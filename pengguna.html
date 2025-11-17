@@ -1,0 +1,1195 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SIPARKIR UNILA · Pengguna</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --bg: #eef4ff;
+            --surface: #ffffff;
+            --primary: #3a6bff;
+            --primary-dark: #112752;
+            --accent: #6dd3ff;
+            --muted: #5c6e94;
+            --border: #d3e0ff;
+            --radius-lg: 34px;
+            --radius-md: 26px;
+            --radius-sm: 18px;
+            --shadow: 0 22px 46px rgba(58, 107, 255, 0.2);
+            --shadow-soft: 0 12px 32px rgba(38, 88, 196, 0.14);
+            --bubble-pink: rgba(183, 210, 255, 0.55);
+            --bubble-blue: rgba(164, 223, 255, 0.5);
+            --bubble-yellow: rgba(206, 224, 255, 0.6);
+        }
+
+        *, *::before, *::after {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Poppins', sans-serif;
+            background: var(--bg);
+            color: var(--primary-dark);
+            line-height: 1.6;
+            scroll-behavior: smooth;
+            position: relative;
+        }
+
+        body::before,
+        body::after {
+            content: '';
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(0);
+            z-index: 0;
+            opacity: 0.7;
+        }
+
+        body::before {
+            width: 360px;
+            height: 360px;
+            background: var(--bubble-blue);
+            top: -120px;
+            right: -80px;
+        }
+
+        body::after {
+            width: 280px;
+            height: 280px;
+            background: var(--bubble-pink);
+            bottom: -90px;
+            left: -70px;
+        }
+
+        img {
+            display: block;
+            max-width: 100%;
+            height: auto;
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        .top-nav {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(255, 255, 255, 0.94);
+            backdrop-filter: saturate(180%) blur(22px);
+            border-bottom: none;
+            border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+            box-shadow: 0 18px 40px rgba(35, 79, 158, 0.18);
+        }
+
+        .nav-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 18px 28px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 28px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 999px;
+            box-shadow: 0 14px 32px rgba(42, 92, 181, 0.16);
+            position: relative;
+            z-index: 2;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            font-weight: 700;
+            color: var(--primary);
+            padding-left: 6px;
+        }
+
+        .brand-badge {
+            width: 52px;
+            height: 52px;
+            border-radius: 20px;
+            display: grid;
+            place-items: center;
+            background: linear-gradient(135deg, #6ca4ff, #3a6bff);
+            color: #fff;
+            font-size: 22px;
+            box-shadow: 0 14px 26px rgba(58, 107, 255, 0.3);
+        }
+
+        .brand-text {
+            display: flex;
+            flex-direction: column;
+            line-height: 1.2;
+        }
+
+        .brand-title {
+            font-size: 16px;
+            font-weight: 700;
+        }
+
+        .brand-subtitle {
+            font-size: 12px;
+            font-weight: 500;
+            color: rgba(17, 39, 82, 0.68);
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .nav-links a {
+            position: relative;
+            padding: 10px 20px;
+            font-weight: 600;
+            font-size: 14px;
+            color: var(--primary-dark);
+            background: rgba(150, 188, 255, 0.2);
+            border-radius: 999px;
+            transition: all 0.25s ease;
+            box-shadow: 0 12px 22px rgba(46, 104, 200, 0.18);
+        }
+
+        .nav-links a:hover {
+            color: #fff;
+            background: linear-gradient(135deg, #6dd3ff, #3a6bff);
+            transform: translateY(-2px);
+            box-shadow: 0 18px 30px rgba(58, 107, 255, 0.25);
+        }
+
+        .nav-links a.active {
+            color: #fff;
+            background: linear-gradient(135deg, #6dd3ff, #3a6bff);
+        }
+
+        .nav-cta {
+            padding: 10px 20px;
+            border-radius: 999px;
+            border: 1px solid rgba(58, 107, 255, 0.28);
+            background: rgba(255, 255, 255, 0.4);
+            color: var(--primary);
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 12px 22px rgba(42, 92, 181, 0.12);
+            cursor: pointer;
+            transition: all 0.25s ease;
+        }
+
+        .nav-cta:hover {
+            background: linear-gradient(135deg, #6dd3ff, #3a6bff);
+            color: #fff;
+            box-shadow: 0 18px 30px rgba(58, 107, 255, 0.25);
+        }
+
+        main {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 48px 32px 72px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 32px;
+            background: linear-gradient(140deg, #9ccaff 0%, #5f8dff 48%, #3a6bff 110%);
+            border-radius: var(--radius-lg);
+            padding: 56px 52px;
+            color: #fff;
+            position: relative;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            width: 320px;
+            height: 320px;
+            background: rgba(255, 255, 255, 0.16);
+            border-radius: 50%;
+            top: -140px;
+            left: -80px;
+        }
+
+        .hero::after {
+            content: '';
+            position: absolute;
+            top: -40px;
+            right: -60px;
+            width: 260px;
+            height: 260px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.18);
+        }
+
+        .hero-text {
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-text .tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 18px;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.3);
+            font-size: 13px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            margin-bottom: 22px;
+        }
+
+        .hero-text h1 {
+            font-size: 38px;
+            line-height: 1.25;
+            margin: 0 0 20px;
+            font-weight: 700;
+        }
+
+        .hero-text p {
+            margin: 0 0 32px;
+            max-width: 460px;
+        }
+
+        .hero-actions {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            border: none;
+            border-radius: 999px;
+            padding: 14px 26px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: transform 0.25s ease, box-shadow 0.25s ease;
+            position: relative;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #6dd3ff, #3a6bff);
+            color: #fff;
+            box-shadow: 0 18px 36px rgba(52, 104, 214, 0.28);
+        }
+
+        .btn-ghost {
+            background: rgba(255, 255, 255, 0.32);
+            color: #fff;
+            border: 1px solid rgba(255, 255, 255, 0.45);
+            box-shadow: 0 12px 28px rgba(90, 158, 255, 0.26);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .btn-primary:hover {
+            box-shadow: 0 20px 40px rgba(52, 104, 214, 0.34);
+        }
+
+        .btn-ghost:hover {
+            box-shadow: 0 16px 34px rgba(90, 158, 255, 0.3);
+        }
+
+        .hero-media {
+            position: relative;
+            z-index: 1;
+            justify-self: center;
+        }
+
+        .hero-media img {
+            width: 320px;
+            max-width: 100%;
+            border-radius: 18px;
+        }
+
+        .insight-section {
+            margin-top: 48px;
+        }
+
+        .insight-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 18px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+
+        .insight-header h2 {
+            margin: 0;
+            font-size: 22px;
+            font-weight: 600;
+            color: var(--primary-dark);
+        }
+
+        .insight-header p {
+            margin: 0;
+            color: var(--muted);
+            font-size: 14px;
+            max-width: 520px;
+        }
+
+        .insight-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 20px;
+        }
+
+        .insight-card {
+            position: relative;
+            background: var(--surface);
+            border-radius: var(--radius-md);
+            padding: 24px;
+            border: 1px solid rgba(208, 223, 255, 0.78);
+            box-shadow: var(--shadow-soft);
+            overflow: hidden;
+        }
+
+        .insight-card::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(61, 119, 223, 0.08), rgba(186, 215, 255, 0.18));
+            pointer-events: none;
+        }
+
+        .insight-icon {
+            width: 54px;
+            height: 54px;
+            border-radius: 20px;
+            display: grid;
+            place-items: center;
+            background: rgba(154, 198, 255, 0.22);
+            color: var(--primary);
+            font-size: 18px;
+            margin-bottom: 16px;
+        }
+
+        .insight-card h3 {
+            margin: 0 0 10px;
+            font-size: 18px;
+        }
+
+        .insight-card p {
+            margin: 0;
+            font-size: 14px;
+            color: var(--muted);
+            max-width: 85%;
+        }
+
+        .insight-media {
+            position: absolute;
+            right: -10px;
+            bottom: -10px;
+            width: 140px;
+            opacity: 0.7;
+        }
+
+        .insight-card > * {
+            position: relative;
+            z-index: 1;
+        }
+
+        .insight-media img {
+            width: 100%;
+            border-radius: 60px 0 0 0;
+        }
+
+        .insight-card.variant-a {
+            background: linear-gradient(140deg, #1f3e86 0%, #3a6bff 100%);
+            border: none;
+            color: #ffffff;
+        }
+
+        .insight-card.variant-a::after {
+            background: linear-gradient(160deg, rgba(255,255,255,0.18), rgba(58, 107, 255, 0.32));
+        }
+
+        .insight-card.variant-a h3 {
+            color: #fff;
+        }
+
+        .insight-card.variant-a p {
+            color: rgba(255, 255, 255, 0.84);
+        }
+
+        .insight-card.variant-a .insight-icon {
+            background: rgba(255, 255, 255, 0.22);
+            color: #fff;
+        }
+
+        .insight-card.variant-a .insight-media {
+            opacity: 0.54;
+        }
+
+        .insight-card.variant-b {
+            background: linear-gradient(145deg, rgba(245, 249, 255, 0.95), rgba(207, 227, 255, 0.8));
+            border: 1px solid rgba(140, 177, 255, 0.35);
+            box-shadow: 0 18px 42px rgba(73, 123, 214, 0.14);
+        }
+
+        .insight-card.variant-b h3 {
+            color: var(--primary-dark);
+        }
+
+        .insight-card.variant-b p {
+            color: rgba(60, 86, 140, 0.78);
+        }
+
+        .insight-card.variant-b::after {
+            background: linear-gradient(150deg, rgba(146, 187, 255, 0.25), rgba(255, 255, 255, 0.35));
+        }
+
+        .insight-card.variant-b .insight-icon {
+            background: rgba(146, 187, 255, 0.22);
+            color: var(--primary);
+        }
+
+        .insight-card.variant-b .insight-media {
+            opacity: 0.7;
+        }
+
+        .insight-card.variant-c {
+            background: linear-gradient(155deg, rgba(226, 248, 255, 0.9), rgba(206, 235, 255, 0.95));
+            border: 1px solid rgba(120, 201, 255, 0.38);
+            box-shadow: 0 18px 46px rgba(54, 154, 214, 0.16);
+        }
+
+        .insight-card.variant-c::after {
+            background: linear-gradient(150deg, rgba(120, 201, 255, 0.22), rgba(220, 245, 255, 0.4));
+        }
+
+        .insight-card.variant-c .insight-icon {
+            background: rgba(111, 207, 255, 0.24);
+            color: #0b577b;
+        }
+
+        .insight-card.variant-c h3 {
+            color: #0f4c73;
+        }
+
+        .insight-card.variant-c p {
+            color: rgba(20, 83, 120, 0.78);
+        }
+
+        section {
+            margin-top: 56px;
+        }
+
+        main > section:first-of-type {
+            margin-top: 0;
+        }
+
+        .bubble-panel {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: var(--radius-lg);
+            padding: 40px 44px;
+            box-shadow: var(--shadow-soft);
+            border: 1px solid rgba(201, 219, 255, 0.4);
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+        }
+
+        .bubble-panel::before {
+            content: '';
+            position: absolute;
+            width: 220px;
+            height: 220px;
+            background: var(--bubble-yellow);
+            border-radius: 50%;
+            top: -90px;
+            right: -60px;
+        }
+
+        .bubble-panel::after {
+            content: '';
+            position: absolute;
+            width: 180px;
+            height: 180px;
+            background: var(--bubble-pink);
+            border-radius: 50%;
+            bottom: -80px;
+            left: -40px;
+        }
+
+        .bubble-panel > * {
+            position: relative;
+            z-index: 1;
+        }
+
+        .section-heading {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .section-heading h2 {
+            margin: 0;
+            font-size: 22px;
+            font-weight: 600;
+            color: var(--primary-dark);
+        }
+
+        .stats-grid {
+            display: grid;
+            gap: 24px;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        }
+
+        .stat-card {
+            background: linear-gradient(155deg, rgba(255, 255, 255, 0.98) 0%, rgba(206, 227, 255, 0.5) 100%);
+            border-radius: var(--radius-md);
+            padding: 30px;
+            box-shadow: var(--shadow-soft);
+            border: 1px solid rgba(201, 219, 255, 0.6);
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.25s ease, box-shadow 0.25s ease;
+        }
+
+        .stat-card::after {
+            content: '';
+            position: absolute;
+            width: 120px;
+            height: 120px;
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 50%;
+            top: -40px;
+            right: -30px;
+            z-index: 0;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 28px 60px rgba(52, 104, 214, 0.24);
+        }
+
+        .stat-icon {
+            width: 62px;
+            height: 62px;
+            border-radius: 50%;
+            display: grid;
+            place-items: center;
+            font-size: 22px;
+            margin-bottom: 18px;
+            background: linear-gradient(135deg, #6dd3ff, #3a6bff);
+            color: #fff;
+            box-shadow: inset 0 0 0 6px rgba(255, 255, 255, 0.2);
+        }
+
+        .stat-value {
+            font-size: 34px;
+            font-weight: 700;
+            margin-bottom: 6px;
+        }
+
+        .stat-card > * {
+            position: relative;
+            z-index: 1;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: rgba(52, 92, 150, 0.7);
+        }
+
+        .actions-grid {
+            display: grid;
+            gap: 24px;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        }
+
+        .action-card {
+            background: rgba(255, 255, 255, 0.97);
+            border-radius: var(--radius-md);
+            padding: 32px;
+            border: 1px solid rgba(201, 219, 255, 0.55);
+            box-shadow: var(--shadow-soft);
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.25s ease, box-shadow 0.25s ease;
+        }
+
+        .action-card::after {
+            content: '';
+            position: absolute;
+            width: 180px;
+            height: 180px;
+            background: rgba(125, 205, 255, 0.26);
+            border-radius: 50%;
+            bottom: -90px;
+            right: -60px;
+            z-index: 0;
+        }
+
+        .action-card::before {
+            content: '';
+            position: absolute;
+            width: 120px;
+            height: 120px;
+            background: rgba(192, 221, 255, 0.36);
+            border-radius: 50%;
+            top: -70px;
+            left: -40px;
+            z-index: 0;
+        }
+
+        .action-card:hover {
+            transform: translateY(-10px) scale(1.01);
+            box-shadow: 0 28px 60px rgba(52, 104, 214, 0.22);
+        }
+
+        .action-card h3 {
+            font-size: 18px;
+            margin: 0;
+        }
+
+        .action-card p {
+            margin: 0;
+            font-size: 14px;
+            color: var(--muted);
+        }
+
+        .action-card > * {
+            position: relative;
+            z-index: 1;
+        }
+
+        .action-card .btn {
+            margin-top: auto;
+        }
+
+        .activity-list {
+            background: rgba(255, 255, 255, 0.96);
+            border-radius: var(--radius-lg);
+            border: 1px solid rgba(201, 219, 255, 0.5);
+            box-shadow: var(--shadow-soft);
+            padding: 32px;
+            display: grid;
+            gap: 22px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .activity-list > * {
+            position: relative;
+            z-index: 1;
+        }
+
+        .activity-item {
+            display: flex;
+            align-items: center;
+            gap: 22px;
+            padding: 18px 16px;
+            border-radius: var(--radius-md);
+            background: rgba(150, 188, 255, 0.16);
+            border: none;
+            box-shadow: inset 0 0 0 1px rgba(150, 188, 255, 0.28);
+            transition: transform 0.25s ease, box-shadow 0.25s ease;
+        }
+
+        .activity-item:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 16px 30px rgba(56, 108, 205, 0.24);
+        }
+
+        .activity-icon {
+            width: 58px;
+            height: 58px;
+            border-radius: 50%;
+            display: grid;
+            place-items: center;
+            background: linear-gradient(135deg, #6dd3ff, #3a6bff);
+            color: #fff;
+            font-size: 18px;
+            box-shadow: 0 10px 20px rgba(56, 108, 205, 0.28);
+        }
+
+        .activity-meta {
+            margin-left: auto;
+            font-size: 13px;
+            color: var(--muted);
+        }
+
+        .activity-time {
+            color: rgba(52, 92, 150, 0.7);
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(12, 32, 68, 0.55);
+            z-index: 200;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+        }
+
+        .modal-content {
+            background: linear-gradient(160deg, rgba(255, 255, 255, 0.98) 0%, rgba(206, 227, 255, 0.46) 100%);
+            border-radius: var(--radius-lg);
+            padding: 36px;
+            max-width: 420px;
+            width: 100%;
+            box-shadow: 0 24px 60px rgba(36, 82, 162, 0.32);
+            position: relative;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .modal-header h3 {
+            margin: 0;
+            font-size: 20px;
+        }
+
+        .close-btn {
+            border: none;
+            background: rgba(199, 219, 255, 0.55);
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 18px;
+            color: var(--primary-dark);
+        }
+
+        .form-group {
+            display: grid;
+            gap: 8px;
+            margin-bottom: 18px;
+        }
+
+        label {
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .form-control, select, textarea {
+            font-family: 'Poppins', sans-serif;
+            padding: 12px 14px;
+            border-radius: var(--radius-sm);
+            border: 1px solid rgba(201, 219, 255, 0.85);
+            background: #fff;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+            font-size: 14px;
+        }
+
+        .form-control:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(58, 107, 255, 0.18);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 96px;
+        }
+
+        .btn-full {
+            width: 100%;
+        }
+
+        @media (max-width: 900px) {
+            .hero {
+                padding: 32px;
+            }
+
+            .insight-header {
+                flex-direction: column;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .nav-inner {
+                padding: 18px;
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 18px;
+                border-radius: var(--radius-lg);
+            }
+
+            main {
+                padding: 32px 20px 60px;
+            }
+
+            .hero {
+                padding: 28px;
+            }
+
+            .hero-text h1 {
+                font-size: 28px;
+            }
+
+            .nav-links {
+                width: 100%;
+                gap: 12px;
+            }
+
+            .nav-links a {
+                width: 100%;
+                text-align: center;
+            }
+
+            .nav-cta {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="top-nav">
+        <div class="nav-inner">
+            <a href="pengguna.html" class="brand">
+                <span class="brand-badge"><i class="fas fa-parking"></i></span>
+                <div class="brand-text">
+                    <span class="brand-title">SIPARKIR UNILA</span>
+                    <span class="brand-subtitle">Dashboard Pengguna</span>
+                </div>
+            </a>
+            <div class="nav-links">
+                <a href="#dashboard" class="active">Dashboard</a>
+                <a href="#statistik">Ringkasan</a>
+                <a href="#layanan">Layanan</a>
+                <a href="#aktivitas">Aktivitas</a>
+            </div>
+        </div>
+    </nav>
+
+    <main>
+        <section class="hero" id="dashboard">
+            <div class="hero-text">
+                <span class="tag"><i class="fas fa-circle"></i> Dashboard Pengguna</span>
+                <h1>Kelola parkir kampus lebih praktis dan terarah dalam satu dasbor.</h1>
+                <p>Pantau status kendaraan, riwayat parkir, hingga buat laporan kehilangan hanya dengan beberapa klik. SIPARKIR UNILA hadir untuk memudahkan mobilitas sivitas akademika.</p>
+                <div class="hero-actions">
+                    <button class="btn btn-primary" data-modal="registerModal">Registrasi Kendaraan</button>
+                    <button class="btn btn-ghost" data-modal="parkirModal">Check-In Parkir</button>
+                </div>
+            </div>
+            <div class="hero-media">
+                <img src="https://cdn.vectorstock.com/i/750p/62/31/using-parking-app-isolated-cartoon-vector-54426231.avif" alt="Ilustrasi aplikasi parkir">
+            </div>
+        </section>
+
+        <section class="insight-section bubble-panel" id="insight">
+            <div class="insight-header">
+                <h2>Highlight Parkir Cerdas</h2>
+            </div>
+            <div class="insight-grid">
+                <article class="insight-card variant-a">
+                    <div class="insight-icon"><i class="fas fa-headset"></i></div>
+                    <h3>Lapor Kehilangan</h3>
+                    <p>Sampaikan insiden kehilangan atau kerusakan kendaraan dan pantau tindak lanjutnya lewat formulir terintegrasi.</p>
+                    <div class="insight-media">
+                        <img src="https://cdn.vectorstock.com/i/750p/37/84/valet-parking-service-isolated-cartoon-vector-55303784.avif" alt="Ilustrasi valet parkir">
+                    </div>
+                </article>
+                <article class="insight-card variant-b">
+                    <div class="insight-icon"><i class="fas fa-mobile-screen"></i></div>
+                    <h3>Aplikasi Parkir Aktif</h3>
+                    <p>Pengguna dapat langsung melakukan check-in melalui gawai dan memantau riwayat parkir pribadi.</p>
+                    <div class="insight-media">
+                        <img src="https://cdn.vectorstock.com/i/750p/62/31/using-parking-app-isolated-cartoon-vector-54426231.avif" alt="Ilustrasi aplikasi parkir">
+                    </div>
+                </article>
+                <article class="insight-card variant-c">
+                    <div class="insight-icon"><i class="fas fa-traffic-light"></i></div>
+                    <h3>Registrasi Kendaraan</h3>
+                    <p>Masukkan data kendaraan baru kapan saja sehingga akses area parkir langsung tersinkron dengan akun Anda.</p>
+                    <div class="insight-media">
+                        <img src="https://cdn.vectorstock.com/i/750p/52/62/bay-indicator-isolated-cartoon-vector-43575262.avif" alt="Ilustrasi indikator slot parkir">
+                    </div>
+                </article>
+            </div>
+        </section>
+
+        <section id="statistik" class="bubble-panel">
+            <div class="section-heading">
+                <h2>Ringkasan Hari Ini</h2>
+            </div>
+            <div class="stats-grid">
+                <article class="stat-card">
+                    <div class="stat-icon"><i class="fas fa-car"></i></div>
+                    <div class="stat-value">2</div>
+                    <div class="stat-label">Kendaraan Terdaftar</div>
+                </article>
+                <article class="stat-card">
+                    <div class="stat-icon"><i class="fas fa-parking"></i></div>
+                    <div class="stat-value">1</div>
+                    <div class="stat-label">Parkir Aktif</div>
+                </article>
+                <article class="stat-card">
+                    <div class="stat-icon"><i class="fas fa-clock"></i></div>
+                    <div class="stat-value">24</div>
+                    <div class="stat-label">Total Parkir Bulan Ini</div>
+                </article>
+                <article class="stat-card">
+                    <div class="stat-icon"><i class="fas fa-flag"></i></div>
+                    <div class="stat-value">0</div>
+                    <div class="stat-label">Laporan Aktif</div>
+                </article>
+            </div>
+        </section>
+
+        <section id="layanan" class="bubble-panel">
+            <div class="section-heading">
+                <h2>Aksi Cepat</h2>
+            </div>
+            <div class="actions-grid">
+                <article class="action-card">
+                    <div class="stat-icon"><i class="fas fa-car-side"></i></div>
+                    <h3>Registrasi Kendaraan</h3>
+                    <p>Tambahkan kendaraan baru agar dapat mengakses area parkir kampus secara resmi.</p>
+                    <button class="btn btn-primary" data-modal="registerModal">Daftarkan Sekarang</button>
+                </article>
+                <article class="action-card">
+                    <div class="stat-icon"><i class="fas fa-sign-in-alt"></i></div>
+                    <h3>Check-In Parkir</h3>
+                    <p>Catat waktu masuk kendaraan ketika tiba di area parkir tujuan.</p>
+                    <button class="btn btn-primary" data-modal="parkirModal">Mulai Parkir</button>
+                </article>
+                <article class="action-card">
+                        <div class="stat-icon"><i class="fas fa-sign-out-alt"></i></div>
+                    <h3>Check-Out Parkir</h3>
+                    <p>Segera tutup sesi parkir saat Anda meninggalkan area untuk menjaga akurasi data.</p>
+                    <button class="btn btn-primary" data-modal="keluarModal">Selesaikan Parkir</button>
+                </article>
+                <article class="action-card">
+                    <div class="stat-icon"><i class="fas fa-exclamation-triangle"></i></div>
+                    <h3>Lapor Kehilangan</h3>
+                    <p>Laporkan insiden kehilangan atau kerusakan kendaraan dengan formulir terintegrasi.</p>
+                    <button class="btn btn-primary" data-modal="laporModal">Buat Laporan</button>
+                </article>
+            </div>
+        </section>
+
+        <section id="aktivitas" class="bubble-panel">
+            <div class="section-heading">
+                <h2>Aktivitas Terbaru</h2>
+            </div>
+            <div class="activity-list">
+                <div class="activity-item">
+                    <div class="activity-icon"><i class="fas fa-parking"></i></div>
+                    <div>
+                        <strong>Check-In Parkir Berhasil</strong>
+                        <div>Honda Beat - Area Parkir A (Gedung Rektorat)</div>
+                    </div>
+                    <span class="activity-meta">10:30</span>
+                </div>
+                <div class="activity-item">
+                    <div class="activity-icon"><i class="fas fa-car"></i></div>
+                    <div>
+                        <strong>Check-Out Parkir</strong>
+                        <div>Toyota Avanza - Area Parkir B (Fakultas Teknik)</div>
+                    </div>
+                    <span class="activity-meta">Kemarin</span>
+                </div>
+                <div class="activity-item">
+                    <div class="activity-icon"><i class="fas fa-car-side"></i></div>
+                    <div>
+                        <strong>Kendaraan Baru Terdaftar</strong>
+                        <div>Mitsubishi Xpander - BE 9876 KL</div>
+                    </div>
+                    <span class="activity-meta">2 hari lalu</span>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <div class="modal" id="registerModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Registrasi Kendaraan</h3>
+                <button class="close-btn" data-close>&times;</button>
+            </div>
+            <form id="registerForm">
+                <div class="form-group">
+                    <label for="jenisKendaraan">Jenis Kendaraan</label>
+                    <select id="jenisKendaraan" class="form-control" required>
+                        <option value="">Pilih jenis</option>
+                        <option value="Motor">Motor</option>
+                        <option value="Mobil">Mobil</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="platNomor">Plat Nomor</label>
+                    <input type="text" id="platNomor" class="form-control" placeholder="Contoh: BE 1234 XX" required>
+                </div>
+                <div class="form-group">
+                    <label for="merkKendaraan">Merk &amp; Tipe</label>
+                    <input type="text" id="merkKendaraan" class="form-control" placeholder="Contoh: Honda Beat" required>
+                </div>
+                <div class="form-group">
+                    <label for="warnaKendaraan">Warna Kendaraan</label>
+                    <input type="text" id="warnaKendaraan" class="form-control" placeholder="Contoh: Hitam" required>
+                </div>
+                <button type="submit" class="btn btn-primary btn-full">Simpan Kendaraan</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="modal" id="parkirModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Check-In Parkir</h3>
+                <button class="close-btn" data-close>&times;</button>
+            </div>
+            <form id="parkirForm">
+                <div class="form-group">
+                    <label for="kendaraanParkir">Pilih Kendaraan</label>
+                    <select id="kendaraanParkir" class="form-control" required>
+                        <option value="">Pilih kendaraan</option>
+                        <option>Honda Beat - BE 1234 AA</option>
+                        <option>Toyota Avanza - BE 5678 CD</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="lokasiParkir">Lokasi Parkir</label>
+                    <select id="lokasiParkir" class="form-control" required>
+                        <option value="">Pilih lokasi</option>
+                        <option>Area A · Gedung Rektorat</option>
+                        <option>Area B · Fakultas Teknik</option>
+                        <option>Area C · Perpustakaan</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary btn-full">Konfirmasi Check-In</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="modal" id="keluarModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Check-Out Parkir</h3>
+                <button class="close-btn" data-close>&times;</button>
+            </div>
+            <div class="form-group">
+                <label>Parkir Aktif</label>
+                <div class="action-card" style="box-shadow:none; border-color: rgba(221,227,240,0.9);">
+                    <strong>Honda Beat - Area A</strong>
+                    <span>Masuk pukul 10:30 · Durasi 02:15</span>
+                </div>
+            </div>
+            <button class="btn btn-primary btn-full" id="keluarBtn">Selesaikan Parkir</button>
+        </div>
+    </div>
+
+    <div class="modal" id="laporModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Lapor Kehilangan</h3>
+                <button class="close-btn" data-close>&times;</button>
+            </div>
+            <form id="laporForm">
+                <div class="form-group">
+                    <label for="kendaraanHilang">Kendaraan</label>
+                    <select id="kendaraanHilang" class="form-control" required>
+                        <option value="">Pilih kendaraan</option>
+                        <option>Honda Beat - BE 1234 AA</option>
+                        <option>Toyota Avanza - BE 5678 CD</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="lokasiHilang">Lokasi</label>
+                    <input type="text" id="lokasiHilang" class="form-control" placeholder="Area parkir" required>
+                </div>
+                <div class="form-group">
+                    <label for="waktuHilang">Perkiraan Waktu</label>
+                    <input type="datetime-local" id="waktuHilang" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="keterangan">Keterangan Tambahan</label>
+                    <textarea id="keterangan" class="form-control" placeholder="Jelaskan detail kejadian..."></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary btn-full">Kirim Laporan</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const modalTriggers = document.querySelectorAll('[data-modal]');
+        const closeButtons = document.querySelectorAll('[data-close]');
+
+        modalTriggers.forEach(trigger => {
+            trigger.addEventListener('click', () => {
+                const target = document.getElementById(trigger.dataset.modal);
+                if (target) target.style.display = 'flex';
+            });
+        });
+
+        closeButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                btn.closest('.modal').style.display = 'none';
+            });
+        });
+
+        window.addEventListener('click', (event) => {
+            if (event.target.classList.contains('modal')) {
+                event.target.style.display = 'none';
+            }
+        });
+
+        document.getElementById('registerForm').addEventListener('submit', (event) => {
+            event.preventDefault();
+            alert('Kendaraan berhasil ditambahkan.');
+            event.target.reset();
+            document.getElementById('registerModal').style.display = 'none';
+        });
+
+        document.getElementById('parkirForm').addEventListener('submit', (event) => {
+            event.preventDefault();
+            alert('Check-in parkir tercatat.');
+            event.target.reset();
+            document.getElementById('parkirModal').style.display = 'none';
+        });
+
+        document.getElementById('laporForm').addEventListener('submit', (event) => {
+            event.preventDefault();
+            alert('Laporan kehilangan terkirim.');
+            event.target.reset();
+            document.getElementById('laporModal').style.display = 'none';
+        });
+
+        document.getElementById('keluarBtn').addEventListener('click', () => {
+            alert('Sesi parkir selesai. Terima kasih sudah menggunakan SIPARKIR UNILA.');
+            document.getElementById('keluarModal').style.display = 'none';
+        });
+    </script>
+</body>
+</html>

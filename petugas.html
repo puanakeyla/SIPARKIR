@@ -1,0 +1,1363 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SIPARKIR-UNILA · Petugas</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+            :root {
+                --bg: #eef4ff;
+                --surface: #ffffff;
+                --surface-soft: rgba(255, 255, 255, 0.92);
+                --primary: #3a6bff;
+                --primary-dark: #112752;
+                --accent: #6dd3ff;
+                --muted: #5c6e94;
+                --border: #d3e0ff;
+                --radius-lg: 34px;
+                --radius-md: 24px;
+                --radius-sm: 16px;
+                --shadow: 0 18px 40px rgba(42, 92, 181, 0.18);
+                --shadow-soft: 0 12px 28px rgba(46, 104, 200, 0.16);
+                --success: #28a745;
+                --warning: #ffc107;
+                --danger: #dc3545;
+                --dark-text: #112752;
+                --gray-text: #5c6e94;
+            }
+
+            *, *::before, *::after {
+                box-sizing: border-box;
+            }
+
+            body {
+                margin: 0;
+                font-family: 'Poppins', sans-serif;
+                background: var(--bg);
+                color: var(--primary-dark);
+                line-height: 1.6;
+                position: relative;
+            }
+
+            body::before,
+            body::after {
+                content: '';
+                position: fixed;
+                border-radius: 50%;
+                filter: blur(0);
+                z-index: 0;
+                opacity: 0.7;
+            }
+
+            body::before {
+                width: 360px;
+                height: 360px;
+                background: rgba(164, 223, 255, 0.5);
+                top: -120px;
+                right: -80px;
+            }
+
+            body::after {
+                width: 280px;
+                height: 280px;
+                background: rgba(183, 210, 255, 0.55);
+                bottom: -90px;
+                left: -70px;
+            }
+
+            img {
+                max-width: 100%;
+                display: block;
+                height: auto;
+            }
+
+            a {
+                color: inherit;
+                text-decoration: none;
+            }
+
+            .top-nav {
+                position: sticky;
+                top: 0;
+                z-index: 200;
+                background: rgba(255, 255, 255, 0.92);
+                backdrop-filter: saturate(180%) blur(22px);
+                border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+                box-shadow: 0 18px 40px rgba(35, 79, 158, 0.12);
+            }
+
+            .nav-inner {
+                max-width: 1200px;
+                margin: 0 auto;
+                padding: 18px 30px;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                gap: 24px;
+                background: rgba(255, 255, 255, 0.92);
+                border-radius: 999px;
+                box-shadow: 0 14px 30px rgba(42, 92, 181, 0.16);
+                position: relative;
+                z-index: 2;
+            }
+
+            .brand {
+                display: flex;
+                align-items: center;
+                gap: 14px;
+                font-weight: 700;
+                color: var(--primary);
+            }
+
+            .brand-badge {
+                width: 52px;
+                height: 52px;
+                border-radius: 20px;
+                display: grid;
+                place-items: center;
+                background: linear-gradient(135deg, #6ca4ff, #3a6bff);
+                color: #fff;
+                font-size: 22px;
+                box-shadow: 0 14px 26px rgba(58, 107, 255, 0.3);
+            }
+
+            .brand-text {
+                display: flex;
+                flex-direction: column;
+                line-height: 1.2;
+            }
+
+            .brand-title {
+                font-size: 16px;
+                font-weight: 700;
+            }
+
+            .brand-subtitle {
+                font-size: 12px;
+                font-weight: 500;
+                color: rgba(17, 39, 82, 0.68);
+            }
+
+            .nav-links {
+                display: flex;
+                align-items: center;
+                gap: 14px;
+                flex-wrap: wrap;
+            }
+
+            .nav-links a {
+                padding: 10px 20px;
+                font-weight: 600;
+                font-size: 14px;
+                color: var(--primary-dark);
+                background: rgba(150, 188, 255, 0.18);
+                border-radius: 999px;
+                transition: all 0.25s ease;
+                box-shadow: 0 12px 22px rgba(46, 104, 200, 0.14);
+            }
+
+            .nav-links a:hover,
+            .nav-links a.active {
+                color: #fff;
+                background: linear-gradient(135deg, var(--accent), var(--primary));
+                transform: translateY(-2px);
+                box-shadow: 0 16px 30px rgba(58, 107, 255, 0.25);
+            }
+
+            .nav-cta {
+                padding: 10px 20px;
+                border-radius: 999px;
+                border: 1px solid rgba(58, 107, 255, 0.28);
+                background: rgba(255, 255, 255, 0.4);
+                color: var(--primary);
+                font-weight: 600;
+                display: inline-flex;
+                align-items: center;
+                gap: 10px;
+                box-shadow: 0 12px 22px rgba(42, 92, 181, 0.12);
+                cursor: pointer;
+                transition: all 0.25s ease;
+            }
+
+            .nav-cta:hover {
+                background: linear-gradient(135deg, var(--accent), var(--primary));
+                color: #fff;
+                box-shadow: 0 16px 30px rgba(58, 107, 255, 0.25);
+            }
+
+            main {
+                max-width: 1200px;
+                margin: 0 auto;
+                padding: 52px 32px 96px;
+                position: relative;
+                z-index: 1;
+            }
+
+            .hero {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+                gap: 32px;
+                background: linear-gradient(140deg, #9ccaff 0%, #5f8dff 48%, #3a6bff 110%);
+                border-radius: var(--radius-lg);
+                padding: 56px;
+                color: #fff;
+                position: relative;
+                overflow: hidden;
+                box-shadow: var(--shadow);
+            }
+
+            .hero::before {
+                content: '';
+                position: absolute;
+                width: 320px;
+                height: 320px;
+                background: rgba(255, 255, 255, 0.16);
+                border-radius: 50%;
+                top: -140px;
+                left: -80px;
+            }
+
+            .hero::after {
+                content: '';
+                position: absolute;
+                width: 260px;
+                height: 260px;
+                background: rgba(255, 255, 255, 0.18);
+                border-radius: 50%;
+                bottom: -110px;
+                right: -70px;
+            }
+
+            .hero-text {
+                position: relative;
+                z-index: 1;
+            }
+
+            .hero-text .tag {
+                display: inline-flex;
+                align-items: center;
+                gap: 8px;
+                padding: 8px 18px;
+                border-radius: 999px;
+                background: rgba(255, 255, 255, 0.28);
+                font-size: 13px;
+                font-weight: 600;
+                letter-spacing: 0.5px;
+                margin-bottom: 22px;
+            }
+
+            .hero-text h1 {
+                font-size: 36px;
+                line-height: 1.2;
+                margin: 0 0 20px;
+                font-weight: 700;
+            }
+
+            .hero-text p {
+                margin: 0 0 28px;
+                max-width: 480px;
+            }
+
+            .hero-actions {
+                display: flex;
+                align-items: center;
+                gap: 14px;
+                flex-wrap: wrap;
+            }
+
+            .hero-media {
+                position: relative;
+                z-index: 1;
+                justify-self: center;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                gap: 18px;
+            }
+
+            .hero-media img {
+                width: 320px;
+                max-width: 100%;
+                border-radius: 18px;
+                box-shadow: 0 22px 46px rgba(18, 51, 120, 0.32);
+            }
+
+            .profile-chip {
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                padding: 10px 16px;
+                background: rgba(255, 255, 255, 0.2);
+                border-radius: 999px;
+                border: 1px solid rgba(255, 255, 255, 0.45);
+                backdrop-filter: blur(6px);
+            }
+
+            .profile-chip img {
+                width: 42px;
+                height: 42px;
+                border-radius: 50%;
+                border: 2px solid rgba(255, 255, 255, 0.8);
+            }
+
+            .profile-chip .chip-title {
+                font-weight: 600;
+                font-size: 14px;
+                color: #fff;
+            }
+
+            .profile-chip .chip-subtitle {
+                font-size: 12px;
+                color: rgba(255, 255, 255, 0.86);
+            }
+
+            .btn {
+                border: none;
+                border-radius: 999px;
+                padding: 14px 26px;
+                font-weight: 600;
+                font-size: 14px;
+                cursor: pointer;
+                transition: transform 0.25s ease, box-shadow 0.25s ease, background 0.25s ease, color 0.25s ease;
+                display: inline-flex;
+                align-items: center;
+                gap: 10px;
+            }
+
+            .btn-primary {
+                background: linear-gradient(135deg, var(--accent), var(--primary));
+                color: #fff;
+                box-shadow: 0 18px 36px rgba(52, 104, 214, 0.28);
+            }
+
+            .btn-ghost {
+                background: rgba(255, 255, 255, 0.22);
+                color: #fff;
+                border: 1px solid rgba(255, 255, 255, 0.45);
+                box-shadow: 0 12px 28px rgba(90, 158, 255, 0.26);
+            }
+
+            .btn-outline {
+                background: rgba(58, 107, 255, 0.08);
+                color: var(--primary);
+                border: 1px solid rgba(58, 107, 255, 0.3);
+                padding: 12px 22px;
+                border-radius: 999px;
+            }
+
+            .btn:hover {
+                transform: translateY(-2px);
+            }
+
+            .btn-primary:hover {
+                box-shadow: 0 20px 44px rgba(52, 104, 214, 0.34);
+            }
+
+            .btn-ghost:hover {
+                background: rgba(255, 255, 255, 0.32);
+            }
+
+            .btn-outline:hover {
+                background: linear-gradient(135deg, var(--accent), var(--primary));
+                color: #fff;
+                box-shadow: 0 18px 34px rgba(58, 107, 255, 0.22);
+                border-color: transparent;
+            }
+
+            .btn-success {
+                background: linear-gradient(135deg, #58d58f, #2eb669);
+                color: #fff;
+            }
+
+            .btn-warning {
+                background: linear-gradient(135deg, #ffd76f, #ffb14b);
+                color: #6b4200;
+            }
+
+            .btn-danger {
+                background: linear-gradient(135deg, #ff7a7a, #ff4d4d);
+                color: #fff;
+            }
+
+            .btn-sm {
+                padding: 10px 18px;
+                font-size: 13px;
+            }
+
+            .btn-block {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .bubble-panel {
+                margin-top: 48px;
+                background: var(--surface);
+                border-radius: var(--radius-lg);
+                border: 1px solid rgba(199, 214, 255, 0.7);
+                box-shadow: var(--shadow-soft);
+                padding: 40px;
+                position: relative;
+                overflow: hidden;
+            }
+
+            .bubble-panel::after {
+                content: '';
+                position: absolute;
+                width: 180px;
+                height: 180px;
+                background: rgba(109, 211, 255, 0.18);
+                border-radius: 50%;
+                top: -90px;
+                right: -70px;
+                pointer-events: none;
+            }
+
+            .bubble-panel > * {
+                position: relative;
+                z-index: 1;
+            }
+
+            .section-heading {
+                display: flex;
+                align-items: flex-start;
+                justify-content: space-between;
+                gap: 20px;
+                flex-wrap: wrap;
+                margin-bottom: 28px;
+            }
+
+            .section-heading h2 {
+                margin: 0 0 6px;
+                font-size: 22px;
+                font-weight: 600;
+                color: var(--primary-dark);
+            }
+
+            .section-heading p {
+                margin: 0;
+                color: var(--muted);
+                font-size: 14px;
+                max-width: 520px;
+            }
+
+            .section-actions {
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                flex-wrap: wrap;
+            }
+
+            .badge-soft {
+                display: inline-flex;
+                align-items: center;
+                gap: 10px;
+                padding: 10px 18px;
+                border-radius: 999px;
+                background: rgba(109, 211, 255, 0.16);
+                color: var(--primary-dark);
+                font-weight: 600;
+            }
+
+            .record-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+                gap: 22px;
+                margin-top: 26px;
+            }
+
+            .record-card {
+                background: rgba(255, 255, 255, 0.96);
+                border-radius: var(--radius-md);
+                border: 1px solid rgba(206, 227, 255, 0.65);
+                box-shadow: var(--shadow-soft);
+                padding: 26px;
+                display: flex;
+                flex-direction: column;
+                gap: 20px;
+            }
+
+            .record-header {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                gap: 14px;
+            }
+
+            .record-header h3 {
+                margin: 0;
+                font-size: 18px;
+                font-weight: 600;
+                color: var(--primary-dark);
+                display: flex;
+                align-items: center;
+                gap: 10px;
+            }
+
+            .record-header span {
+                font-size: 12px;
+                font-weight: 600;
+                color: var(--primary);
+                background: rgba(109, 211, 255, 0.22);
+                padding: 6px 12px;
+                border-radius: 999px;
+            }
+
+            .record-form {
+                display: grid;
+                gap: 16px;
+            }
+
+            .record-form .form-group {
+                margin: 0;
+            }
+
+            .record-actions {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 12px;
+                align-items: center;
+            }
+
+            .record-actions .btn {
+                flex: 1;
+                min-width: 150px;
+            }
+
+            .monitoring-grid {
+                display: grid;
+                grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+                gap: 22px;
+            }
+
+            .reports-grid {
+                display: grid;
+                grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+                gap: 22px;
+                margin-bottom: 26px;
+            }
+
+            .table-card {
+                background: rgba(255, 255, 255, 0.96);
+                border-radius: var(--radius-md);
+                border: 1px solid rgba(206, 227, 255, 0.65);
+                box-shadow: var(--shadow-soft);
+                padding: 24px;
+                display: flex;
+                flex-direction: column;
+                gap: 20px;
+            }
+
+            .table-header {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                gap: 16px;
+                flex-wrap: wrap;
+            }
+
+            .table-header h3 {
+                margin: 0;
+                font-size: 18px;
+                font-weight: 600;
+                color: var(--primary-dark);
+                display: flex;
+                align-items: center;
+                gap: 12px;
+            }
+
+            .table-responsive {
+                overflow-x: auto;
+            }
+
+            table {
+                width: 100%;
+                border-collapse: collapse;
+            }
+
+            th,
+            td {
+                padding: 14px 16px;
+                text-align: left;
+                border-bottom: 1px solid rgba(206, 227, 255, 0.7);
+                font-size: 14px;
+                vertical-align: middle;
+            }
+
+            th {
+                color: var(--primary-dark);
+                font-weight: 600;
+                background: rgba(206, 227, 255, 0.45);
+            }
+
+            tbody tr:hover {
+                background: rgba(109, 211, 255, 0.12);
+            }
+
+            .table-actions {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 10px;
+                justify-content: center;
+            }
+
+            .table-actions .btn {
+                flex: 1;
+                min-width: 135px;
+                justify-content: center;
+            }
+
+            .activity-card {
+                background: linear-gradient(160deg, rgba(58, 107, 255, 0.95), rgba(109, 211, 255, 0.88));
+                border: none;
+                color: #fff;
+                box-shadow: 0 24px 48px rgba(58, 107, 255, 0.22);
+            }
+
+            .activity-card .table-header h3 {
+                color: #fff;
+            }
+
+            .activity-list {
+                display: flex;
+                flex-direction: column;
+                gap: 16px;
+            }
+
+            .activity-item {
+                display: flex;
+                align-items: center;
+                gap: 14px;
+                padding: 18px;
+                border-radius: var(--radius-sm);
+                background: rgba(255, 255, 255, 0.16);
+                border: 1px solid rgba(255, 255, 255, 0.2);
+                box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.12);
+            }
+
+            .activity-icon {
+                width: 46px;
+                height: 46px;
+                border-radius: 16px;
+                display: grid;
+                place-items: center;
+                font-size: 18px;
+                color: #fff;
+            }
+
+            .activity-icon.danger {
+                background: rgba(255, 122, 122, 0.4);
+            }
+
+            .activity-icon.warning {
+                background: rgba(255, 215, 111, 0.35);
+            }
+
+            .activity-icon.success {
+                background: rgba(88, 213, 143, 0.38);
+            }
+
+            .activity-content h4 {
+                margin: 0;
+                font-size: 16px;
+                font-weight: 600;
+            }
+
+            .activity-content p {
+                margin: 4px 0 0;
+                font-size: 13px;
+                color: rgba(255, 255, 255, 0.86);
+            }
+
+            .activity-time {
+                margin-left: auto;
+                font-size: 13px;
+                font-weight: 600;
+                color: rgba(255, 255, 255, 0.9);
+            }
+
+            .status-badge {
+                display: inline-flex;
+                align-items: center;
+                gap: 8px;
+                padding: 8px 14px;
+                border-radius: 999px;
+                font-weight: 600;
+                font-size: 12px;
+            }
+
+            .status-active {
+                background: rgba(58, 107, 255, 0.16);
+                color: var(--primary);
+            }
+
+            .status-pending {
+                background: rgba(255, 193, 7, 0.18);
+                color: #a76100;
+            }
+
+            .status-danger {
+                background: rgba(220, 53, 69, 0.18);
+                color: #a4192f;
+            }
+
+            .status-success {
+                background: rgba(88, 213, 143, 0.22);
+                color: #1f7a4d;
+            }
+
+            .info-box {
+                background: rgba(109, 211, 255, 0.18);
+                padding: 20px;
+                border-radius: 16px;
+                border-left: 4px solid var(--primary);
+                margin-bottom: 20px;
+            }
+
+            .form-group {
+                display: flex;
+                flex-direction: column;
+                gap: 10px;
+                margin-bottom: 18px;
+            }
+
+            .form-group label {
+                margin: 0;
+                color: var(--primary-dark);
+                font-weight: 600;
+                font-size: 14px;
+            }
+
+            .form-control {
+                width: 100%;
+                padding: 14px 18px;
+                border: 2px solid rgba(201, 219, 255, 0.8);
+                border-radius: 14px;
+                background: #fff;
+                color: var(--primary-dark);
+                font-size: 14px;
+                transition: all 0.25s ease;
+            }
+
+            .form-control:focus {
+                outline: none;
+                border-color: var(--primary);
+                box-shadow: 0 0 0 4px rgba(58, 107, 255, 0.18);
+            }
+
+            .modal {
+                display: none;
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(17, 39, 82, 0.55);
+                backdrop-filter: blur(6px);
+                z-index: 1000;
+                align-items: center;
+                justify-content: center;
+                padding: 20px;
+            }
+
+            .modal-content {
+                background: linear-gradient(160deg, rgba(255, 255, 255, 0.98) 0%, rgba(206, 227, 255, 0.54) 100%);
+                padding: 35px;
+                border-radius: 24px;
+                width: min(520px, 90%);
+                box-shadow: var(--shadow);
+                border: 1px solid rgba(201, 219, 255, 0.6);
+            }
+
+            .modal-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 22px;
+            }
+
+            .modal-header h3 {
+                font-size: 20px;
+                font-weight: 700;
+                color: var(--primary-dark);
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                margin: 0;
+            }
+
+            .modal-header h3 i {
+                color: var(--primary);
+            }
+
+            .close {
+                background: rgba(109, 211, 255, 0.18);
+                border: none;
+                color: var(--primary-dark);
+                font-size: 24px;
+                cursor: pointer;
+                width: 38px;
+                height: 38px;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                transition: all 0.25s ease;
+            }
+
+            .close:hover {
+                background: var(--primary);
+                color: #fff;
+                transform: rotate(90deg);
+            }
+
+            .anchor-offset {
+                position: relative;
+                top: -120px;
+                height: 0;
+                display: block;
+            }
+
+            @media (max-width: 1024px) {
+                .nav-inner {
+                    flex-direction: column;
+                    align-items: stretch;
+                }
+
+                .nav-links {
+                    width: 100%;
+                    justify-content: center;
+                }
+
+                .nav-links a {
+                    width: 100%;
+                    text-align: center;
+                }
+
+                .nav-cta {
+                    width: 100%;
+                    justify-content: center;
+                }
+
+                .monitoring-grid {
+                    grid-template-columns: 1fr;
+                }
+
+                .reports-grid {
+                    grid-template-columns: 1fr;
+                }
+            }
+
+            @media (max-width: 768px) {
+                main {
+                    padding: 38px 20px 80px;
+                }
+
+                .hero {
+                    padding: 40px 28px;
+                }
+
+                .bubble-panel {
+                    padding: 32px 24px;
+                }
+            }
+    </style>
+</head>
+<body>
+    <nav class="top-nav">
+        <div class="nav-inner">
+            <a href="petugas.html" class="brand">
+                <span class="brand-badge"><i class="fas fa-parking"></i></span>
+                <div class="brand-text">
+                    <span class="brand-title">SIPARKIR UNILA</span>
+                    <span class="brand-subtitle">Dashboard Petugas</span>
+                </div>
+            </a>
+            <div class="nav-links">
+                <a href="#catat-kendaraan" class="active">Catat Kendaraan</a>
+                <a href="#verifikasi-identitas">Verifikasi Identitas</a>
+                <a href="#laporan-kehilangan">Laporan Kehilangan</a>
+            </div>
+            <a class="nav-cta" href="login-petugas.html"><i class="fas fa-sign-out-alt"></i> Keluar</a>
+        </div>
+    </nav>
+
+    <main>
+        <section class="hero" id="catat-kendaraan">
+            <div class="hero-text">
+                <span class="tag"><i class="fas fa-circle"></i> Mencatat Kendaraan Keluar/Masuk</span>
+                <h1>Pastikan setiap kendaraan tercatat rapi saat keluar maupun masuk area kampus.</h1>
+                <p>Gunakan panel ini untuk mencatat pergerakan kendaraan secara real time, menjaga antrean tetap lancar, dan menghindari kehilangan data shift.</p>
+                <div class="hero-actions">
+                    <button class="btn btn-primary" onclick="document.getElementById('catat-kendaraan-log').scrollIntoView({ behavior: 'smooth' })"><i class="fas fa-plus-circle"></i> Catatan Baru</button>
+                    <button class="btn btn-ghost" onclick="document.getElementById('verifikasi-identitas').scrollIntoView({ behavior: 'smooth' })"><i class="fas fa-id-card"></i> Buka Verifikasi</button>
+                </div>
+            </div>
+            <div class="hero-media">
+                <img src="https://cdn.vectorstock.com/i/750p/37/84/valet-parking-service-isolated-cartoon-vector-55303784.avif" alt="Ilustrasi petugas parkir">
+                <div class="profile-chip">
+                    <img src="https://ui-avatars.com/api/?name=Budi+Santoso&background=3A6BFF&color=fff&bold=true" alt="Budi Santoso">
+                    <div>
+                        <div class="chip-title">Budi Santoso</div>
+                        <div class="chip-subtitle">Petugas Keamanan</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="bubble-panel" id="catat-kendaraan-log">
+            <div class="section-heading">
+                <div>
+                    <h2>Mencatat Kendaraan Keluar/Masuk</h2>
+                    <p>Catat kendaraan yang masuk atau keluar dan pastikan setiap pergerakan tersimpan dalam log shift.</p>
+                </div>
+                <div class="section-actions">
+                    <span class="badge-soft"><i class="fas fa-calendar-day"></i> Hari Ini</span>
+                </div>
+            </div>
+            <div class="record-grid">
+                <article class="record-card">
+                    <div class="record-header">
+                        <h3><i class="fas fa-clipboard-list"></i> Form Pencatatan</h3>
+                        <span>Shift Siang</span>
+                    </div>
+                    <form class="record-form" onsubmit="return false;">
+                        <div class="form-group">
+                            <label for="platNomor">Plat Nomor</label>
+                            <input type="text" id="platNomor" class="form-control" placeholder="B 1234 ABC" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="jenisKendaraan">Jenis Kendaraan</label>
+                            <select id="jenisKendaraan" class="form-control" required>
+                                <option value="" disabled selected>Pilih jenis</option>
+                                <option>Motor</option>
+                                <option>Mobil</option>
+                                <option>Truk Operasional</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="lokasiPenjagaan">Lokasi Penjagaan</label>
+                            <select id="lokasiPenjagaan" class="form-control" required>
+                                <option value="" disabled selected>Pilih lokasi</option>
+                                <option>Parkiran A</option>
+                                <option>Parkiran B</option>
+                                <option>Parkiran C</option>
+                                <option>Gerbang Teknik</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="waktuTransaksi">Waktu</label>
+                            <input type="time" id="waktuTransaksi" class="form-control" value="12:45" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="statusPergerakan">Status Pergerakan</label>
+                            <select id="statusPergerakan" class="form-control" required>
+                                <option value="" disabled selected>Pilih status</option>
+                                <option>Kendaraan Masuk</option>
+                                <option>Kendaraan Keluar</option>
+                                <option>Parkir Internal</option>
+                                <option>Pengawalan Dinas</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="catatanTransaksi">Catatan Singkat</label>
+                            <textarea id="catatanTransaksi" class="form-control" rows="3" placeholder="Tambahkan nomor kartu akses atau catatan penting"></textarea>
+                        </div>
+                        <div class="record-actions">
+                            <button type="button" class="btn btn-primary btn-sm"><i class="fas fa-sign-in-alt"></i> Simpan Masuk</button>
+                            <button type="button" class="btn btn-success btn-sm"><i class="fas fa-sign-out-alt"></i> Simpan Keluar</button>
+                        </div>
+                    </form>
+                </article>
+                <article class="table-card">
+                    <div class="table-header">
+                        <h3><i class="fas fa-clock"></i> Riwayat Pencatatan</h3>
+                    </div>
+                    <div class="table-responsive">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Waktu</th>
+                                    <th>Plat</th>
+                                    <th>Jenis</th>
+                                    <th>Status</th>
+                                    <th>Petugas</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>12:55 PM</td>
+                                    <td><strong>B 3456 QRS</strong></td>
+                                    <td>Mobil</td>
+                                    <td><span class="status-badge status-active">Kendaraan Masuk</span></td>
+                                    <td>Budi Santoso</td>
+                                </tr>
+                                <tr>
+                                    <td>12:32 PM</td>
+                                    <td><strong>BE 2234 UZ</strong></td>
+                                    <td>Motor</td>
+                                    <td><span class="status-badge status-success">Kendaraan Keluar</span></td>
+                                    <td>Budi Santoso</td>
+                                </tr>
+                                <tr>
+                                    <td>12:18 PM</td>
+                                    <td><strong>B 7788 TYU</strong></td>
+                                    <td>Mobil</td>
+                                    <td><span class="status-badge status-pending">Parkir Internal</span></td>
+                                    <td>Budi Santoso</td>
+                                </tr>
+                                <tr>
+                                    <td>12:05 PM</td>
+                                    <td><strong>A 9988 HJA</strong></td>
+                                    <td>Truk Operasional</td>
+                                    <td><span class="status-badge status-success">Pengawalan Dinas</span></td>
+                                    <td>Unit Patroli 3</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </article>
+            </div>
+        </section>
+
+        <section class="bubble-panel" id="verifikasi-identitas">
+            <div class="section-heading">
+                <div>
+                    <h2>Memverifikasi Identitas Kendaraan</h2>
+                    <p>Pastikan kendaraan yang terparkir sesuai dengan data pemilik dan status perizinan parkir.</p>
+                </div>
+                <div class="section-actions">
+                    <button class="btn btn-outline btn-sm" onclick="openModal('verifikasiModal')"><i class="fas fa-clipboard-check"></i> Input Verifikasi</button>
+                </div>
+            </div>
+            <div class="monitoring-grid">
+                <article class="table-card">
+                    <div class="table-header">
+                        <h3><i class="fas fa-car"></i> Kendaraan Perlu Verifikasi</h3>
+                        <button class="btn btn-primary btn-sm">
+                            <i class="fas fa-sync"></i> Refresh
+                        </button>
+                    </div>
+                    <div class="table-responsive">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Plat Nomor</th>
+                                    <th>Jenis</th>
+                                    <th>Lokasi</th>
+                                    <th>Waktu Masuk</th>
+                                    <th>Durasi</th>
+                                    <th>Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>B 1234 ABC</strong></td>
+                                    <td>Motor</td>
+                                    <td>Parkiran A</td>
+                                    <td>10:30 AM</td>
+                                    <td>2 jam 15 menit</td>
+                                    <td>
+                                        <button class="btn btn-success btn-sm" onclick="verifikasiKendaraan('B 1234 ABC', 'Motor', 'Parkiran A', '10:30 AM')">
+                                            <i class="fas fa-check"></i> Verifikasi
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><strong>B 5678 XYZ</strong></td>
+                                    <td>Mobil</td>
+                                    <td>Parkiran B</td>
+                                    <td>09:15 AM</td>
+                                    <td>3 jam 30 menit</td>
+                                    <td>
+                                        <button class="btn btn-success btn-sm" onclick="verifikasiKendaraan('B 5678 XYZ', 'Mobil', 'Parkiran B', '09:15 AM')">
+                                            <i class="fas fa-check"></i> Verifikasi
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><strong>B 9012 DEF</strong></td>
+                                    <td>Motor</td>
+                                    <td>Parkiran C</td>
+                                    <td>11:45 AM</td>
+                                    <td>1 jam 05 menit</td>
+                                    <td>
+                                        <button class="btn btn-success btn-sm" onclick="verifikasiKendaraan('B 9012 DEF', 'Motor', 'Parkiran C', '11:45 AM')">
+                                            <i class="fas fa-check"></i> Verifikasi
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </article>
+
+                <article class="table-card activity-card">
+                    <div class="table-header">
+                        <h3><i class="fas fa-id-badge"></i> Riwayat Verifikasi</h3>
+                    </div>
+                    <div class="activity-list">
+                        <div class="activity-item">
+                            <div class="activity-icon success">
+                                <i class="fas fa-check"></i>
+                            </div>
+                            <div class="activity-content">
+                                <h4>Valid - Terdaftar</h4>
+                                <p>Honda Beat - B 2345 GHI</p>
+                            </div>
+                            <div class="activity-time">30m lalu</div>
+                        </div>
+                        <div class="activity-item">
+                            <div class="activity-icon warning">
+                                <i class="fas fa-search"></i>
+                            </div>
+                            <div class="activity-content">
+                                <h4>Perlu Investigasi</h4>
+                                <p>Yamaha NMAX - B 6789 JKL</p>
+                            </div>
+                            <div class="activity-time">2jam lalu</div>
+                        </div>
+                        <div class="activity-item">
+                            <div class="activity-icon danger">
+                                <i class="fas fa-times"></i>
+                            </div>
+                            <div class="activity-content">
+                                <h4>Tidak Valid - Blokir Akses</h4>
+                                <p>Toyota Avanza - B 3456 MNO</p>
+                            </div>
+                            <div class="activity-time">5jam lalu</div>
+                        </div>
+                    </div>
+                </article>
+            </div>
+        </section>
+
+        <section class="bubble-panel" id="laporan-kehilangan">
+                <div class="section-heading">
+                    <div>
+                        <h2>Menangani Laporan Kehilangan</h2>
+                        <p>Tindak lanjuti laporan kehilangan kendaraan dan catat progres penyelesaiannya.</p>
+                    </div>
+                    <div class="section-actions">
+                        <span class="badge-soft"><i class="fas fa-folder-open"></i> Antrian Kasus</span>
+                    </div>
+                </div>
+                <div class="reports-grid">
+                    <article class="table-card">
+                        <div class="table-header">
+                            <h3><i class="fas fa-file-alt"></i> Daftar Laporan Kehilangan</h3>
+                        </div>
+                        <div class="table-responsive">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Waktu</th>
+                                        <th>Status</th>
+                                        <th>Kendaraan</th>
+                                        <th>Lokasi Terakhir</th>
+                                        <th>Pelapor</th>
+                                        <th>Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>12:45 PM</td>
+                                        <td><span class="status-badge status-active">Investigasi</span></td>
+                                        <td><strong>Honda Beat - B 9012 DEF</strong></td>
+                                        <td>Parkiran C</td>
+                                        <td>Rani Pratiwi</td>
+                                        <td>
+                                            <div class="table-actions">
+                                                <button class="btn btn-primary btn-sm"><i class="fas fa-eye"></i> Detail</button>
+                                                <button class="btn btn-success btn-sm"><i class="fas fa-check"></i> Selesaikan</button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>12:15 PM</td>
+                                        <td><span class="status-badge status-pending">Menunggu CCTV</span></td>
+                                        <td><strong>Yamaha NMAX - B 6789 JKL</strong></td>
+                                        <td>Gerbang Teknik</td>
+                                        <td>Andi Saputra</td>
+                                        <td>
+                                            <div class="table-actions">
+                                                <button class="btn btn-primary btn-sm"><i class="fas fa-eye"></i> Detail</button>
+                                                <button class="btn btn-outline btn-sm"><i class="fas fa-paperclip"></i> Lampirkan Bukti</button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>11:45 AM</td>
+                                        <td><span class="status-badge status-active">Dalam Patroli</span></td>
+                                        <td><strong>Toyota Avanza - B 3456 MNO</strong></td>
+                                        <td>Parkiran B</td>
+                                        <td>Dini Larasati</td>
+                                        <td>
+                                            <div class="table-actions">
+                                                <button class="btn btn-primary btn-sm"><i class="fas fa-eye"></i> Detail</button>
+                                                <button class="btn btn-success btn-sm"><i class="fas fa-check"></i> Selesaikan</button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>10:30 AM</td>
+                                        <td><span class="status-badge status-success">Selesai</span></td>
+                                        <td><strong>Suzuki Ertiga - B 1122 QWE</strong></td>
+                                        <td>Parkiran Fakultas Hukum</td>
+                                        <td>Sarah Dewi</td>
+                                        <td>
+                                            <div class="table-actions">
+                                                <button class="btn btn-outline btn-sm"><i class="fas fa-file-export"></i> Ekspor Berita Acara</button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </article>
+
+                    <article class="table-card activity-card">
+                        <div class="table-header">
+                            <h3><i class="fas fa-bell"></i> Status Laporan Terbaru</h3>
+                        </div>
+                        <div class="activity-list">
+                            <div class="activity-item">
+                                <div class="activity-icon warning">
+                                    <i class="fas fa-video"></i>
+                                </div>
+                                <div class="activity-content">
+                                    <h4>Menunggu CCTV</h4>
+                                    <p>Yamaha NMAX - B 6789 JKL</p>
+                                </div>
+                                <div class="activity-time">Diserahkan ke tim IT</div>
+                            </div>
+                            <div class="activity-item">
+                                <div class="activity-icon success">
+                                    <i class="fas fa-shield-alt"></i>
+                                </div>
+                                <div class="activity-content">
+                                    <h4>Dalam Patroli</h4>
+                                    <p>Toyota Avanza - B 3456 MNO</p>
+                                </div>
+                                <div class="activity-time">Unit patroli 3</div>
+                            </div>
+                            <div class="activity-item">
+                                <div class="activity-icon danger">
+                                    <i class="fas fa-exclamation-triangle"></i>
+                                </div>
+                                <div class="activity-content">
+                                    <h4>Investigasi Lapangan</h4>
+                                    <p>Honda Beat - B 9012 DEF</p>
+                                </div>
+                                <div class="activity-time">Butuh update dalam 1 jam</div>
+                            </div>
+                        </div>
+                    </article>
+                </div>
+
+            </section>
+
+        </main>
+
+    <!-- Modal Verifikasi Kendaraan -->
+    <div id="verifikasiModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-clipboard-check"></i> Verifikasi Kendaraan</h3>
+                <button class="close" onclick="closeModal('verifikasiModal')">&times;</button>
+            </div>
+            <div id="verifikasiContent">
+                <!-- Content will be loaded dynamically -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function verifikasiKendaraan(platNomor, jenis, lokasi, waktuMasuk) {
+            const content = `
+                <div class="info-box">
+                    <h4 style="margin-bottom: 10px; color: var(--dark-text);"><i class="fas fa-info-circle"></i> Informasi Kendaraan</h4>
+                    <div style="display: grid; grid-template-columns: 120px 1fr; gap: 10px; color: var(--gray-text);">
+                        <strong>Plat Nomor:</strong> <span>${platNomor}</span>
+                        <strong>Jenis:</strong> <span>${jenis}</span>
+                        <strong>Lokasi:</strong> <span>${lokasi}</span>
+                        <strong>Waktu Masuk:</strong> <span>${waktuMasuk}</span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="statusVerifikasi">Status Verifikasi</label>
+                    <select class="form-control" id="statusVerifikasi">
+                        <option value="valid">✅ Valid - Kendaraan Terdaftar</option>
+                        <option value="invalid">❌ Tidak Valid - Kendaraan Tidak Terdaftar</option>
+                        <option value="suspicious">⚠️ Mencurigakan - Perlu Investigasi</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="catatanVerifikasi">Catatan</label>
+                    <textarea class="form-control" id="catatanVerifikasi" rows="3" placeholder="Tambahkan catatan jika diperlukan..." style="resize: vertical;"></textarea>
+                </div>
+                <button class="btn btn-success btn-block" onclick="simpanVerifikasi('${platNomor}')">
+                    <i class="fas fa-save"></i> Simpan Verifikasi
+                </button>
+            `;
+            
+            document.getElementById('verifikasiContent').innerHTML = content;
+            openModal('verifikasiModal');
+        }
+
+        function simpanVerifikasi(platNomor) {
+            const status = document.getElementById('statusVerifikasi').value;
+            const catatan = document.getElementById('catatanVerifikasi').value;
+            
+            let statusText = '';
+            switch(status) {
+                case 'valid':
+                    statusText = 'Valid - Kendaraan Terdaftar';
+                    break;
+                case 'invalid':
+                    statusText = 'Tidak Valid - Kendaraan Tidak Terdaftar';
+                    break;
+                case 'suspicious':
+                    statusText = 'Mencurigakan - Perlu Investigasi';
+                    break;
+            }
+            
+            alert(`✅ Verifikasi untuk ${platNomor} berhasil disimpan!\n\nStatus: ${statusText}\nCatatan: ${catatan || '-'}`);
+            closeModal('verifikasiModal');
+        }
+
+        function openModal(modalId) {
+            document.getElementById(modalId).style.display = 'flex';
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            if (event.target.classList.contains('modal')) {
+                event.target.style.display = 'none';
+            }
+        }
+
+        document.querySelectorAll('.nav-links a').forEach(link => {
+            link.addEventListener('click', function(event) {
+                const target = this.getAttribute('href');
+                if (target && target.startsWith('#')) {
+                    event.preventDefault();
+                    document.querySelectorAll('.nav-links a').forEach(item => item.classList.remove('active'));
+                    this.classList.add('active');
+                    const section = document.querySelector(target);
+                    if (section) {
+                        section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>

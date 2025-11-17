@@ -1,0 +1,1572 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SIPARKIR-UNILA - Dashboard Admin</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --bg: #eef4ff;
+            --surface: #ffffff;
+            --surface-soft: rgba(255, 255, 255, 0.92);
+            --primary: #3a6bff;
+            --primary-dark: #112752;
+            --accent: #6dd3ff;
+            --muted: #5c6e94;
+            --border: #d3e0ff;
+            --radius-lg: 34px;
+            --radius-md: 24px;
+            --radius-sm: 16px;
+            --shadow: 0 18px 40px rgba(42, 92, 181, 0.18);
+            --shadow-soft: 0 12px 28px rgba(46, 104, 200, 0.16);
+            --success: #28a745;
+            --warning: #ffc107;
+            --danger: #dc3545;
+        }
+
+        *, *::before, *::after {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Poppins', sans-serif;
+            background: var(--bg);
+            color: var(--primary-dark);
+            line-height: 1.6;
+            position: relative;
+        }
+
+        body::before,
+        body::after {
+            content: '';
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(0);
+            z-index: 0;
+            opacity: 0.7;
+        }
+
+        body::before {
+            width: 360px;
+            height: 360px;
+            background: rgba(164, 223, 255, 0.5);
+            top: -120px;
+            right: -80px;
+        }
+
+        body::after {
+            width: 280px;
+            height: 280px;
+            background: rgba(183, 210, 255, 0.55);
+            bottom: -90px;
+            left: -70px;
+        }
+
+        img {
+            max-width: 100%;
+            display: block;
+            height: auto;
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        .top-nav {
+            position: sticky;
+            top: 0;
+            z-index: 200;
+            background: rgba(255, 255, 255, 0.92);
+            backdrop-filter: saturate(180%) blur(22px);
+            border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+            box-shadow: 0 18px 40px rgba(35, 79, 158, 0.12);
+        }
+
+        .nav-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 18px 30px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 24px;
+            background: rgba(255, 255, 255, 0.92);
+            border-radius: 999px;
+            box-shadow: 0 14px 30px rgba(42, 92, 181, 0.16);
+            position: relative;
+            z-index: 2;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .brand-badge {
+            width: 52px;
+            height: 52px;
+            border-radius: 20px;
+            display: grid;
+            place-items: center;
+            background: linear-gradient(135deg, #6ca4ff, #3a6bff);
+            color: #fff;
+            font-size: 22px;
+            box-shadow: 0 14px 26px rgba(58, 107, 255, 0.3);
+        }
+
+        .brand-text {
+            display: flex;
+            flex-direction: column;
+            line-height: 1.2;
+        }
+
+        .brand-title {
+            font-size: 16px;
+            font-weight: 700;
+        }
+
+        .brand-subtitle {
+            font-size: 12px;
+            font-weight: 500;
+            color: rgba(17, 39, 82, 0.68);
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            flex-wrap: wrap;
+        }
+
+        .nav-links a {
+            padding: 10px 20px;
+            font-weight: 600;
+            font-size: 14px;
+            color: var(--primary-dark);
+            background: rgba(150, 188, 255, 0.18);
+            border-radius: 999px;
+            transition: all 0.25s ease;
+            box-shadow: 0 12px 22px rgba(46, 104, 200, 0.14);
+        }
+
+        .nav-links a:hover,
+        .nav-links a.active {
+            color: #fff;
+            background: linear-gradient(135deg, var(--accent), var(--primary));
+            transform: translateY(-2px);
+            box-shadow: 0 16px 30px rgba(58, 107, 255, 0.25);
+        }
+
+        .nav-cta {
+            padding: 10px 20px;
+            border-radius: 999px;
+            border: 1px solid rgba(58, 107, 255, 0.28);
+            background: rgba(255, 255, 255, 0.4);
+            color: var(--primary);
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 12px 22px rgba(42, 92, 181, 0.12);
+            cursor: pointer;
+            transition: all 0.25s ease;
+        }
+
+        .nav-cta:hover {
+            background: linear-gradient(135deg, var(--accent), var(--primary));
+            color: #fff;
+            box-shadow: 0 16px 30px rgba(58, 107, 255, 0.25);
+        }
+
+        main {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 52px 32px 96px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 32px;
+            background: linear-gradient(140deg, #9ccaff 0%, #5f8dff 48%, #3a6bff 110%);
+            border-radius: var(--radius-lg);
+            padding: 56px;
+            color: #fff;
+            position: relative;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            width: 320px;
+            height: 320px;
+            background: rgba(255, 255, 255, 0.16);
+            border-radius: 50%;
+            top: -140px;
+            left: -80px;
+        }
+
+        .hero::after {
+            content: '';
+            position: absolute;
+            width: 260px;
+            height: 260px;
+            background: rgba(255, 255, 255, 0.18);
+            border-radius: 50%;
+            bottom: -110px;
+            right: -70px;
+        }
+
+        .hero-text {
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-text .tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 18px;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.28);
+            font-size: 13px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            margin-bottom: 22px;
+        }
+
+        .hero-text h1 {
+            font-size: 36px;
+            line-height: 1.2;
+            margin: 0 0 20px;
+            font-weight: 700;
+        }
+
+        .hero-text p {
+            margin: 0 0 28px;
+            max-width: 480px;
+        }
+
+        .hero-actions {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            flex-wrap: wrap;
+        }
+
+        .hero-media {
+            position: relative;
+            z-index: 1;
+            justify-self: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 18px;
+        }
+
+        .hero-media img {
+            width: 320px;
+            max-width: 100%;
+            border-radius: 18px;
+            box-shadow: 0 22px 46px rgba(18, 51, 120, 0.32);
+        }
+
+        .profile-chip {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 16px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 999px;
+            border: 1px solid rgba(255, 255, 255, 0.45);
+            backdrop-filter: blur(6px);
+        }
+
+        .profile-chip img {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            border: 2px solid rgba(255, 255, 255, 0.8);
+        }
+
+        .profile-chip .chip-title {
+            font-weight: 600;
+            font-size: 14px;
+            color: #fff;
+        }
+
+        .profile-chip .chip-subtitle {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.86);
+        }
+
+        .btn {
+            border: none;
+            border-radius: 999px;
+            padding: 14px 26px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: transform 0.25s ease, box-shadow 0.25s ease, background 0.25s ease, color 0.25s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent), var(--primary));
+            color: #fff;
+            box-shadow: 0 18px 36px rgba(52, 104, 214, 0.28);
+        }
+
+        .btn-ghost {
+            background: rgba(255, 255, 255, 0.22);
+            color: #fff;
+            border: 1px solid rgba(255, 255, 255, 0.45);
+            box-shadow: 0 12px 28px rgba(90, 158, 255, 0.26);
+        }
+
+        .btn-outline {
+            background: rgba(58, 107, 255, 0.08);
+            color: var(--primary);
+            border: 1px solid rgba(58, 107, 255, 0.3);
+            padding: 12px 22px;
+            border-radius: 999px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .btn-primary:hover {
+            box-shadow: 0 20px 44px rgba(52, 104, 214, 0.34);
+        }
+
+        .btn-ghost:hover {
+            background: rgba(255, 255, 255, 0.32);
+        }
+
+        .btn-outline:hover {
+            background: linear-gradient(135deg, var(--accent), var(--primary));
+            color: #fff;
+            box-shadow: 0 18px 34px rgba(58, 107, 255, 0.22);
+            border-color: transparent;
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #58d58f, #2eb669);
+            color: #fff;
+        }
+
+        .btn-warning {
+            background: linear-gradient(135deg, #ffd76f, #ffb14b);
+            color: #6b4200;
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #ff7a7a, #ff4d4d);
+            color: #fff;
+        }
+
+        .btn-sm {
+            padding: 10px 18px;
+            font-size: 13px;
+        }
+
+        .btn-block {
+            width: 100%;
+            justify-content: center;
+        }
+
+        .bubble-panel {
+            margin-top: 48px;
+            background: var(--surface);
+            border-radius: var(--radius-lg);
+            border: 1px solid rgba(199, 214, 255, 0.7);
+            box-shadow: var(--shadow-soft);
+            padding: 40px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .bubble-panel::after {
+            content: '';
+            position: absolute;
+            width: 180px;
+            height: 180px;
+            background: rgba(109, 211, 255, 0.18);
+            border-radius: 50%;
+            top: -90px;
+            right: -70px;
+            pointer-events: none;
+        }
+
+        .bubble-panel > * {
+            position: relative;
+            z-index: 1;
+        }
+
+        .anchor-offset {
+            position: relative;
+            top: -120px;
+            height: 0;
+            display: block;
+        }
+
+        .section-heading {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-bottom: 28px;
+        }
+
+        .section-heading h2 {
+            margin: 0 0 6px;
+            font-size: 22px;
+            font-weight: 600;
+            color: var(--primary-dark);
+        }
+
+        .section-heading p {
+            margin: 0;
+            color: var(--muted);
+            font-size: 14px;
+            max-width: 520px;
+        }
+
+        .section-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .badge-soft {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 18px;
+            border-radius: 999px;
+            background: rgba(109, 211, 255, 0.16);
+            color: var(--primary-dark);
+            font-weight: 600;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 22px;
+        }
+
+        .stat-card {
+            background: linear-gradient(155deg, rgba(255, 255, 255, 0.96) 0%, rgba(206, 227, 255, 0.52) 100%);
+            padding: 30px;
+            border-radius: var(--radius-md);
+            box-shadow: 0 16px 32px rgba(76, 119, 207, 0.12);
+            border: 1px solid rgba(206, 227, 255, 0.65);
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 24px 48px rgba(58, 107, 255, 0.18);
+        }
+
+        .stat-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 20px;
+            display: grid;
+            place-items: center;
+            font-size: 24px;
+            color: #fff;
+            box-shadow: inset 0 0 0 6px rgba(255, 255, 255, 0.16);
+            background: linear-gradient(135deg, #6dd3ff, #3a6bff);
+        }
+
+        .stat-icon.success {
+            background: linear-gradient(135deg, #58d58f, #2eb669);
+        }
+
+        .stat-icon.warning {
+            background: linear-gradient(135deg, #ffd76f, #ffb14b);
+            color: #6b4200;
+        }
+
+        .stat-icon.danger {
+            background: linear-gradient(135deg, #ff8b94, #ff4d6d);
+        }
+
+        .stat-value {
+            font-size: 34px;
+            font-weight: 700;
+            color: var(--primary-dark);
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: var(--muted);
+            font-weight: 500;
+        }
+
+        .charts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 22px;
+        }
+
+        .chart-card {
+            background: rgba(255, 255, 255, 0.96);
+            padding: 26px;
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-soft);
+            border: 1px solid rgba(206, 227, 255, 0.65);
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .report-tools {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 22px;
+            margin-top: 18px;
+        }
+
+        .report-card {
+            background: rgba(255, 255, 255, 0.96);
+            padding: 24px;
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-soft);
+            border: 1px solid rgba(206, 227, 255, 0.65);
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+        }
+
+        .report-card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 14px;
+        }
+
+        .report-card-header h3 {
+            margin: 0;
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--primary-dark);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .report-card-header span {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--primary);
+            background: rgba(109, 211, 255, 0.22);
+            padding: 6px 12px;
+            border-radius: 999px;
+        }
+
+        .report-form {
+            display: grid;
+            gap: 16px;
+        }
+
+        .report-form .form-group {
+            margin: 0;
+        }
+
+        .report-toggle {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 13px;
+            color: var(--muted);
+        }
+
+        .report-toggle input {
+            width: 16px;
+            height: 16px;
+            accent-color: var(--primary);
+        }
+
+        .report-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .report-actions .btn {
+            flex: none;
+            min-width: 160px;
+        }
+
+        .report-history {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            gap: 14px;
+        }
+
+        .report-history li {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+            background: rgba(109, 211, 255, 0.14);
+            padding: 14px 16px;
+            border-radius: 16px;
+            border: 1px solid rgba(206, 227, 255, 0.6);
+        }
+
+        .report-history li div {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .report-history .title {
+            font-weight: 600;
+            color: var(--primary-dark);
+        }
+
+        .report-history .meta {
+            font-size: 12px;
+            color: var(--muted);
+        }
+
+        .chart-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 14px;
+        }
+
+        .chart-header h3 {
+            margin: 0;
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--primary-dark);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .chart-header h3 i {
+            color: var(--primary);
+        }
+
+        .chart-container {
+            position: relative;
+            height: 280px;
+            width: 100%;
+        }
+
+        .tab-controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 24px;
+            background: rgba(109, 211, 255, 0.12);
+            padding: 8px;
+            border-radius: 999px;
+            box-shadow: inset 0 0 0 1px rgba(58, 107, 255, 0.1);
+        }
+
+        .tab {
+            border: none;
+            background: transparent;
+            padding: 12px 22px;
+            border-radius: 999px;
+            font-weight: 600;
+            color: var(--muted);
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.2s ease;
+        }
+
+        .tab:hover {
+            color: var(--primary);
+        }
+
+        .tab.active {
+            background: linear-gradient(135deg, var(--accent), var(--primary));
+            color: #fff;
+            box-shadow: 0 12px 24px rgba(58, 107, 255, 0.2);
+        }
+
+        .tab-content {
+            display: none;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        .tab-content.active {
+            display: flex;
+        }
+
+        .table-card {
+            background: rgba(255, 255, 255, 0.96);
+            border-radius: var(--radius-md);
+            border: 1px solid rgba(206, 227, 255, 0.65);
+            box-shadow: var(--shadow-soft);
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .table-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .table-header h3 {
+            margin: 0;
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--primary-dark);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .table-responsive {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th,
+        td {
+            padding: 14px 16px;
+            text-align: left;
+            border-bottom: 1px solid rgba(206, 227, 255, 0.7);
+            font-size: 14px;
+        }
+
+        th {
+            color: var(--primary-dark);
+            font-weight: 600;
+            background: rgba(206, 227, 255, 0.45);
+        }
+
+        tbody tr:hover {
+            background: rgba(109, 211, 255, 0.12);
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 14px;
+            border-radius: 999px;
+            font-weight: 600;
+            font-size: 12px;
+        }
+
+        .status-active {
+            background: rgba(58, 107, 255, 0.16);
+            color: var(--primary);
+        }
+
+        .status-pending {
+            background: rgba(255, 193, 7, 0.18);
+            color: #a76100;
+        }
+
+        .status-danger {
+            background: rgba(220, 53, 69, 0.18);
+            color: #a4192f;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(17, 39, 82, 0.55);
+            backdrop-filter: blur(6px);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .modal-content {
+            background: linear-gradient(160deg, rgba(255, 255, 255, 0.98) 0%, rgba(206, 227, 255, 0.54) 100%);
+            padding: 35px;
+            border-radius: 24px;
+            width: min(520px, 90%);
+            box-shadow: var(--shadow);
+            border: 1px solid rgba(201, 219, 255, 0.6);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 22px;
+        }
+
+        .modal-header h3 {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--primary-dark);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin: 0;
+        }
+
+        .modal-header h3 i {
+            color: var(--primary);
+        }
+
+        .close {
+            background: rgba(109, 211, 255, 0.18);
+            border: none;
+            color: var(--primary-dark);
+            font-size: 24px;
+            cursor: pointer;
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.25s ease;
+        }
+
+        .close:hover {
+            background: var(--primary);
+            color: #fff;
+            transform: rotate(90deg);
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 18px;
+        }
+
+        .form-group label {
+            margin: 0;
+            color: var(--primary-dark);
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 14px 18px;
+            border: 2px solid rgba(201, 219, 255, 0.8);
+            border-radius: 14px;
+            background: #fff;
+            color: var(--primary-dark);
+            font-size: 14px;
+            transition: all 0.25s ease;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(58, 107, 255, 0.18);
+        }
+
+        @media (max-width: 1024px) {
+            .nav-inner {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .nav-links {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .nav-links a {
+                width: 100%;
+                text-align: center;
+            }
+
+            .nav-cta {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+
+        @media (max-width: 768px) {
+            main {
+                padding: 38px 20px 80px;
+            }
+
+            .hero {
+                padding: 40px 28px;
+            }
+
+            .bubble-panel {
+                padding: 32px 24px;
+            }
+
+            .chart-container {
+                height: 240px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="top-nav">
+        <div class="nav-inner">
+            <a href="admin.html" class="brand">
+                <span class="brand-badge"><i class="fas fa-parking"></i></span>
+                <div class="brand-text">
+                    <span class="brand-title">SIPARKIR UNILA</span>
+                    <span class="brand-subtitle">Dashboard Admin</span>
+                </div>
+            </a>
+            <div class="nav-links">
+                <a href="#monitoring" class="active">Monitoring Sistem Parkir</a>
+                <a href="#laporan-statistik">Laporan Statistik</a>
+                <a href="#database-kendaraan">Database Kendaraan</a>
+            </div>
+            <a class="nav-cta" href="login-admin.html"><i class="fas fa-sign-out-alt"></i> Keluar</a>
+        </div>
+    </nav>
+
+    <main>
+        <section class="hero" id="monitoring">
+            <div class="hero-text">
+                <span class="tag"><i class="fas fa-circle"></i> Monitoring Sistem Parkir</span>
+                <h1>Awasi seluruh area parkir kampus secara real time.</h1>
+                <p>Lihat status parkir terkini, tindak lanjuti lonjakan kendaraan, dan pastikan operasional tetap terkendali lewat satu panel terintegrasi.</p>
+                <div class="hero-actions">
+                    <button class="btn btn-primary" onclick="openModal('addUserModal')"><i class="fas fa-user-plus"></i> Tambah Pengguna</button>
+                    <button class="btn btn-ghost" onclick="openModal('addVehicleModal')"><i class="fas fa-car-side"></i> Tambah Kendaraan</button>
+                </div>
+            </div>
+            <div class="hero-media">
+                <img src="https://cdn.vectorstock.com/i/750p/62/31/using-parking-app-isolated-cartoon-vector-54426231.avif" alt="Ilustrasi dashboard admin">
+                <div class="profile-chip">
+                    <img src="https://ui-avatars.com/api/?name=Admin+System&background=3A6BFF&color=fff&bold=true" alt="Admin System">
+                    <div>
+                        <div class="chip-title">Admin System</div>
+                        <div class="chip-subtitle">Administrator</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="bubble-panel" id="monitoring-ringkasan">
+            <div class="section-heading">
+                <div>
+                    <h2>Indikator Monitoring</h2>
+                    <p>Pantau aktivitas parkir terkini, pergerakan kendaraan, dan status laporan agar aksi cepat dapat diambil.</p>
+                </div>
+                <div class="section-actions">
+                    <span class="badge-soft"><i class="fas fa-calendar-week"></i> Pekan Ini</span>
+                </div>
+            </div>
+            <div class="stats-grid">
+                <article class="stat-card">
+                    <div class="stat-icon"><i class="fas fa-users"></i></div>
+                    <div class="stat-value">1,247</div>
+                    <div class="stat-label">Total Pengguna</div>
+                </article>
+                <article class="stat-card">
+                    <div class="stat-icon success"><i class="fas fa-car"></i></div>
+                    <div class="stat-value">2,156</div>
+                    <div class="stat-label">Kendaraan Terdaftar</div>
+                </article>
+                <article class="stat-card">
+                    <div class="stat-icon warning"><i class="fas fa-parking"></i></div>
+                    <div class="stat-value">342</div>
+                    <div class="stat-label">Transaksi Hari Ini</div>
+                </article>
+                <article class="stat-card">
+                    <div class="stat-icon danger"><i class="fas fa-exclamation-triangle"></i></div>
+                    <div class="stat-value">8</div>
+                    <div class="stat-label">Laporan Aktif</div>
+                </article>
+            </div>
+        </section>
+
+        <section class="bubble-panel" id="laporan-statistik">
+            <div class="section-heading">
+                <div>
+                    <h2>Membuat Laporan Statistik</h2>
+                    <p>Kompilasikan grafik pergerakan kendaraan dan distribusi tipe untuk mendukung laporan berkala kampus.</p>
+                </div>
+                <div class="section-actions">
+                    <select class="form-control" style="width: auto; padding: 10px 20px; border-radius: 999px;">
+                        <option value="week">Minggu Ini</option>
+                        <option value="month">Bulan Ini</option>
+                        <option value="year">Tahun Ini</option>
+                    </select>
+                </div>
+            </div>
+            <div class="charts-grid">
+                <article class="chart-card">
+                    <div class="chart-header">
+                        <h3><i class="fas fa-chart-line"></i> Statistik Penggunaan Parkir</h3>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="usageChart"></canvas>
+                    </div>
+                </article>
+                <article class="chart-card">
+                    <div class="chart-header">
+                        <h3><i class="fas fa-chart-pie"></i> Distribusi Kendaraan</h3>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="vehicleChart"></canvas>
+                    </div>
+                </article>
+            </div>
+
+            <div class="report-tools">
+                <article class="report-card">
+                    <div class="report-card-header">
+                        <h3><i class="fas fa-file-export"></i> Generator Laporan</h3>
+                        <span>Ekspor</span>
+                    </div>
+                    <p>Susun dan unduh laporan statistik dengan menyesuaikan rentang waktu, format, serta konten yang ingin disertakan.</p>
+                    <form class="report-form">
+                        <div class="form-group">
+                            <label for="reportRange">Rentang Waktu</label>
+                            <select id="reportRange" class="form-control">
+                                <option value="daily">Harian</option>
+                                <option value="weekly" selected>Pekanan</option>
+                                <option value="monthly">Bulanan</option>
+                                <option value="custom">Kustom...</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="reportFormat">Format Laporan</label>
+                            <select id="reportFormat" class="form-control">
+                                <option value="pdf" selected>PDF</option>
+                                <option value="xlsx">Spreadsheet (XLSX)</option>
+                                <option value="csv">CSV</option>
+                            </select>
+                        </div>
+                        <label class="report-toggle">
+                            <input type="checkbox" checked> Sertakan grafik penggunaan dan distribusi
+                        </label>
+                    </form>
+                    <div class="report-actions">
+                        <button type="button" class="btn btn-primary"><i class="fas fa-file-download"></i> Buat Laporan</button>
+                    </div>
+                </article>
+                <article class="report-card">
+                    <div class="report-card-header">
+                        <h3><i class="fas fa-clock"></i> Riwayat Laporan</h3>
+                        <span>Terbaru</span>
+                    </div>
+                    <p>Catatan laporan yang telah digenerasi memudahkan audit dan tindak lanjut.</p>
+                    <ul class="report-history">
+                        <li>
+                            <div>
+                                <span class="title">Laporan Pekanan · 10-16 Nov 2025</span>
+                                <span class="meta">Dibuat oleh Admin System · PDF · 1.2 MB</span>
+                            </div>
+                            <button type="button" class="btn btn-outline btn-sm"><i class="fas fa-download"></i> Unduh</button>
+                        </li>
+                        <li>
+                            <div>
+                                <span class="title">Evaluasi Bulanan · Oktober 2025</span>
+                                <span class="meta">Dibuat oleh Puan Akeyla · XLSX · 980 KB</span>
+                            </div>
+                            <button type="button" class="btn btn-outline btn-sm"><i class="fas fa-download"></i> Unduh</button>
+                        </li>
+                        <li>
+                            <div>
+                                <span class="title">Rekap Harian · 15 Nov 2025</span>
+                                <span class="meta">Dibuat oleh Admin System · CSV · 320 KB</span>
+                            </div>
+                            <button type="button" class="btn btn-outline btn-sm"><i class="fas fa-download"></i> Unduh</button>
+                        </li>
+                    </ul>
+                </article>
+            </div>
+        </section>
+
+        <section class="bubble-panel" id="database-kendaraan">
+            <div class="section-heading">
+                <div>
+                    <h2>Mengelola Database Kendaraan</h2>
+                    <p>Validasi data kendaraan, perbarui kepemilikan, dan tangani laporan lapangan dalam satu pusat kendali.</p>
+                </div>
+                <div class="section-actions">
+                    <button class="btn btn-outline" onclick="openModal('addUserModal')"><i class="fas fa-plus-circle"></i> Aksi Cepat</button>
+                </div>
+            </div>
+
+            <div class="tab-controls">
+                <button class="tab active" data-tab-target="users" onclick="switchTab(event, 'users')"><i class="fas fa-users"></i> Pengguna</button>
+                <button class="tab" data-tab-target="vehicles" onclick="switchTab(event, 'vehicles')"><i class="fas fa-car"></i> Kendaraan</button>
+                <button class="tab" data-tab-target="reports" onclick="switchTab(event, 'reports')"><i class="fas fa-exclamation-triangle"></i> Laporan</button>
+            </div>
+
+            <div id="users-tab" class="tab-content active">
+                <div class="table-card">
+                    <div class="table-header">
+                        <h3><i class="fas fa-user-graduate"></i> Daftar Pengguna</h3>
+                        <button class="btn btn-primary" onclick="openModal('addUserModal')">
+                            <i class="fas fa-plus"></i> Tambah Pengguna
+                        </button>
+                    </div>
+                    <div class="table-responsive">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Nama</th>
+                                    <th>NIM</th>
+                                    <th>Email</th>
+                                    <th>Kendaraan</th>
+                                    <th>Status</th>
+                                    <th>Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>Puan Akeyla</strong></td>
+                                    <td>2315061001</td>
+                                    <td>puan@student.unila.ac.id</td>
+                                    <td>2 Kendaraan</td>
+                                    <td><span class="status-badge status-active">Aktif</span></td>
+                                    <td>
+                                        <button class="btn btn-warning btn-sm"><i class="fas fa-edit"></i> Edit</button>
+                                        <button class="btn btn-danger btn-sm"><i class="fas fa-trash"></i> Hapus</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Jane Smith</strong></td>
+                                    <td>2315061002</td>
+                                    <td>jane.smith@student.unila.ac.id</td>
+                                    <td>1 Kendaraan</td>
+                                    <td><span class="status-badge status-active">Aktif</span></td>
+                                    <td>
+                                        <button class="btn btn-warning btn-sm"><i class="fas fa-edit"></i> Edit</button>
+                                        <button class="btn btn-danger btn-sm"><i class="fas fa-trash"></i> Hapus</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Michael Johnson</strong></td>
+                                    <td>2315061003</td>
+                                    <td>michael.j@student.unila.ac.id</td>
+                                    <td>1 Kendaraan</td>
+                                    <td><span class="status-badge status-active">Aktif</span></td>
+                                    <td>
+                                        <button class="btn btn-warning btn-sm"><i class="fas fa-edit"></i> Edit</button>
+                                        <button class="btn btn-danger btn-sm"><i class="fas fa-trash"></i> Hapus</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div id="vehicles-tab" class="tab-content">
+                <div class="table-card">
+                    <div class="table-header">
+                        <h3><i class="fas fa-car"></i> Database Kendaraan</h3>
+                        <button class="btn btn-primary" onclick="openModal('addVehicleModal')">
+                            <i class="fas fa-plus"></i> Tambah Kendaraan
+                        </button>
+                    </div>
+                    <div class="table-responsive">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Plat Nomor</th>
+                                    <th>Jenis</th>
+                                    <th>Merk</th>
+                                    <th>Pemilik</th>
+                                    <th>Tanggal Daftar</th>
+                                    <th>Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>B 1234 ABC</strong></td>
+                                    <td>Motor</td>
+                                    <td>Honda Beat</td>
+                                    <td>Puan Akeyla</td>
+                                    <td>15 Jan 2024</td>
+                                    <td>
+                                        <button class="btn btn-warning btn-sm"><i class="fas fa-edit"></i> Edit</button>
+                                        <button class="btn btn-danger btn-sm"><i class="fas fa-trash"></i> Hapus</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><strong>B 5678 XYZ</strong></td>
+                                    <td>Mobil</td>
+                                    <td>Toyota Avanza</td>
+                                    <td>Jane Smith</td>
+                                    <td>10 Jan 2024</td>
+                                    <td>
+                                        <button class="btn btn-warning btn-sm"><i class="fas fa-edit"></i> Edit</button>
+                                        <button class="btn btn-danger btn-sm"><i class="fas fa-trash"></i> Hapus</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><strong>B 9012 DEF</strong></td>
+                                    <td>Motor</td>
+                                    <td>Yamaha NMAX</td>
+                                    <td>Michael Johnson</td>
+                                    <td>08 Jan 2024</td>
+                                    <td>
+                                        <button class="btn btn-warning btn-sm"><i class="fas fa-edit"></i> Edit</button>
+                                        <button class="btn btn-danger btn-sm"><i class="fas fa-trash"></i> Hapus</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <span id="laporan-kehilangan" class="anchor-offset"></span>
+            <div id="reports-tab" class="tab-content">
+                <div class="table-card">
+                    <div class="table-header">
+                        <h3><i class="fas fa-exclamation-triangle"></i> Laporan Kehilangan</h3>
+                    </div>
+                    <div class="table-responsive">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>ID Laporan</th>
+                                    <th>Kendaraan</th>
+                                    <th>Pelapor</th>
+                                    <th>Tanggal</th>
+                                    <th>Status</th>
+                                    <th>Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>#LAP-001</strong></td>
+                                    <td>Honda Beat - B 2345 GHI</td>
+                                    <td>Robert Brown</td>
+                                    <td>20 Jan 2024</td>
+                                    <td><span class="status-badge status-pending">Investigasi</span></td>
+                                    <td>
+                                        <button class="btn btn-primary btn-sm"><i class="fas fa-eye"></i> Detail</button>
+                                        <button class="btn btn-success btn-sm"><i class="fas fa-check"></i> Selesai</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><strong>#LAP-002</strong></td>
+                                    <td>Yamaha NMAX - B 6789 JKL</td>
+                                    <td>Sarah Johnson</td>
+                                    <td>19 Jan 2024</td>
+                                    <td><span class="status-badge status-active">Aktif</span></td>
+                                    <td>
+                                        <button class="btn btn-primary btn-sm"><i class="fas fa-eye"></i> Detail</button>
+                                        <button class="btn btn-success btn-sm"><i class="fas fa-check"></i> Selesai</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Modal Tambah Pengguna -->
+    <div id="addUserModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-user-plus"></i> Tambah Pengguna Baru</h3>
+                <button class="close" onclick="closeModal('addUserModal')">&times;</button>
+            </div>
+            <form id="addUserForm">
+                <div class="form-group">
+                    <label for="userName">Nama Lengkap</label>
+                    <input type="text" class="form-control" id="userName" placeholder="Masukkan nama lengkap" required>
+                </div>
+                <div class="form-group">
+                    <label for="userNIM">NIM</label>
+                    <input type="text" class="form-control" id="userNIM" placeholder="Masukkan NIM" required>
+                </div>
+                <div class="form-group">
+                    <label for="userEmail">Email</label>
+                    <input type="email" class="form-control" id="userEmail" placeholder="email@student.unila.ac.id" required>
+                </div>
+                <div class="form-group">
+                    <label for="userRole">Role</label>
+                    <select class="form-control" id="userRole" required>
+                        <option value="user">Pengguna</option>
+                        <option value="petugas">Petugas</option>
+                        <option value="admin">Admin</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-success btn-block">
+                    <i class="fas fa-save"></i> Simpan Pengguna
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal Tambah Kendaraan -->
+    <div id="addVehicleModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-car-side"></i> Tambah Kendaraan Baru</h3>
+                <button class="close" onclick="closeModal('addVehicleModal')">&times;</button>
+            </div>
+            <form id="addVehicleForm">
+                <div class="form-group">
+                    <label for="vehicleOwner">Pemilik</label>
+                    <select class="form-control" id="vehicleOwner" required>
+                        <option value="">Pilih Pemilik</option>
+                        <option value="1">Puan Akeyla (2315061001)</option>
+                        <option value="2">Jane Smith (2315061002)</option>
+                        <option value="3">Michael Johnson (2315061003)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="vehiclePlate">Plat Nomor</label>
+                    <input type="text" class="form-control" id="vehiclePlate" placeholder="Contoh: B 1234 ABC" required>
+                </div>
+                <div class="form-group">
+                    <label for="vehicleType">Jenis Kendaraan</label>
+                    <select class="form-control" id="vehicleType" required>
+                        <option value="">Pilih Jenis</option>
+                        <option value="motor">Motor</option>
+                        <option value="mobil">Mobil</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="vehicleBrand">Merk Kendaraan</label>
+                    <input type="text" class="form-control" id="vehicleBrand" placeholder="Contoh: Honda Beat" required>
+                </div>
+                <button type="submit" class="btn btn-success btn-block">
+                    <i class="fas fa-save"></i> Simpan Kendaraan
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Initialize Charts
+        let usageChart, vehicleChart;
+
+        function initCharts() {
+            const usageCtx = document.getElementById('usageChart').getContext('2d');
+            usageChart = new Chart(usageCtx, {
+                type: 'line',
+                data: {
+                    labels: ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu'],
+                    datasets: [{
+                        label: 'Kendaraan Masuk',
+                        data: [120, 150, 180, 90, 200, 80, 60],
+                        borderColor: '#3A6BFF',
+                        backgroundColor: 'rgba(58, 107, 255, 0.12)',
+                        borderWidth: 3,
+                        fill: true,
+                        tension: 0.4,
+                        pointBackgroundColor: '#3A6BFF',
+                        pointRadius: 5,
+                        pointHoverRadius: 7
+                    }, {
+                        label: 'Kendaraan Keluar',
+                        data: [110, 140, 170, 85, 190, 75, 55],
+                        borderColor: '#6DD3FF',
+                        backgroundColor: 'rgba(109, 211, 255, 0.18)',
+                        borderWidth: 3,
+                        fill: true,
+                        tension: 0.4,
+                        pointBackgroundColor: '#6DD3FF',
+                        pointRadius: 5,
+                        pointHoverRadius: 7
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            labels: {
+                                color: '#112752',
+                                font: {
+                                    size: 13,
+                                    weight: 600
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            grid: {
+                                color: 'rgba(0, 0, 0, 0.05)'
+                            },
+                            ticks: {
+                                color: '#5C6E94',
+                                font: {
+                                    size: 12
+                                }
+                            }
+                        },
+                        y: {
+                            grid: {
+                                color: 'rgba(0, 0, 0, 0.05)'
+                            },
+                            ticks: {
+                                color: '#5C6E94',
+                                font: {
+                                    size: 12
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+
+            const vehicleCtx = document.getElementById('vehicleChart').getContext('2d');
+            vehicleChart = new Chart(vehicleCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Motor', 'Mobil', 'Lainnya'],
+                    datasets: [{
+                        data: [65, 30, 5],
+                        backgroundColor: [
+                            '#3A6BFF',
+                            '#6DD3FF',
+                            '#C5D9FF'
+                        ],
+                        borderWidth: 3,
+                        borderColor: '#FFFFFF',
+                        hoverOffset: 10
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                color: '#112752',
+                                padding: 20,
+                                font: {
+                                    size: 13,
+                                    weight: 600
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Tab Switching
+        function switchTab(source, tabName) {
+            document.querySelectorAll('.tab-content').forEach(section => {
+                section.classList.remove('active');
+            });
+            document.querySelectorAll('.tab-controls .tab').forEach(button => {
+                button.classList.remove('active');
+            });
+
+            const targetPanel = document.getElementById(tabName + '-tab');
+            if (targetPanel) {
+                targetPanel.classList.add('active');
+            }
+
+            if (source instanceof Event) {
+                source.currentTarget.classList.add('active');
+            } else if (source) {
+                source.classList.add('active');
+            }
+        }
+
+        // Modal Functions
+        function openModal(modalId) {
+            document.getElementById(modalId).style.display = 'flex';
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+
+        // Form Submissions
+        document.getElementById('addUserForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            alert('✅ Pengguna berhasil ditambahkan!');
+            closeModal('addUserModal');
+            this.reset();
+        });
+
+        document.getElementById('addVehicleForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            alert('✅ Kendaraan berhasil ditambahkan!');
+            closeModal('addVehicleModal');
+            this.reset();
+        });
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            if (event.target.classList.contains('modal')) {
+                event.target.style.display = 'none';
+            }
+        }
+
+        // Initialize charts when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            initCharts();
+
+            document.querySelectorAll('.nav-links a').forEach(link => {
+                link.addEventListener('click', function() {
+                    document.querySelectorAll('.nav-links a').forEach(item => item.classList.remove('active'));
+                    this.classList.add('active');
+
+                    const targetTab = this.dataset.tab;
+                    if (targetTab) {
+                        const tabButton = document.querySelector(`.tab-controls .tab[data-tab-target="${targetTab}"]`);
+                        if (tabButton) {
+                            switchTab(tabButton, targetTab);
+                        }
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
