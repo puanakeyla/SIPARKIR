@@ -596,8 +596,8 @@
             });
         }
 
-        // Handle form submission
-        loginForm.addEventListener('submit', function(e) {
+        // Handle form submission with MySQL API
+        loginForm.addEventListener('submit', async function(e) {
             e.preventDefault();
             
             const email = document.getElementById('email').value.trim();
@@ -613,18 +613,26 @@
             submitBtn.disabled = true;
             submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Memproses...';
 
-            // Proses login
             try {
-                // Cek apakah database.js sudah loaded
-                if (typeof db === 'undefined' || typeof db.login !== 'function') {
-                    throw new Error('Database belum siap. Silakan refresh halaman.');
-                }
+                // Login menggunakan MySQL API
+                const response = await fetch('api/login.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        email: email,
+                        password: password
+                    })
+                });
 
-                // Login menggunakan database.js
-                const user = db.login(email, password);
+                const result = await response.json();
                 
-                if (user) {
-                    // Simpan juga ke localStorage untuk persistent session
+                if (result.success && result.data && result.data.user) {
+                    const user = result.data.user;
+                    
+                    // Simpan ke session dan localStorage
+                    sessionStorage.setItem('currentUser', JSON.stringify(user));
                     localStorage.setItem('currentUser', JSON.stringify(user));
                     
                     // Login sukses
@@ -641,8 +649,8 @@
                         }
                     }, 500);
                 } else {
-                    // Login gagal - credentials salah
-                    alert('❌ Email atau password salah!\n\nSilakan cek kredensial di bawah form.');
+                    // Login gagal
+                    alert('❌ ' + (result.message || 'Email atau password salah!') + '\n\nSilakan cek kredensial di bawah form.');
                     
                     // Enable button kembali
                     submitBtn.disabled = false;
@@ -650,6 +658,36 @@
                 }
             } catch (error) {
                 console.error('Login error:', error);
+                
+                // Fallback ke localStorage jika API gagal
+                console.log('API gagal, menggunakan localStorage fallback...');
+                
+                try {
+                    if (typeof db !== 'undefined' && typeof db.login === 'function') {
+                        const user = db.login(email, password);
+                        
+                        if (user) {
+                            localStorage.setItem('currentUser', JSON.stringify(user));
+                            sessionStorage.setItem('currentUser', JSON.stringify(user));
+                            
+                            alert(`✅ Login berhasil sebagai ${user.role.toUpperCase()}!\n\nSelamat datang, ${user.nama}!`);
+                            
+                            setTimeout(() => {
+                                if (user.role === 'pengguna') {
+                                    window.location.href = 'pengguna.html';
+                                } else if (user.role === 'petugas') {
+                                    window.location.href = 'petugas.html';
+                                } else if (user.role === 'admin') {
+                                    window.location.href = 'admin.html';
+                                }
+                            }, 500);
+                            return;
+                        }
+                    }
+                } catch (fallbackError) {
+                    console.error('Fallback error:', fallbackError);
+                }
+                
                 alert(`❌ Terjadi kesalahan saat login!\n\n${error.message}`);
                 
                 // Enable button kembali
