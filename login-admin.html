@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SIPARKIR UNILA · Login Admin</title>
+    <title>SIPARKIR UNILA · Login</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -229,13 +229,59 @@
             box-shadow: 0 20px 40px rgba(58, 107, 255, 0.26);
         }
 
-        .forgot-link {
-            display: block;
-            margin-top: -6px;
-            text-align: center;
+        .credentials-info {
+            background: rgba(58, 107, 255, 0.08);
+            border-radius: 18px;
+            padding: 20px;
+            margin-top: 8px;
+            text-align: left;
+        }
+
+        .credentials-info h3 {
+            margin: 0 0 16px 0;
+            font-size: 15px;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .credential-item {
+            margin-bottom: 14px;
+            padding-bottom: 14px;
+            border-bottom: 1px solid rgba(58, 107, 255, 0.15);
+        }
+
+        .credential-item:last-child {
+            margin-bottom: 0;
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+
+        .credential-item strong {
+            display: flex;
+            align-items: center;
+            gap: 8px;
             font-size: 13px;
+            color: var(--primary-dark);
+            margin-bottom: 6px;
+        }
+
+        .credential-item p {
+            margin: 4px 0;
+            font-size: 12px;
+            color: var(--muted);
+        }
+
+        .credential-item code {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 3px 8px;
+            border-radius: 6px;
+            font-family: 'Courier New', monospace;
+            font-size: 11px;
             color: var(--primary);
             font-weight: 600;
+            border: 1px solid rgba(58, 107, 255, 0.2);
         }
 
         @media (max-width: 540px) {
@@ -258,18 +304,18 @@
     <main class="login-wrapper">
         <section class="login-card">
             <div class="brand">
-                <span class="brand-badge"><i class="fas fa-user-shield"></i></span>
+                <span class="brand-badge"><i class="fas fa-parking"></i></span>
                 <div class="brand-text">
                     <span class="brand-title">SIPARKIR UNILA</span>
-                    <span class="brand-subtitle">Portal Admin</span>
+                    <span class="brand-subtitle">Sistem Parkir Kampus</span>
                 </div>
             </div>
-            <h1 class="login-title">Masuk ke Panel Admin</h1>
-            <p class="intro">Pantau operasional parkir secara menyeluruh, kelola data pengguna, dan tinjau laporan penting dengan cepat.</p>
-            <form action="admin.html" method="get" autocomplete="off">
+            <h1 class="login-title">Masuk ke Sistem</h1>
+            <p class="intro">Gunakan kredensial Anda sesuai role untuk mengakses dashboard.</p>
+            <form id="loginForm" autocomplete="off">
                 <div class="input-group">
-                    <label for="idAdmin">ID Admin</label>
-                    <input type="text" id="idAdmin" name="idAdmin" placeholder="Masukkan ID atau email" required>
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" placeholder="Masukkan email Anda" required>
                 </div>
                 <div class="input-group">
                     <label for="password">Kata Sandi</label>
@@ -285,18 +331,67 @@
                 </div>
                 <button type="submit" class="submit-btn">Masuk</button>
             </form>
-            <a class="forgot-link" href="#">Lupa kata sandi?</a>
+            <div class="credentials-info">
+                <h3><i class="fas fa-info-circle"></i> Kredensial Login</h3>
+                <div class="credential-item">
+                    <strong><i class="fas fa-user-graduate"></i> Mahasiswa/Pengguna:</strong>
+                    <p>Email: <code>mahasiswa@student.unila.ac.id</code></p>
+                    <p>Password: <code>mahasiswa123</code></p>
+                </div>
+                <div class="credential-item">
+                    <strong><i class="fas fa-shield-alt"></i> Petugas Keamanan:</strong>
+                    <p>Email: <code>petugas@unila.ac.id</code></p>
+                    <p>Password: <code>petugas123</code></p>
+                </div>
+                <div class="credential-item">
+                    <strong><i class="fas fa-user-shield"></i> Administrator:</strong>
+                    <p>Email: <code>admin@unila.ac.id</code></p>
+                    <p>Password: <code>admin123</code></p>
+                </div>
+            </div>
         </section>
     </main>
 
     <script>
         const togglePassword = document.querySelector('.toggle-password');
         const passwordInput = document.querySelector('#password');
+        const loginForm = document.getElementById('loginForm');
 
+        // Toggle password visibility
         togglePassword.addEventListener('click', () => {
             const isHidden = passwordInput.getAttribute('type') === 'password';
             passwordInput.setAttribute('type', isHidden ? 'text' : 'password');
             togglePassword.innerHTML = isHidden ? '<i class="fas fa-eye-slash"></i>' : '<i class="fas fa-eye"></i>';
+        });
+
+        // Kredensial untuk setiap role
+        const credentials = {
+            'mahasiswa@student.unila.ac.id': { password: 'mahasiswa123', redirect: 'pengguna.html', role: 'Mahasiswa' },
+            'petugas@unila.ac.id': { password: 'petugas123', redirect: 'petugas.html', role: 'Petugas' },
+            'admin@unila.ac.id': { password: 'admin123', redirect: 'admin.html', role: 'Admin' }
+        };
+
+        // Handle form submission
+        loginForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value;
+
+            // Cek kredensial
+            if (credentials[email]) {
+                if (credentials[email].password === password) {
+                    // Login sukses
+                    alert(`✅ Login berhasil sebagai ${credentials[email].role}!`);
+                    window.location.href = credentials[email].redirect;
+                } else {
+                    // Password salah
+                    alert('❌ Password salah! Silakan cek kredensial di bawah form.');
+                }
+            } else {
+                // Email tidak terdaftar
+                alert('❌ Email tidak terdaftar! Silakan gunakan kredensial yang tersedia.');
+            }
         });
     </script>
 </body>

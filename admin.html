@@ -962,8 +962,9 @@
                 <a href="#monitoring" class="active">Monitoring Sistem Parkir</a>
                 <a href="#laporan-statistik">Laporan Statistik</a>
                 <a href="#database-kendaraan">Database Kendaraan</a>
+                <a href="#kelola-petugas">Kelola Petugas</a>
             </div>
-            <a class="nav-cta" href="login-admin.html"><i class="fas fa-sign-out-alt"></i> Keluar</a>
+            <a class="nav-cta" href="login.html"><i class="fas fa-sign-out-alt"></i> Keluar</a>
         </div>
     </nav>
 
@@ -1307,6 +1308,73 @@
                 </div>
             </div>
         </section>
+
+        <section class="bubble-panel" id="kelola-petugas">
+            <div class="section-heading">
+                <div>
+                    <h2>Kelola Petugas Keamanan</h2>
+                    <p>Tambah, edit, dan kelola data petugas keamanan yang bertugas mengawasi area parkir kampus.</p>
+                </div>
+                <div class="section-actions">
+                    <button class="btn btn-primary" onclick="openModal('addPetugasModal')"><i class="fas fa-plus-circle"></i> Tambah Petugas</button>
+                </div>
+            </div>
+
+            <div class="table-card">
+                <div class="table-header">
+                    <h3><i class="fas fa-user-shield"></i> Daftar Petugas Keamanan</h3>
+                </div>
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Nama</th>
+                                <th>NIP</th>
+                                <th>Email</th>
+                                <th>Shift</th>
+                                <th>Status</th>
+                                <th>Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Budi Santoso</strong></td>
+                                <td>198501012010011001</td>
+                                <td>budi.santoso@unila.ac.id</td>
+                                <td>Pagi (07:00 - 15:00)</td>
+                                <td><span class="status-badge status-active">Aktif</span></td>
+                                <td>
+                                    <button class="btn btn-warning btn-sm"><i class="fas fa-edit"></i> Edit</button>
+                                    <button class="btn btn-danger btn-sm"><i class="fas fa-trash"></i> Hapus</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>Siti Nurjanah</strong></td>
+                                <td>199003152015032002</td>
+                                <td>siti.nurjanah@unila.ac.id</td>
+                                <td>Siang (15:00 - 23:00)</td>
+                                <td><span class="status-badge status-active">Aktif</span></td>
+                                <td>
+                                    <button class="btn btn-warning btn-sm"><i class="fas fa-edit"></i> Edit</button>
+                                    <button class="btn btn-danger btn-sm"><i class="fas fa-trash"></i> Hapus</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>Ahmad Rifai</strong></td>
+                                <td>198712202012011003</td>
+                                <td>ahmad.rifai@unila.ac.id</td>
+                                <td>Malam (23:00 - 07:00)</td>
+                                <td><span class="status-badge status-active">Aktif</span></td>
+                                <td>
+                                    <button class="btn btn-warning btn-sm"><i class="fas fa-edit"></i> Edit</button>
+                                    <button class="btn btn-danger btn-sm"><i class="fas fa-trash"></i> Hapus</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
     </main>
 
     <!-- Modal Tambah Pengguna -->
@@ -1379,6 +1447,46 @@
                 </div>
                 <button type="submit" class="btn btn-success btn-block">
                     <i class="fas fa-save"></i> Simpan Kendaraan
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal Tambah Petugas -->
+    <div id="addPetugasModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-user-shield"></i> Tambah Petugas Baru</h3>
+                <button class="close" onclick="closeModal('addPetugasModal')">&times;</button>
+            </div>
+            <form id="addPetugasForm">
+                <div class="form-group">
+                    <label for="petugasName">Nama Lengkap</label>
+                    <input type="text" class="form-control" id="petugasName" placeholder="Masukkan nama lengkap" required>
+                </div>
+                <div class="form-group">
+                    <label for="petugasNIP">NIP</label>
+                    <input type="text" class="form-control" id="petugasNIP" placeholder="Masukkan NIP" required>
+                </div>
+                <div class="form-group">
+                    <label for="petugasEmail">Email</label>
+                    <input type="email" class="form-control" id="petugasEmail" placeholder="email@unila.ac.id" required>
+                </div>
+                <div class="form-group">
+                    <label for="petugasShift">Shift</label>
+                    <select class="form-control" id="petugasShift" required>
+                        <option value="">Pilih Shift</option>
+                        <option value="pagi">Pagi (07:00 - 15:00)</option>
+                        <option value="siang">Siang (15:00 - 23:00)</option>
+                        <option value="malam">Malam (23:00 - 07:00)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="petugasPassword">Password</label>
+                    <input type="password" class="form-control" id="petugasPassword" placeholder="Masukkan password" required>
+                </div>
+                <button type="submit" class="btn btn-success btn-block">
+                    <i class="fas fa-save"></i> Simpan Petugas
                 </button>
             </form>
         </div>
@@ -1541,6 +1649,13 @@
             this.reset();
         });
 
+        document.getElementById('addPetugasForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            alert('✅ Petugas berhasil ditambahkan!');
+            closeModal('addPetugasModal');
+            this.reset();
+        });
+
         // Close modal when clicking outside
         window.onclick = function(event) {
             if (event.target.classList.contains('modal')) {
@@ -1567,6 +1682,224 @@
                 });
             });
         });
+    </script>
+    <script src="js/database.js"></script>
+    <script>
+        // Cek login
+        const currentUser = db.getCurrentUser();
+        if (!currentUser || currentUser.role !== 'admin') {
+            alert('⛔ Anda harus login terlebih dahulu!');
+            window.location.href = 'login.html';
+        }
+
+        // Load statistics untuk admin
+        function loadAdminData() {
+            const stats = db.getStatistics();
+            
+            // Update KPI cards
+            document.querySelectorAll('.stat-card .stat-value')[0].textContent = stats.totalPengguna.toLocaleString();
+            document.querySelectorAll('.stat-card .stat-value')[1].textContent = stats.totalKendaraan.toLocaleString();
+            document.querySelectorAll('.stat-card .stat-value')[2].textContent = stats.transaksiHariIni.toLocaleString();
+            document.querySelectorAll('.stat-card .stat-value')[3].textContent = stats.laporanAktif.toLocaleString();
+
+            // Update tabel pengguna
+            const pengguna = db.getAllUsers('pengguna');
+            const tbodyPengguna = document.querySelector('#users-tab table tbody');
+            if (tbodyPengguna) {
+                tbodyPengguna.innerHTML = '';
+                pengguna.forEach(p => {
+                    const kendaraanCount = db.getKendaraanByPemilik(p.id).length;
+                    tbodyPengguna.innerHTML += `
+                        <tr>
+                            <td><strong>${p.nama}</strong></td>
+                            <td>${p.nim || '-'}</td>
+                            <td>${p.email}</td>
+                            <td>${kendaraanCount} Kendaraan</td>
+                            <td><span class="status-badge status-active">Aktif</span></td>
+                            <td>
+                                <button class="btn btn-warning btn-sm"><i class="fas fa-edit"></i> Edit</button>
+                                <button class="btn btn-danger btn-sm" onclick="hapusPengguna('${p.id}', '${p.nama}')"><i class="fas fa-trash"></i> Hapus</button>
+                            </td>
+                        </tr>
+                    `;
+                });
+            }
+
+            // Update tabel kendaraan
+            const kendaraan = db.getAllKendaraan();
+            const tbodyKendaraan = document.querySelector('#vehicles-tab table tbody');
+            if (tbodyKendaraan) {
+                tbodyKendaraan.innerHTML = '';
+                kendaraan.forEach(k => {
+                    const pemilik = db.getAllUsers('pengguna').find(p => p.id === k.pemilikId);
+                    const statusClass = k.status === 'aktif' ? 'status-active' : 'status-pending';
+                    tbodyKendaraan.innerHTML += `
+                        <tr>
+                            <td><strong>${k.platNomor}</strong></td>
+                            <td>${k.merk} ${k.tipe}</td>
+                            <td>${pemilik ? pemilik.nama : '-'}</td>
+                            <td>${k.warna}</td>
+                            <td>${k.tahun}</td>
+                            <td><span class="status-badge ${statusClass}">${k.status}</span></td>
+                            <td>
+                                ${k.status === 'pending' ? `
+                                    <button class="btn btn-success btn-sm" onclick="verifikasiKendaraanAdmin('${k.id}')">
+                                        <i class="fas fa-check"></i> Verifikasi
+                                    </button>
+                                ` : ''}
+                                <button class="btn btn-danger btn-sm" onclick="hapusKendaraan('${k.id}', '${k.platNomor}')">
+                                    <i class="fas fa-trash"></i> Hapus
+                                </button>
+                            </td>
+                        </tr>
+                    `;
+                });
+            }
+
+            // Update tabel laporan kehilangan
+            const laporan = db.getAllLaporan();
+            const tbodyLaporan = document.querySelector('#reports-tab table tbody');
+            if (tbodyLaporan) {
+                tbodyLaporan.innerHTML = '';
+                laporan.forEach(l => {
+                    const tanggal = new Date(l.tanggalLapor).toLocaleDateString('id-ID');
+                    const statusClass = l.status === 'Selesai' ? 'status-success' : l.status === 'Investigasi' ? 'status-pending' : 'status-active';
+                    
+                    tbodyLaporan.innerHTML += `
+                        <tr>
+                            <td><strong>${l.id}</strong></td>
+                            <td>${l.platNomor}</td>
+                            <td>${l.pelaporNama}</td>
+                            <td>${tanggal}</td>
+                            <td><span class="status-badge ${statusClass}">${l.status}</span></td>
+                            <td>
+                                <button class="btn btn-primary btn-sm" onclick="lihatDetailLaporanAdmin('${l.id}')">
+                                    <i class="fas fa-eye"></i> Detail
+                                </button>
+                                ${l.status !== 'Selesai' ? `
+                                    <button class="btn btn-success btn-sm" onclick="selesaikanLaporanAdmin('${l.id}')">
+                                        <i class="fas fa-check"></i> Selesai
+                                    </button>
+                                ` : ''}
+                            </td>
+                        </tr>
+                    `;
+                });
+            }
+
+            // Update tabel petugas
+            const petugas = db.getAllUsers('petugas');
+            const tbodyPetugas = document.querySelector('#kelola-petugas table tbody');
+            if (tbodyPetugas) {
+                tbodyPetugas.innerHTML = '';
+                petugas.forEach(p => {
+                    tbodyPetugas.innerHTML += `
+                        <tr>
+                            <td><strong>${p.nama}</strong></td>
+                            <td>${p.nip}</td>
+                            <td>${p.email}</td>
+                            <td>${p.shift}</td>
+                            <td><span class="status-badge status-active">Aktif</span></td>
+                            <td>
+                                <button class="btn btn-warning btn-sm"><i class="fas fa-edit"></i> Edit</button>
+                                <button class="btn btn-danger btn-sm" onclick="hapusPetugas('${p.id}', '${p.nama}')"><i class="fas fa-trash"></i> Hapus</button>
+                            </td>
+                        </tr>
+                    `;
+                });
+            }
+        }
+
+        // Form handlers
+        document.getElementById('addUserForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const userData = {
+                nama: document.getElementById('userName').value,
+                nim: document.getElementById('userNIM').value,
+                email: document.getElementById('userEmail').value,
+                password: 'password123', // default password
+                role: document.getElementById('userRole').value
+            };
+            
+            db.addUser(userData, userData.role);
+            alert(`✅ ${userData.role.toUpperCase()} berhasil ditambahkan!\n\nNama: ${userData.nama}\nEmail: ${userData.email}\nPassword: password123`);
+            closeModal('addUserModal');
+            this.reset();
+            loadAdminData();
+        });
+
+        document.getElementById('addVehicleForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const pemilikId = document.getElementById('vehicleOwner').value;
+            const kendaraanData = {
+                pemilikId: pemilikId,
+                platNomor: document.getElementById('vehiclePlate').value,
+                merk: document.getElementById('vehicleBrand').value,
+                tipe: document.getElementById('vehicleType').value,
+                warna: 'Hitam', // default
+                tahun: new Date().getFullYear()
+            };
+            
+            db.addKendaraan(kendaraanData);
+            alert('✅ Kendaraan berhasil ditambahkan!');
+            closeModal('addVehicleModal');
+            this.reset();
+            loadAdminData();
+        });
+
+        document.getElementById('addPetugasForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const petugasData = {
+                nama: document.getElementById('petugasName').value,
+                nip: document.getElementById('petugasNIP').value,
+                email: document.getElementById('petugasEmail').value,
+                shift: document.getElementById('petugasShift').options[document.getElementById('petugasShift').selectedIndex].text,
+                password: document.getElementById('petugasPassword').value
+            };
+            
+            db.addUser(petugasData, 'petugas');
+            alert('✅ Petugas berhasil ditambahkan!');
+            closeModal('addPetugasModal');
+            this.reset();
+            loadAdminData();
+        });
+
+        // Action functions
+        window.verifikasiKendaraanAdmin = function(kendaraanId) {
+            db.updateKendaraan(kendaraanId, { status: 'aktif' });
+            alert('✅ Kendaraan berhasil diverifikasi!');
+            loadAdminData();
+        }
+
+        window.hapusKendaraan = function(kendaraanId, platNomor) {
+            if (confirm(`Hapus kendaraan ${platNomor}?`)) {
+                db.deleteKendaraan(kendaraanId);
+                alert('✅ Kendaraan berhasil dihapus!');
+                loadAdminData();
+            }
+        }
+
+        window.lihatDetailLaporanAdmin = function(laporanId) {
+            const laporan = db.getAllLaporan().find(l => l.id === laporanId);
+            if (laporan) {
+                const waktu = new Date(laporan.waktuKejadian).toLocaleString('id-ID');
+                alert(`📋 Detail Laporan ${laporan.id}\n\nKendaraan: ${laporan.platNomor}\nPelapor: ${laporan.pelaporNama}\nLokasi: ${laporan.lokasiKehilangan}\nWaktu: ${waktu}\n\nKronologi:\n${laporan.kronologi}\n\nStatus: ${laporan.status}`);
+            }
+        }
+
+        window.selesaikanLaporanAdmin = function(laporanId) {
+            if (confirm('Tandai laporan sebagai SELESAI?')) {
+                db.updateLaporan(laporanId, { status: 'Selesai' });
+                alert('✅ Laporan berhasil diselesaikan!');
+                loadAdminData();
+            }
+        }
+
+        // Load data saat halaman dimuat
+        loadAdminData();
+
+        // Refresh data setiap 30 detik
+        setInterval(loadAdminData, 30000);
     </script>
 </body>
 </html>
