@@ -791,15 +791,16 @@
                         </div>
                         <div class="form-group">
                             <label for="tahunKendaraan">Tahun Pembuatan</label>
-                            <input type="number" id="tahunKendaraan" class="form-control" placeholder="2020" min="1980" max="2025" required>
+                            <input type="number" id="tahunKendaraan" class="form-control" placeholder="2022" min="1980" max="2025" required>
                         </div>
                         <div class="form-group">
-                            <label for="fotoKendaraan">Foto Kendaraan & STNK</label>
+                            <label for="fotoKendaraan">Foto Dokumen (STNK/KTP)</label>
                             <div class="upload-area" onclick="document.getElementById('fotoKendaraan').click()">
                                 <i class="fas fa-cloud-upload-alt"></i>
                                 <p><strong>Klik untuk upload foto</strong><br>Format: JPG, PNG (Max 2MB)</p>
                                 <input type="file" id="fotoKendaraan" accept="image/*">
                             </div>
+                            <small class="form-text text-muted">Upload foto STNK dan KTP untuk verifikasi</small>
                         </div>
                         <div class="record-actions">
                             <button type="submit" class="btn btn-primary btn-sm"><i class="fas fa-save"></i> Daftar Kendaraan</button>
@@ -1054,7 +1055,7 @@
 
     </main>
 
-    <script src="js/database.js"></script>
+    <script src="js/database-api.js"></script>
     <script>
         // Cek login
         const currentUser = db.getCurrentUser();
@@ -1095,14 +1096,14 @@
             const tbody = document.querySelector('#form-registrasi table tbody');
             tbody.innerHTML = '';
             kendaraanList.forEach(k => {
-                const statusBadge = k.status === 'aktif' ? 'status-success' : 'status-pending';
-                const statusText = k.status === 'aktif' ? 'Aktif' : 'Pending';
+                const statusBadge = k.status === 'aktif' ? 'status-success' : k.status === 'pending' ? 'status-pending' : 'status-danger';
+                const statusText = k.status === 'aktif' ? 'Aktif' : k.status === 'pending' ? 'Pending' : 'Nonaktif';
                 tbody.innerHTML += `
                     <tr>
                         <td><strong>${k.platNomor}</strong></td>
                         <td>${k.merk} ${k.tipe}</td>
                         <td>${k.warna}</td>
-                        <td>${k.tahun}</td>
+                        <td>${k.tahunPembuatan || k.tahun}</td>
                         <td><span class="status-badge ${statusBadge}">${statusText}</span></td>
                     </tr>
                 `;
@@ -1169,17 +1170,24 @@
         document.querySelector('#form-registrasi form').addEventListener('submit', function(e) {
             e.preventDefault();
             
+            const fotoInput = document.getElementById('fotoKendaraan');
+            let fotoDokumen = null;
+            if (fotoInput.files && fotoInput.files[0]) {
+                fotoDokumen = fotoInput.files[0].name; // Simpan nama file
+            }
+            
             const formData = {
                 pemilikId: currentUser.id,
                 platNomor: document.getElementById('platNomor').value,
                 merk: document.getElementById('merkKendaraan').value,
                 tipe: document.getElementById('tipeKendaraan').value,
                 warna: document.getElementById('warnaKendaraan').value,
-                tahun: parseInt(document.getElementById('tahunKendaraan').value)
+                tahunPembuatan: parseInt(document.getElementById('tahunKendaraan').value),
+                fotoDokumen: fotoDokumen
             };
 
             db.addKendaraan(formData);
-            alert('✅ Kendaraan berhasil didaftarkan!\n\nData kendaraan Anda akan diverifikasi oleh admin dalam 1x24 jam.');
+            alert('✅ Kendaraan berhasil didaftarkan!\n\nData kendaraan Anda akan diverifikasi oleh admin/petugas dalam 1x24 jam.');
             this.reset();
             loadUserData();
         });

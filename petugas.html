@@ -1359,7 +1359,7 @@
             });
         });
     </script>
-    <script src="js/database.js"></script>
+    <script src="js/database-api.js"></script>
     <script>
         // Cek login
         const currentUser = db.getCurrentUser();
@@ -1476,7 +1476,15 @@
         // Verifikasi kendaraan
         window.verifikasiKendaraanReal = function(kendaraanId, platNomor) {
             if (confirm(`Verifikasi kendaraan ${platNomor}?\n\nKendaraan ini akan diaktifkan dan dapat digunakan untuk parkir.`)) {
-                db.updateKendaraan(kendaraanId, { status: 'aktif' });
+                const currentUser = db.getCurrentUser();
+                if (!currentUser) {
+                    alert('Session expired!');
+                    return;
+                }
+                
+                // Gunakan fungsi verifikasi dengan role petugas
+                db.verifikasiKendaraan(kendaraanId, currentUser.id, 'petugas', 'Valid', 'Diverifikasi oleh petugas keamanan');
+                
                 alert(`✅ Kendaraan ${platNomor} berhasil diverifikasi!\n\nStatus: AKTIF`);
                 loadPetugasData();
             }
@@ -1494,9 +1502,11 @@
         // Selesaikan laporan
         window.selesaikanLaporan = function(laporanId) {
             if (confirm('Tandai laporan ini sebagai SELESAI?')) {
+                const currentUser = db.getCurrentUser();
                 db.updateLaporan(laporanId, { 
                     status: 'Selesai',
-                    petugasId: currentUser.id
+                    petugasId: currentUser.id,
+                    handlerRole: 'petugas'
                 });
                 alert('✅ Laporan berhasil diselesaikan!');
                 loadPetugasData();

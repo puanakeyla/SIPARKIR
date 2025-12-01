@@ -1375,6 +1375,39 @@
                 </div>
             </div>
         </section>
+
+        <!-- Section Audit Log -->
+        <section class="bubble-panel" id="audit-log">
+            <div class="section-heading">
+                <div>
+                    <h2><i class="fas fa-history"></i> Audit Trail</h2>
+                    <p>Riwayat aktivitas admin untuk accountability dan tracking perubahan data</p>
+                </div>
+                <div class="section-actions">
+                    <span class="badge-soft"><i class="fas fa-shield-alt"></i> Log Aktivitas</span>
+                </div>
+            </div>
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Waktu</th>
+                            <th>Admin</th>
+                            <th>Aksi</th>
+                            <th>Tabel</th>
+                            <th>Record ID</th>
+                            <th>Keterangan</th>
+                            <th>Detail</th>
+                        </tr>
+                    </thead>
+                    <tbody id="auditLogTableBody">
+                        <tr>
+                            <td colspan="7" class="text-center">Loading...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
     </main>
 
     <!-- Modal Tambah Pengguna -->
@@ -1683,7 +1716,7 @@
             });
         });
     </script>
-    <script src="js/database.js"></script>
+    <script src="js/database-api.js"></script>
     <script>
         // Cek login
         const currentUser = db.getCurrentUser();
@@ -1808,6 +1841,39 @@
                     `;
                 });
             }
+
+            // Update tabel audit log
+            const auditLogs = db.getAllAuditLogs();
+            const tbodyAudit = document.getElementById('auditLogTableBody');
+            if (tbodyAudit) {
+                tbodyAudit.innerHTML = '';
+                if (auditLogs.length === 0) {
+                    tbodyAudit.innerHTML = '<tr><td colspan="7" class="text-center">Belum ada log aktivitas</td></tr>';
+                } else {
+                    auditLogs.reverse().slice(0, 50).forEach(log => {
+                        const admin = db.getAllUsers('admin').find(a => a.id === log.adminId);
+                        const waktu = new Date(log.waktuAksi).toLocaleString('id-ID');
+                        const badgeClass = log.aksi === 'INSERT' ? 'status-success' : 
+                                          log.aksi === 'UPDATE' ? 'status-warning' : 'status-danger';
+                        
+                        tbodyAudit.innerHTML += `
+                            <tr>
+                                <td>${waktu}</td>
+                                <td>${admin ? admin.nama : 'Unknown'}</td>
+                                <td><span class="status-badge ${badgeClass}">${log.aksi}</span></td>
+                                <td>${log.tabelTarget}</td>
+                                <td>${log.idRecord || '-'}</td>
+                                <td>${log.keterangan || '-'}</td>
+                                <td>
+                                    <button class="btn btn-info btn-sm" onclick="viewAuditDetail('${log.id}')">
+                                        <i class="fas fa-eye"></i> Detail
+                                    </button>
+                                </td>
+                            </tr>
+                        `;
+                    });
+                }
+            }
         }
 
         // Form handlers
@@ -1866,8 +1932,16 @@
 
         // Action functions
         window.verifikasiKendaraanAdmin = function(kendaraanId) {
-            db.updateKendaraan(kendaraanId, { status: 'aktif' });
-            alert('✅ Kendaraan berhasil diverifikasi!');
+            const currentUser = db.getCurrentUser();
+            if (!currentUser) {
+                alert('Session expired!');
+                return;
+            }
+            
+            // Gunakan fungsi verifikasi yang support admin
+            db.verifikasiKendaraan(kendaraanId, currentUser.id, 'admin', 'Valid', 'Diverifikasi oleh admin');
+            
+            alert('✅ Kendaraan berhasil diverifikasi oleh admin!');
             loadAdminData();
         }
 
@@ -1889,8 +1963,48 @@
 
         window.selesaikanLaporanAdmin = function(laporanId) {
             if (confirm('Tandai laporan sebagai SELESAI?')) {
-                db.updateLaporan(laporanId, { status: 'Selesai' });
+                const currentUser = db.getCurrentUser();
+                db.updateLaporan(laporanId, { 
+                    status: 'Selesai',
+                    adminId: currentUser.id,
+                    handlerRole: 'admin'
+                });
                 alert('✅ Laporan berhasil diselesaikan!');
+                loadAdminData();
+            }
+        }
+
+        window.viewAuditDetail = function(logId) {
+            const log = db.getAllAuditLogs().find(l => l.id === logId);
+            if (log) {
+                const admin = db.getAllUsers('admin').find(a => a.id === log.adminId);
+                const waktu = new Date(log.waktuAksi).toLocaleString('id-ID');
+                
+                let detail = `🔍 DETAIL AUDIT LOG\n\n`;
+                detail += `ID: ${log.id}\n`;
+                detail += `Waktu: ${waktu}\n`;
+                detail += `Admin: ${admin ? admin.nama : 'Unknown'}\n`;
+                detail += `Aksi: ${log.aksi}\n`;
+                detail += `Tabel: ${log.tabelTarget}\n`;
+                detail += `Record ID: ${log.idRecord || '-'}\n`;
+                detail += `Keterangan: ${log.keterangan || '-'}\n\n`;
+                
+                if (log.dataLama) {
+                    detail += `📜 DATA SEBELUM:\n${log.dataLama}\n\n`;
+                }
+                if (log.dataBaru) {
+                    detail += `📝 DATA SESUDAH:\n${log.dataBaru}`;
+                }
+                
+                alert(detail);
+            }
+        }
+
+        window.hapusPetugas = function(petugasId, nama) {
+            if (confirm(`Hapus petugas ${nama}?`)) {
+                const petugas = db.getAllUsers('petugas').filter(p => p.id !== petugasId);
+                localStorage.setItem('siparkir_petugas', JSON.stringify(petugas));
+                alert('✅ Petugas berhasil dihapus!');
                 loadAdminData();
             }
         }

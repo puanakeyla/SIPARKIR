@@ -1,6 +1,7 @@
 -- ============================================
--- SIPARKIR UNILA - Database Schema
+-- SIPARKIR UNILA - MySQL Database Schema
 -- Sistem Informasi Parkir Universitas Lampung
+-- Database: siparkir
 -- ============================================
 
 -- Drop tables if exists (untuk clean install)
@@ -9,6 +10,7 @@ DROP TABLE IF EXISTS verifikasi_kendaraan;
 DROP TABLE IF EXISTS laporan_kehilangan;
 DROP TABLE IF EXISTS transaksi_parkir;
 DROP TABLE IF EXISTS kendaraan;
+DROP TABLE IF EXISTS audit_log;
 DROP TABLE IF EXISTS petugas_keamanan;
 DROP TABLE IF EXISTS pengguna;
 DROP TABLE IF EXISTS admin;
@@ -171,16 +173,45 @@ CREATE TABLE verifikasi_kendaraan (
     id_verifikasi VARCHAR(20) PRIMARY KEY,
     id_kendaraan VARCHAR(20) NOT NULL,
     id_petugas VARCHAR(20),
+    id_admin VARCHAR(20),
     plat_nomor VARCHAR(20) NOT NULL,
     status_verifikasi VARCHAR(50) NOT NULL, -- Valid, Tidak Valid, Mencurigakan
     catatan TEXT,
     waktu_verifikasi DATETIME DEFAULT CURRENT_TIMESTAMP,
+    verifikator_role VARCHAR(20) NOT NULL, -- 'petugas' atau 'admin'
     
     FOREIGN KEY (id_kendaraan) REFERENCES kendaraan(id_kendaraan) ON DELETE CASCADE,
     FOREIGN KEY (id_petugas) REFERENCES petugas_keamanan(id_petugas) ON DELETE SET NULL,
+    FOREIGN KEY (id_admin) REFERENCES admin(id_admin) ON DELETE SET NULL,
     INDEX idx_kendaraan (id_kendaraan),
-    INDEX idx_petugas (id_petugas)
+    INDEX idx_petugas (id_petugas),
+    INDEX idx_admin (id_admin),
+    CHECK (
+        (verifikator_role = 'petugas' AND id_petugas IS NOT NULL AND id_admin IS NULL) OR
+        (verifikator_role = 'admin' AND id_admin IS NOT NULL AND id_petugas IS NULL)
+    )
 );
+
+-- ============================================
+-- Table: audit_log
+-- Deskripsi: Menyimpan log aktivitas admin untuk tracking
+-- ============================================
+CREATE TABLE audit_log (
+    id_log VARCHAR(20) PRIMARY KEY,
+    id_admin VARCHAR(20) NOT NULL,
+    tabel_target VARCHAR(50) NOT NULL COMMENT 'Tabel yang di-edit',
+    aksi VARCHAR(20) NOT NULL COMMENT 'INSERT, UPDATE, DELETE',
+    id_record VARCHAR(20) COMMENT 'ID record yang diubah',
+    data_lama TEXT COMMENT 'JSON data sebelum perubahan',
+    data_baru TEXT COMMENT 'JSON data setelah perubahan',
+    keterangan TEXT,
+    waktu_aksi TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    
+    FOREIGN KEY (id_admin) REFERENCES admin(id_admin) ON DELETE CASCADE,
+    INDEX idx_audit_admin (id_admin),
+    INDEX idx_audit_tabel (tabel_target),
+    INDEX idx_audit_waktu (waktu_aksi)
+) COMMENT='Tabel untuk menyimpan log aktivitas admin (audit trail)';
 
 -- ============================================
 -- Insert Sample Data
@@ -227,10 +258,15 @@ INSERT INTO pencatatan_petugas (id_pencatatan, id_petugas, plat_nomor, jenis_ken
 ('PNC003', 'PTG002', 'B 1111 GHI', 'Mobil', 'Gerbang Teknik', 'Keluar', '2025-12-01 16:30:00', NULL);
 
 -- Insert Verifikasi Kendaraan
-INSERT INTO verifikasi_kendaraan (id_verifikasi, id_kendaraan, id_petugas, plat_nomor, status_verifikasi, catatan, waktu_verifikasi) VALUES
-('VRF001', 'KND001', 'PTG001', 'B 1234 ABC', 'Valid', 'Dokumen lengkap dan sesuai', '2025-11-20 09:00:00'),
-('VRF002', 'KND002', 'PTG001', 'B 5678 XYZ', 'Valid', 'Semua dokumen terverifikasi', '2025-11-20 09:30:00'),
-('VRF003', 'KND004', 'PTG001', 'B 1111 GHI', 'Valid', 'Kendaraan dosen terverifikasi', '2025-11-21 10:00:00');
+INSERT INTO verifikasi_kendaraan (id_verifikasi, id_kendaraan, id_petugas, id_admin, plat_nomor, status_verifikasi, catatan, waktu_verifikasi, verifikator_role) VALUES
+('VRF001', 'KND001', 'PTG001', NULL, 'B 1234 ABC', 'Valid', 'Dokumen lengkap dan sesuai', '2025-11-20 09:00:00', 'petugas'),
+('VRF002', 'KND002', 'PTG001', NULL, 'B 5678 XYZ', 'Valid', 'Semua dokumen terverifikasi', '2025-11-20 09:30:00', 'petugas'),
+('VRF003', 'KND004', NULL, 'ADM001', 'B 1111 GHI', 'Valid', 'Kendaraan dosen terverifikasi oleh admin', '2025-11-21 10:00:00', 'admin');
+
+-- Insert Audit Log
+INSERT INTO audit_log (id_log, id_admin, tabel_target, aksi, id_record, data_lama, data_baru, keterangan, waktu_aksi) VALUES
+('AUD001', 'ADM001', 'kendaraan', 'UPDATE', 'KND003', '{"status":"pending"}', '{"status":"aktif"}', 'Approve kendaraan mahasiswa setelah verifikasi dokumen', '2025-11-22 10:30:00'),
+('AUD002', 'ADM001', 'laporan_kehilangan', 'UPDATE', 'LAP002', '{"status":"Investigasi"}', '{"status":"Selesai"}', 'Laporan kehilangan diselesaikan - kendaraan ditemukan', '2025-11-23 14:15:00');
 
 -- ============================================
 -- Views untuk kemudahan query
