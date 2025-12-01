@@ -1055,99 +1055,113 @@
 
     </main>
 
-    <script src="js/database-api.js"></script>
     <script>
-        // Cek login
-        const currentUser = db.getCurrentUser();
+        // Cek login dari localStorage
+        const currentUser = JSON.parse(localStorage.getItem('currentUser'));
         if (!currentUser || currentUser.role !== 'pengguna') {
             alert('⛔ Anda harus login terlebih dahulu!');
             window.location.href = 'login.html';
         }
 
-        // Load data pengguna
-        function loadUserData() {
-            const kendaraanList = db.getKendaraanByPemilik(currentUser.id);
-            const transaksiAktif = db.getTransaksiAktif().filter(t => t.penggunaId === currentUser.id);
-            const laporanUser = db.getAllLaporan().filter(l => l.penggunaId === currentUser.id);
+        // Load data pengguna dengan API
+        async function loadUserData() {
+            try {
+                // Get kendaraan milik user
+                const resKendaraan = await fetch(`api/kendaraan.php?id_pengguna=${currentUser.id}`);
+                const dataKendaraan = await resKendaraan.json();
+                const kendaraanList = dataKendaraan.success ? dataKendaraan.data : [];
 
-            // Update dropdown kendaraan di parkir masuk
-            const selectMasuk = document.getElementById('kendaraanMasuk');
-            selectMasuk.innerHTML = '<option value="" disabled selected>Pilih kendaraan terdaftar</option>';
-            kendaraanList.filter(k => k.status === 'aktif').forEach(k => {
-                selectMasuk.innerHTML += `<option value="${k.id}">${k.platNomor} - ${k.merk} ${k.tipe} (${k.warna})</option>`;
-            });
+                // Get riwayat parkir aktif
+                const resRiwayat = await fetch(`api/riwayat_parkir.php?status=aktif`);
+                const dataRiwayat = await resRiwayat.json();
+                const riwayatAktif = dataRiwayat.success ? dataRiwayat.data.filter(r => r.id_pengguna === currentUser.id) : [];
 
-            // Update dropdown kendaraan di parkir keluar
-            const selectKeluar = document.getElementById('kendaraanKeluar');
-            selectKeluar.innerHTML = '<option value="" disabled selected>Pilih kendaraan yang akan keluar</option>';
-            transaksiAktif.forEach(t => {
-                const waktuMasuk = new Date(t.waktuMasuk).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
-                selectKeluar.innerHTML += `<option value="${t.id}">${t.platNomor} - ${t.lokasiParkir} (Masuk: ${waktuMasuk})</option>`;
-            });
+                // Get laporan kehilangan user
+                const resLaporan = await fetch(`api/laporan.php?id_pengguna=${currentUser.id}`);
+                const dataLaporan = await resLaporan.json();
+                const laporanUser = dataLaporan.success ? dataLaporan.data : [];
 
-            // Update dropdown kendaraan di lapor kehilangan
-            const selectLapor = document.getElementById('kendaraanHilang');
-            selectLapor.innerHTML = '<option value="" disabled selected>Pilih kendaraan yang hilang</option>';
-            kendaraanList.forEach(k => {
-                selectLapor.innerHTML += `<option value="${k.id}">${k.platNomor} - ${k.merk} ${k.tipe}</option>`;
-            });
+                // Update dropdown kendaraan di parkir masuk
+                const selectMasuk = document.getElementById('kendaraanMasuk');
+                selectMasuk.innerHTML = '<option value="" disabled selected>Pilih kendaraan terdaftar</option>';
+                kendaraanList.filter(k => k.status_parkir === 'aktif').forEach(k => {
+                    selectMasuk.innerHTML += `<option value="${k.id_kendaraan}">${k.plat_nomor} - ${k.merk} ${k.tipe} (${k.warna})</option>`;
+                });
 
-            // Update tabel kendaraan terdaftar
-            const tbody = document.querySelector('#form-registrasi table tbody');
-            tbody.innerHTML = '';
-            kendaraanList.forEach(k => {
-                const statusBadge = k.status === 'aktif' ? 'status-success' : k.status === 'pending' ? 'status-pending' : 'status-danger';
-                const statusText = k.status === 'aktif' ? 'Aktif' : k.status === 'pending' ? 'Pending' : 'Nonaktif';
-                tbody.innerHTML += `
-                    <tr>
-                        <td><strong>${k.platNomor}</strong></td>
-                        <td>${k.merk} ${k.tipe}</td>
-                        <td>${k.warna}</td>
-                        <td>${k.tahunPembuatan || k.tahun}</td>
-                        <td><span class="status-badge ${statusBadge}">${statusText}</span></td>
-                    </tr>
-                `;
-            });
+                // Update dropdown kendaraan di parkir keluar
+                const selectKeluar = document.getElementById('kendaraanKeluar');
+                selectKeluar.innerHTML = '<option value="" disabled selected>Pilih kendaraan yang akan keluar</option>';
+                riwayatAktif.forEach(r => {
+                    const waktuMasuk = new Date(r.waktu_masuk).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+                    selectKeluar.innerHTML += `<option value="${r.id_riwayat}">${r.plat_nomor} - ${r.lokasi_parkir} (Masuk: ${waktuMasuk})</option>`;
+                });
 
-            // Update tabel parkir aktif
-            const tbodyParkir = document.querySelector('#parkir-masuk table tbody');
-            tbodyParkir.innerHTML = '';
-            transaksiAktif.forEach(t => {
-                const waktuMasuk = new Date(t.waktuMasuk);
-                const now = new Date();
-                const durasiMenit = Math.floor((now - waktuMasuk) / (1000 * 60));
-                const jam = Math.floor(durasiMenit / 60);
-                const menit = durasiMenit % 60;
-                const durasi = `${jam} jam ${menit} menit`;
-                const waktuStr = waktuMasuk.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+                // Update dropdown kendaraan di lapor kehilangan
+                const selectLapor = document.getElementById('kendaraanHilang');
+                selectLapor.innerHTML = '<option value="" disabled selected>Pilih kendaraan yang hilang</option>';
+                kendaraanList.forEach(k => {
+                    selectLapor.innerHTML += `<option value="${k.id_kendaraan}">${k.plat_nomor} - ${k.merk} ${k.tipe}</option>`;
+                });
 
-                tbodyParkir.innerHTML += `
-                    <tr>
-                        <td><strong>${t.platNomor}</strong></td>
-                        <td>${t.lokasiParkir}</td>
-                        <td>${waktuStr}</td>
-                        <td><span class="status-badge status-active">${durasi}</span></td>
-                    </tr>
-                `;
-            });
+                // Update tabel kendaraan terdaftar
+                const tbody = document.querySelector('#form-registrasi table tbody');
+                tbody.innerHTML = '';
+                kendaraanList.forEach(k => {
+                    const statusBadge = k.status_parkir === 'aktif' ? 'status-success' : 'status-pending';
+                    const statusText = k.status_parkir === 'aktif' ? 'Aktif' : 'Pending';
+                    tbody.innerHTML += `
+                        <tr>
+                            <td><strong>${k.plat_nomor}</strong></td>
+                            <td>${k.merk} ${k.tipe}</td>
+                            <td>${k.warna}</td>
+                            <td>${k.tahun_pembuatan}</td>
+                            <td><span class="status-badge ${statusBadge}">${statusText}</span></td>
+                        </tr>
+                    `;
+                });
 
-            // Update tabel laporan kehilangan
-            const tbodyLaporan = document.querySelector('#lapor-kehilangan table tbody');
-            tbodyLaporan.innerHTML = '';
-            laporanUser.forEach(l => {
-                const tanggal = new Date(l.tanggalLapor).toLocaleDateString('id-ID');
-                const statusClass = l.status === 'Selesai' ? 'status-success' : l.status === 'Investigasi' ? 'status-pending' : 'status-active';
-                
-                tbodyLaporan.innerHTML += `
-                    <tr>
-                        <td><strong>${l.id}</strong></td>
-                        <td>${l.platNomor}</td>
-                        <td>${tanggal}</td>
-                        <td>${l.lokasiKehilangan}</td>
-                        <td><span class="status-badge ${statusClass}">${l.status}</span></td>
-                    </tr>
-                `;
-            });
+                // Update tabel parkir aktif
+                const tbodyParkir = document.querySelector('#parkir-masuk table tbody');
+                tbodyParkir.innerHTML = '';
+                riwayatAktif.forEach(r => {
+                    const waktuMasuk = new Date(r.waktu_masuk);
+                    const now = new Date();
+                    const durasiMenit = Math.floor((now - waktuMasuk) / (1000 * 60));
+                    const jam = Math.floor(durasiMenit / 60);
+                    const menit = durasiMenit % 60;
+                    const durasi = `${jam} jam ${menit} menit`;
+                    const waktuStr = waktuMasuk.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+
+                    tbodyParkir.innerHTML += `
+                        <tr>
+                            <td><strong>${r.plat_nomor}</strong></td>
+                            <td>${r.lokasi_parkir}</td>
+                            <td>${waktuStr}</td>
+                            <td><span class="status-badge status-active">${durasi}</span></td>
+                        </tr>
+                    `;
+                });
+
+                // Update tabel laporan kehilangan
+                const tbodyLaporan = document.querySelector('#lapor-kehilangan table tbody');
+                tbodyLaporan.innerHTML = '';
+                laporanUser.forEach(l => {
+                    const tanggal = new Date(l.tanggal_laporan).toLocaleDateString('id-ID');
+                    const statusClass = l.status_laporan === 'Selesai' ? 'status-success' : l.status_laporan.includes('Investig') ? 'status-pending' : 'status-active';
+                    
+                    tbodyLaporan.innerHTML += `
+                        <tr>
+                            <td><strong>${l.id_laporan}</strong></td>
+                            <td>${l.plat_nomor}</td>
+                            <td>${tanggal}</td>
+                            <td>${l.lokasi_kehilangan}</td>
+                            <td><span class="status-badge ${statusClass}">${l.status_laporan}</span></td>
+                        </tr>
+                    `;
+                });
+            } catch (error) {
+                console.error('Error loading data:', error);
+            }
         }
 
         // Navigation
@@ -1167,89 +1181,163 @@
         });
 
         // Handle registrasi kendaraan
-        document.querySelector('#form-registrasi form').addEventListener('submit', function(e) {
+        document.querySelector('#form-registrasi form').addEventListener('submit', async function(e) {
             e.preventDefault();
             
-            const fotoInput = document.getElementById('fotoKendaraan');
-            let fotoDokumen = null;
-            if (fotoInput.files && fotoInput.files[0]) {
-                fotoDokumen = fotoInput.files[0].name; // Simpan nama file
-            }
+            const submitBtn = this.querySelector('button[type="submit"]');
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Memproses...';
             
-            const formData = {
-                pemilikId: currentUser.id,
-                platNomor: document.getElementById('platNomor').value,
-                merk: document.getElementById('merkKendaraan').value,
-                tipe: document.getElementById('tipeKendaraan').value,
-                warna: document.getElementById('warnaKendaraan').value,
-                tahunPembuatan: parseInt(document.getElementById('tahunKendaraan').value),
-                fotoDokumen: fotoDokumen
-            };
+            try {
+                const formData = {
+                    id_pengguna: currentUser.id,
+                    plat_nomor: document.getElementById('platNomor').value,
+                    merk: document.getElementById('merkKendaraan').value,
+                    tipe: document.getElementById('tipeKendaraan').value,
+                    warna: document.getElementById('warnaKendaraan').value,
+                    tahun_pembuatan: parseInt(document.getElementById('tahunKendaraan').value),
+                    foto_kendaraan: document.getElementById('fotoKendaraan').value || null
+                };
 
-            db.addKendaraan(formData);
-            alert('✅ Kendaraan berhasil didaftarkan!\n\nData kendaraan Anda akan diverifikasi oleh admin/petugas dalam 1x24 jam.');
-            this.reset();
-            loadUserData();
+                const response = await fetch('api/kendaraan.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(formData)
+                });
+
+                const result = await response.json();
+                
+                if (result.success) {
+                    alert('✅ Kendaraan berhasil didaftarkan!');
+                    this.reset();
+                    await loadUserData();
+                } else {
+                    alert('❌ Gagal mendaftarkan kendaraan: ' + result.message);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('❌ Terjadi kesalahan saat mendaftarkan kendaraan');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Daftarkan Kendaraan';
+            }
         });
 
         // Handle lapor kehilangan
-        document.querySelector('#lapor-kehilangan form').addEventListener('submit', function(e) {
+        document.querySelector('#lapor-kehilangan form').addEventListener('submit', async function(e) {
             e.preventDefault();
             
-            const kendaraanId = document.getElementById('kendaraanHilang').value;
-            const kendaraan = db.getAllKendaraan().find(k => k.id === kendaraanId);
+            const submitBtn = this.querySelector('button[type="submit"]');
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Mengirim...';
             
-            const laporanData = {
-                kendaraanId: kendaraanId,
-                platNomor: kendaraan.platNomor,
-                penggunaId: currentUser.id,
-                pelaporNama: currentUser.nama,
-                lokasiKehilangan: document.getElementById('lokasiHilang').value,
-                waktuKejadian: document.getElementById('waktuHilang').value,
-                kronologi: document.getElementById('kronologiHilang').value,
-                buktiPendukung: document.getElementById('buktiPendukung').value || '',
-                petugasId: null
-            };
+            try {
+                const laporanData = {
+                    id_pengguna: currentUser.id,
+                    id_kendaraan: document.getElementById('kendaraanHilang').value,
+                    waktu_kejadian: document.getElementById('waktuHilang').value,
+                    lokasi_kehilangan: document.getElementById('lokasiHilang').value,
+                    deskripsi: document.getElementById('kronologiHilang').value
+                };
 
-            db.addLaporan(laporanData);
-            alert('✅ Laporan kehilangan berhasil dikirim!\n\nPetugas keamanan akan segera menindaklanjuti laporan Anda.');
-            this.reset();
-            loadUserData();
+                const response = await fetch('api/laporan.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(laporanData)
+                });
+
+                const result = await response.json();
+                
+                if (result.success) {
+                    alert('✅ Laporan kehilangan berhasil dikirim!\n\nPetugas keamanan akan segera menindaklanjuti.');
+                    this.reset();
+                    await loadUserData();
+                } else {
+                    alert('❌ Gagal mengirim laporan: ' + result.message);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('❌ Terjadi kesalahan saat mengirim laporan');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Kirim Laporan';
+            }
         });
 
         // Handle check-in parkir
-        document.getElementById('form-parkir-masuk').addEventListener('submit', function(e) {
+        document.getElementById('form-parkir-masuk').addEventListener('submit', async function(e) {
             e.preventDefault();
             
-            const kendaraanId = document.getElementById('kendaraanMasuk').value;
-            const kendaraan = db.getAllKendaraan().find(k => k.id === kendaraanId);
+            const submitBtn = this.querySelector('button[type="submit"]');
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Memproses...';
             
-            const transaksiData = {
-                kendaraanId: kendaraanId,
-                platNomor: kendaraan.platNomor,
-                penggunaId: currentUser.id,
-                lokasiParkir: document.getElementById('lokasiParkirMasuk').value
-            };
+            try {
+                const transaksiData = {
+                    action: 'masuk',
+                    id_kendaraan: document.getElementById('kendaraanMasuk').value,
+                    lokasi_parkir: document.getElementById('lokasiParkirMasuk').value
+                };
 
-            db.checkIn(transaksiData);
-            alert('✅ Check-In berhasil!\n\nKendaraan Anda telah tercatat masuk area parkir.');
-            this.reset();
-            loadUserData();
+                const response = await fetch('api/riwayat_parkir.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(transaksiData)
+                });
+
+                const result = await response.json();
+                
+                if (result.success) {
+                    alert('✅ Check-In berhasil!\n\nKendaraan Anda telah tercatat masuk area parkir.');
+                    this.reset();
+                    await loadUserData();
+                } else {
+                    alert('❌ Check-In gagal: ' + result.message);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('❌ Terjadi kesalahan saat check-in');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Check-In';
+            }
         });
 
         // Handle check-out parkir
-        document.getElementById('form-parkir-keluar').addEventListener('submit', function(e) {
+        document.getElementById('form-parkir-keluar').addEventListener('submit', async function(e) {
             e.preventDefault();
             
-            const transaksiId = document.getElementById('kendaraanKeluar').value;
-            const result = db.checkOut(transaksiId);
+            const submitBtn = this.querySelector('button[type="submit"]');
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Memproses...';
             
-            if (result) {
-                const jam = Math.floor(result.durasi / 60);
-                const menit = result.durasi % 60;
-                alert(`✅ Check-Out berhasil!\n\nDurasi Parkir: ${jam} jam ${menit} menit\nBiaya: Gratis (Civitas Akademika)\n\nTerima kasih telah menggunakan layanan parkir kampus.`);
-                this.reset();
-                loadUserData();
+            try {
+                const transaksiData = {
+                    action: 'keluar',
+                    id_riwayat: document.getElementById('kendaraanKeluar').value
+                };
+
+                const response = await fetch('api/riwayat_parkir.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(transaksiData)
+                });
+
+                const result = await response.json();
+                
+                if (result.success) {
+                    alert('✅ Check-Out berhasil!\n\nTerima kasih telah menggunakan layanan parkir kampus.');
+                    this.reset();
+                    await loadUserData();
+                } else {
+                    alert('❌ Check-Out gagal: ' + result.message);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('❌ Terjadi kesalahan saat check-out');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Check-Out';
             }
         });
 

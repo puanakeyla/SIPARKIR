@@ -44,13 +44,13 @@ function handleGet($pdo) {
             }
         } elseif ($idPengguna) {
             // Get kendaraan by pengguna
-            $stmt = $pdo->prepare("SELECT * FROM kendaraan WHERE id_pengguna = ? ORDER BY waktu_pendaftaran DESC");
+            $stmt = $pdo->prepare("SELECT * FROM kendaraan WHERE id_pengguna = ? ORDER BY created_at DESC");
             $stmt->execute([$idPengguna]);
             $kendaraan = $stmt->fetchAll();
             sendResponse(true, 'Data kendaraan berhasil dimuat', $kendaraan);
         } else {
             // Get all kendaraan
-            $stmt = $pdo->query("SELECT k.*, p.nama as nama_pemilik, p.peran FROM kendaraan k LEFT JOIN pengguna p ON k.id_pengguna = p.id_pengguna ORDER BY k.waktu_pendaftaran DESC");
+            $stmt = $pdo->query("SELECT k.*, p.nama as nama_pemilik, p.peran FROM kendaraan k LEFT JOIN pengguna p ON k.id_pengguna = p.id_pengguna ORDER BY k.created_at DESC");
             $kendaraan = $stmt->fetchAll();
             sendResponse(true, 'Data kendaraan berhasil dimuat', $kendaraan);
         }
@@ -73,8 +73,8 @@ function handlePost($pdo) {
         $idKendaraan = generateId('KND', $pdo, 'kendaraan', 'id_kendaraan');
         
         $stmt = $pdo->prepare("
-            INSERT INTO kendaraan (id_kendaraan, id_pengguna, plat_nomor, merk, tipe, warna, tahun_pembuatan, foto_dokumen, status)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'pending')
+            INSERT INTO kendaraan (id_kendaraan, id_pengguna, plat_nomor, merk, tipe, warna, tahun_pembuatan, foto_kendaraan, status_parkir)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'aktif')
         ");
         
         $stmt->execute([
@@ -85,7 +85,7 @@ function handlePost($pdo) {
             $input['tipe'],
             $input['warna'],
             $input['tahun_pembuatan'],
-            $input['foto_dokumen'] ?? null
+            $input['foto_kendaraan'] ?? null
         ]);
         
         sendResponse(true, 'Kendaraan berhasil didaftarkan', ['id_kendaraan' => $idKendaraan]);
@@ -116,7 +116,7 @@ function handlePut($pdo) {
         $fields = [];
         $values = [];
         
-        $allowedFields = ['plat_nomor', 'merk', 'tipe', 'warna', 'tahun_pembuatan', 'foto_dokumen', 'status'];
+        $allowedFields = ['plat_nomor', 'merk', 'tipe', 'warna', 'tahun_pembuatan', 'foto_kendaraan', 'status_parkir'];
         foreach ($allowedFields as $field) {
             if (isset($input[$field])) {
                 $fields[] = "$field = ?";

@@ -1718,8 +1718,8 @@
     </script>
     <script src="js/database-api.js"></script>
     <script>
-        // Cek login
-        const currentUser = db.getCurrentUser();
+        // Cek login dari localStorage
+        const currentUser = JSON.parse(localStorage.getItem('currentUser'));
         if (!currentUser || currentUser.role !== 'admin') {
             alert('⛔ Anda harus login terlebih dahulu!');
             window.location.href = 'login.html';

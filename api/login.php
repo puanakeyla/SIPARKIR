@@ -22,7 +22,7 @@ if ($method === 'POST') {
         $pdo = getDBConnection();
         
         // Check admin table
-        $stmt = $pdo->prepare("SELECT * FROM admin WHERE email = ? AND password = ? AND status = 'aktif'");
+        $stmt = $pdo->prepare("SELECT * FROM admin WHERE username = ? AND password = ?");
         $stmt->execute([$email, $password]);
         $admin = $stmt->fetch();
         
@@ -31,15 +31,15 @@ if ($method === 'POST') {
                 'user' => [
                     'id' => $admin['id_admin'],
                     'nama' => $admin['nama'],
-                    'email' => $admin['email'],
-                    'role' => $admin['role']
+                    'username' => $admin['username'],
+                    'role' => 'admin'
                 ],
                 'redirect' => 'admin.html'
             ]);
         }
         
         // Check pengguna table
-        $stmt = $pdo->prepare("SELECT * FROM pengguna WHERE email = ? AND password = ? AND status = 'aktif'");
+        $stmt = $pdo->prepare("SELECT * FROM pengguna WHERE username = ? AND password = ? AND status = 'aktif'");
         $stmt->execute([$email, $password]);
         $pengguna = $stmt->fetch();
         
@@ -48,9 +48,9 @@ if ($method === 'POST') {
                 'user' => [
                     'id' => $pengguna['id_pengguna'],
                     'nama' => $pengguna['nama'],
+                    'username' => $pengguna['username'],
                     'email' => $pengguna['email'],
-                    'role' => $pengguna['role'],
-                    'nim' => $pengguna['nim'],
+                    'role' => 'pengguna',
                     'peran' => $pengguna['peran']
                 ],
                 'redirect' => 'pengguna.html'
@@ -58,7 +58,7 @@ if ($method === 'POST') {
         }
         
         // Check petugas table
-        $stmt = $pdo->prepare("SELECT * FROM petugas_keamanan WHERE email = ? AND password = ? AND status = 'aktif'");
+        $stmt = $pdo->prepare("SELECT * FROM petugas_keamanan WHERE username = ? AND password = ? AND status = 'aktif'");
         $stmt->execute([$email, $password]);
         $petugas = $stmt->fetch();
         
@@ -67,9 +67,8 @@ if ($method === 'POST') {
                 'user' => [
                     'id' => $petugas['id_petugas'],
                     'nama' => $petugas['nama'],
-                    'email' => $petugas['email'],
-                    'role' => $petugas['role'],
-                    'nip' => $petugas['nip'],
+                    'username' => $petugas['username'],
+                    'role' => 'petugas',
                     'shift' => $petugas['shift']
                 ],
                 'redirect' => 'petugas.html'
