@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SIPARKIR UNILA · Pengguna</title>
+    <title>SIPARKIR-UNILA · Pengguna</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -827,49 +827,680 @@
         @media (max-width: 900px) {
             .hero {
                 padding: 32px;
+                background: var(--bg);
+                color: var(--primary-dark);
+                line-height: 1.6;
+                position: relative;
             }
 
-            .insight-header {
-                flex-direction: column;
+            body::before,
+            body::after {
+                content: '';
+                position: fixed;
+                border-radius: 50%;
+                filter: blur(0);
+                z-index: 0;
+                opacity: 0.7;
             }
-        }
 
-        @media (max-width: 640px) {
+            body::before {
+                width: 360px;
+                height: 360px;
+                background: rgba(164, 223, 255, 0.5);
+                top: -120px;
+                right: -80px;
+            }
+
+            body::after {
+                width: 280px;
+                height: 280px;
+                background: rgba(183, 210, 255, 0.55);
+                bottom: -90px;
+                left: -70px;
+            }
+
+            img {
+                max-width: 100%;
+                display: block;
+                height: auto;
+            }
+
+            a {
+                color: inherit;
+                text-decoration: none;
+            }
+
+            .top-nav {
+                position: sticky;
+                top: 0;
+                z-index: 200;
+                background: rgba(255, 255, 255, 0.92);
+                backdrop-filter: saturate(180%) blur(22px);
+                border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+                box-shadow: 0 18px 40px rgba(35, 79, 158, 0.12);
+            }
+
             .nav-inner {
-                padding: 18px;
+                max-width: 1200px;
+                margin: 0 auto;
+                padding: 18px 30px;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                gap: 24px;
+                background: rgba(255, 255, 255, 0.92);
+                border-radius: 999px;
+                box-shadow: 0 14px 30px rgba(42, 92, 181, 0.16);
+                position: relative;
+                z-index: 2;
+            }
+
+            .brand {
+                display: flex;
+                align-items: center;
+                gap: 14px;
+                font-weight: 700;
+                color: var(--primary);
+            }
+
+            .brand-badge {
+                width: 52px;
+                height: 52px;
+                border-radius: 20px;
+                display: grid;
+                place-items: center;
+                background: linear-gradient(135deg, #6ca4ff, #3a6bff);
+                color: #fff;
+                font-size: 22px;
+                box-shadow: 0 14px 26px rgba(58, 107, 255, 0.3);
+            }
+
+            .brand-text {
+                display: flex;
                 flex-direction: column;
-                align-items: flex-start;
-                gap: 18px;
-                border-radius: var(--radius-lg);
+                line-height: 1.2;
             }
 
-            main {
-                padding: 32px 20px 60px;
+            .brand-title {
+                font-size: 16px;
+                font-weight: 700;
             }
 
-            .hero {
-                padding: 28px;
-            }
-
-            .hero-text h1 {
-                font-size: 28px;
+            .brand-subtitle {
+                font-size: 12px;
+                font-weight: 500;
+                color: rgba(17, 39, 82, 0.68);
             }
 
             .nav-links {
-                width: 100%;
-                gap: 12px;
+                display: flex;
+                align-items: center;
+                gap: 14px;
+                flex-wrap: wrap;
             }
 
             .nav-links a {
-                width: 100%;
-                text-align: center;
+                padding: 10px 20px;
+                font-weight: 600;
+                font-size: 14px;
+                color: var(--primary-dark);
+                background: rgba(150, 188, 255, 0.18);
+                border-radius: 999px;
+                transition: all 0.25s ease;
+                box-shadow: 0 12px 22px rgba(46, 104, 200, 0.14);
+            }
+
+            .nav-links a:hover,
+            .nav-links a.active {
+                color: #fff;
+                background: linear-gradient(135deg, var(--accent), var(--primary));
+                transform: translateY(-2px);
+                box-shadow: 0 16px 30px rgba(58, 107, 255, 0.25);
             }
 
             .nav-cta {
+                padding: 10px 20px;
+                border-radius: 999px;
+                border: 1px solid rgba(58, 107, 255, 0.28);
+                background: rgba(255, 255, 255, 0.4);
+                color: var(--primary);
+                font-weight: 600;
+                display: inline-flex;
+                align-items: center;
+                gap: 10px;
+                box-shadow: 0 12px 22px rgba(42, 92, 181, 0.12);
+                cursor: pointer;
+                transition: all 0.25s ease;
+            }
+
+            .nav-cta:hover {
+                background: linear-gradient(135deg, var(--accent), var(--primary));
+                color: #fff;
+                box-shadow: 0 16px 30px rgba(58, 107, 255, 0.25);
+            }
+
+            main {
+                max-width: 1200px;
+                margin: 0 auto;
+                padding: 52px 32px 96px;
+                position: relative;
+                z-index: 1;
+            }
+
+            .hero {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+                gap: 32px;
+                background: linear-gradient(140deg, #9ccaff 0%, #5f8dff 48%, #3a6bff 110%);
+                border-radius: var(--radius-lg);
+                padding: 56px;
+                color: #fff;
+                position: relative;
+                overflow: hidden;
+                box-shadow: var(--shadow);
+            }
+
+            .hero::before {
+                content: '';
+                position: absolute;
+                width: 320px;
+                height: 320px;
+                background: rgba(255, 255, 255, 0.16);
+                border-radius: 50%;
+                top: -140px;
+                left: -80px;
+            }
+
+            .hero::after {
+                content: '';
+                position: absolute;
+                width: 260px;
+                height: 260px;
+                background: rgba(255, 255, 255, 0.18);
+                border-radius: 50%;
+                bottom: -110px;
+                right: -70px;
+            }
+
+            .hero-text {
+                position: relative;
+                z-index: 1;
+            }
+
+            .hero-text .tag {
+                display: inline-flex;
+                align-items: center;
+                gap: 8px;
+                padding: 8px 18px;
+                border-radius: 999px;
+                background: rgba(255, 255, 255, 0.28);
+                font-size: 13px;
+                font-weight: 600;
+                letter-spacing: 0.5px;
+                margin-bottom: 22px;
+            }
+
+            .hero-text h1 {
+                font-size: 36px;
+                line-height: 1.2;
+                margin: 0 0 20px;
+                font-weight: 700;
+            }
+
+            .hero-text p {
+                margin: 0 0 28px;
+                max-width: 480px;
+            }
+
+            .hero-actions {
+                display: flex;
+                align-items: center;
+                gap: 14px;
+                flex-wrap: wrap;
+            }
+
+            .hero-media {
+                position: relative;
+                z-index: 1;
+                justify-self: center;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                gap: 18px;
+            }
+
+            .hero-media img {
+                width: 320px;
+                max-width: 100%;
+                border-radius: 18px;
+                box-shadow: 0 22px 46px rgba(18, 51, 120, 0.32);
+            }
+
+            .profile-chip {
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                padding: 10px 16px;
+                background: rgba(255, 255, 255, 0.2);
+                border-radius: 999px;
+                border: 1px solid rgba(255, 255, 255, 0.45);
+                backdrop-filter: blur(6px);
+            }
+
+            .profile-chip img {
+                width: 42px;
+                height: 42px;
+                border-radius: 50%;
+                border: 2px solid rgba(255, 255, 255, 0.8);
+            }
+
+            .profile-chip .chip-title {
+                font-weight: 600;
+                font-size: 14px;
+                color: #fff;
+            }
+
+            .profile-chip .chip-subtitle {
+                font-size: 12px;
+                color: rgba(255, 255, 255, 0.86);
+            }
+
+            .btn {
+                border: none;
+                border-radius: 999px;
+                padding: 14px 26px;
+                font-weight: 600;
+                font-size: 14px;
+                cursor: pointer;
+                transition: transform 0.25s ease, box-shadow 0.25s ease, background 0.25s ease, color 0.25s ease;
+                display: inline-flex;
+                align-items: center;
+                gap: 10px;
+            }
+
+            .btn-primary {
+                background: linear-gradient(135deg, var(--accent), var(--primary));
+                color: #fff;
+                box-shadow: 0 18px 36px rgba(52, 104, 214, 0.28);
+            }
+
+            .btn-ghost {
+                background: rgba(255, 255, 255, 0.22);
+                color: #fff;
+                border: 1px solid rgba(255, 255, 255, 0.45);
+                box-shadow: 0 12px 28px rgba(90, 158, 255, 0.26);
+            }
+
+            .btn-outline {
+                background: rgba(58, 107, 255, 0.08);
+                color: var(--primary);
+                border: 1px solid rgba(58, 107, 255, 0.3);
+                padding: 12px 22px;
+                border-radius: 999px;
+            }
+
+            .btn:hover {
+                transform: translateY(-2px);
+            }
+
+            .btn-primary:hover {
+                box-shadow: 0 20px 44px rgba(52, 104, 214, 0.34);
+            }
+
+            .btn-ghost:hover {
+                background: rgba(255, 255, 255, 0.32);
+            }
+
+            .btn-outline:hover {
+                background: linear-gradient(135deg, var(--accent), var(--primary));
+                color: #fff;
+                box-shadow: 0 18px 34px rgba(58, 107, 255, 0.22);
+                border-color: transparent;
+            }
+
+            .btn-success {
+                background: linear-gradient(135deg, #58d58f, #2eb669);
+                color: #fff;
+            }
+
+            .btn-warning {
+                background: linear-gradient(135deg, #ffd76f, #ffb14b);
+                color: #6b4200;
+            }
+
+            .btn-danger {
+                background: linear-gradient(135deg, #ff7a7a, #ff4d4d);
+                color: #fff;
+            }
+
+            .btn-sm {
+                padding: 10px 18px;
+                font-size: 13px;
+            }
+
+            .btn-block {
                 width: 100%;
                 justify-content: center;
             }
-        }
+
+            .bubble-panel {
+                margin-top: 48px;
+                background: var(--surface);
+                border-radius: var(--radius-lg);
+                border: 1px solid rgba(199, 214, 255, 0.7);
+                box-shadow: var(--shadow-soft);
+                padding: 40px;
+                position: relative;
+                overflow: hidden;
+            }
+
+            .bubble-panel::after {
+                content: '';
+                position: absolute;
+                width: 180px;
+                height: 180px;
+                background: rgba(109, 211, 255, 0.18);
+                border-radius: 50%;
+                top: -90px;
+                right: -70px;
+                pointer-events: none;
+            }
+
+            .bubble-panel > * {
+                position: relative;
+                z-index: 1;
+            }
+
+            .section-heading {
+                display: flex;
+                align-items: flex-start;
+                justify-content: space-between;
+                gap: 20px;
+                flex-wrap: wrap;
+                margin-bottom: 28px;
+            }
+
+            .section-heading h2 {
+                margin: 0 0 6px;
+                font-size: 22px;
+                font-weight: 600;
+                color: var(--primary-dark);
+            }
+
+            .section-heading p {
+                margin: 0;
+                color: var(--muted);
+                font-size: 14px;
+                max-width: 520px;
+            }
+
+            .section-actions {
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                flex-wrap: wrap;
+            }
+
+            .badge-soft {
+                display: inline-flex;
+                align-items: center;
+                gap: 10px;
+                padding: 10px 18px;
+                border-radius: 999px;
+                background: rgba(109, 211, 255, 0.16);
+                color: var(--primary-dark);
+                font-weight: 600;
+            }
+
+            .record-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+                gap: 22px;
+                margin-top: 26px;
+            }
+
+            .record-card {
+                background: rgba(255, 255, 255, 0.96);
+                border-radius: var(--radius-md);
+                border: 1px solid rgba(206, 227, 255, 0.65);
+                box-shadow: var(--shadow-soft);
+                padding: 26px;
+                display: flex;
+                flex-direction: column;
+                gap: 20px;
+            }
+
+            .record-header {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                gap: 14px;
+            }
+
+            .record-header h3 {
+                margin: 0;
+                font-size: 18px;
+                font-weight: 600;
+                color: var(--primary-dark);
+                display: flex;
+                align-items: center;
+                gap: 10px;
+            }
+
+            .record-header span {
+                font-size: 12px;
+                font-weight: 600;
+                color: var(--primary);
+                background: rgba(109, 211, 255, 0.22);
+                padding: 6px 12px;
+                border-radius: 999px;
+            }
+
+            .record-form {
+                display: grid;
+                gap: 16px;
+            }
+
+            .record-form .form-group {
+                margin: 0;
+            }
+
+            .record-actions {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 12px;
+                align-items: center;
+            }
+
+            .record-actions .btn {
+                flex: 1;
+                min-width: 150px;
+            }
+
+            .table-card {
+                background: rgba(255, 255, 255, 0.96);
+                border-radius: var(--radius-md);
+                border: 1px solid rgba(206, 227, 255, 0.65);
+                box-shadow: var(--shadow-soft);
+                padding: 24px;
+                display: flex;
+                flex-direction: column;
+                gap: 20px;
+            }
+
+            .table-header {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                gap: 16px;
+                flex-wrap: wrap;
+            }
+
+            .table-header h3 {
+                margin: 0;
+                font-size: 18px;
+                font-weight: 600;
+                color: var(--primary-dark);
+                display: flex;
+                align-items: center;
+                gap: 12px;
+            }
+
+            .table-responsive {
+                overflow-x: auto;
+            }
+
+            table {
+                width: 100%;
+                border-collapse: collapse;
+            }
+
+            th,
+            td {
+                padding: 14px 16px;
+                text-align: left;
+                border-bottom: 1px solid rgba(206, 227, 255, 0.7);
+                font-size: 14px;
+                vertical-align: middle;
+            }
+
+            th {
+                color: var(--primary-dark);
+                font-weight: 600;
+                background: rgba(206, 227, 255, 0.45);
+            }
+
+            tbody tr:hover {
+                background: rgba(109, 211, 255, 0.12);
+            }
+
+            .status-badge {
+                display: inline-flex;
+                align-items: center;
+                gap: 8px;
+                padding: 8px 14px;
+                border-radius: 999px;
+                font-weight: 600;
+                font-size: 12px;
+            }
+
+            .status-active {
+                background: rgba(58, 107, 255, 0.16);
+                color: var(--primary);
+            }
+
+            .status-pending {
+                background: rgba(255, 193, 7, 0.18);
+                color: #a76100;
+            }
+
+            .status-danger {
+                background: rgba(220, 53, 69, 0.18);
+                color: #a4192f;
+            }
+
+            .status-success {
+                background: rgba(88, 213, 143, 0.22);
+                color: #1f7a4d;
+            }
+
+            .form-group {
+                display: flex;
+                flex-direction: column;
+                gap: 10px;
+                margin-bottom: 18px;
+            }
+
+            .form-group label {
+                margin: 0;
+                color: var(--primary-dark);
+                font-weight: 600;
+                font-size: 14px;
+            }
+
+            .form-control {
+                width: 100%;
+                padding: 14px 18px;
+                border: 2px solid rgba(201, 219, 255, 0.8);
+                border-radius: 14px;
+                background: #fff;
+                color: var(--primary-dark);
+                font-size: 14px;
+                transition: all 0.25s ease;
+            }
+
+            .form-control:focus {
+                outline: none;
+                border-color: var(--primary);
+                box-shadow: 0 0 0 4px rgba(58, 107, 255, 0.18);
+            }
+
+            .upload-area {
+                border: 2px dashed rgba(201, 219, 255, 0.8);
+                border-radius: 14px;
+                padding: 30px;
+                text-align: center;
+                background: rgba(109, 211, 255, 0.08);
+                cursor: pointer;
+                transition: all 0.25s ease;
+            }
+
+            .upload-area:hover {
+                border-color: var(--primary);
+                background: rgba(109, 211, 255, 0.14);
+            }
+
+            .upload-area i {
+                font-size: 48px;
+                color: var(--primary);
+                margin-bottom: 14px;
+            }
+
+            .upload-area p {
+                margin: 0;
+                color: var(--muted);
+                font-size: 14px;
+            }
+
+            .upload-area input[type="file"] {
+                display: none;
+            }
+
+            @media (max-width: 1024px) {
+                .nav-inner {
+                    flex-direction: column;
+                    align-items: stretch;
+                }
+
+                .nav-links {
+                    width: 100%;
+                    justify-content: center;
+                }
+
+                .nav-links a {
+                    width: 100%;
+                    text-align: center;
+                }
+
+                .nav-cta {
+                    width: 100%;
+                    justify-content: center;
+                }
+            }
+
+            @media (max-width: 768px) {
+                main {
+                    padding: 38px 20px 80px;
+                }
+
+                .hero {
+                    padding: 40px 28px;
+                }
+
+                .bubble-panel {
+                    padding: 32px 24px;
+                }
+            }
     </style>
 </head>
 <body>
@@ -879,317 +1510,547 @@
                 <span class="brand-badge"><i class="fas fa-parking"></i></span>
                 <div class="brand-text">
                     <span class="brand-title">SIPARKIR UNILA</span>
-                    <span class="brand-subtitle">Dashboard Pengguna</span>
+                    <span class="brand-subtitle">Portal Pengguna</span>
                 </div>
             </a>
             <div class="nav-links">
-                <a href="#dashboard" class="active">Dashboard</a>
-                <a href="#statistik">Ringkasan</a>
-                <a href="#layanan">Layanan</a>
-                <a href="#aktivitas">Aktivitas</a>
+                <a href="#registrasi-kendaraan" class="active">Registrasi Kendaraan</a>
+                <a href="#parkir-masuk">Parkir Masuk</a>
+                <a href="#parkir-keluar">Parkir Keluar</a>
+                <a href="#lapor-kehilangan">Lapor Kehilangan</a>
             </div>
+            <a class="nav-cta" href="#" onclick="db.logout(); return false;"><i class="fas fa-sign-out-alt"></i> Keluar</a>
         </div>
     </nav>
 
     <main>
-        <section class="hero" id="dashboard">
+        <section class="hero" id="registrasi-kendaraan">
             <div class="hero-text">
-                <span class="tag"><i class="fas fa-circle"></i> Dashboard Pengguna</span>
-                <h1>Kelola parkir kampus lebih praktis dan terarah dalam satu dasbor.</h1>
-                <p>Pantau status kendaraan, riwayat parkir, hingga buat laporan kehilangan hanya dengan beberapa klik. SIPARKIR UNILA hadir untuk memudahkan mobilitas sivitas akademika.</p>
+                <span class="tag"><i class="fas fa-circle"></i> Registrasi Kendaraan</span>
+                <h1>Daftarkan kendaraan Anda untuk parkir di kampus dengan mudah dan aman.</h1>
+                <p>Lengkapi data kendaraan Anda untuk mendapatkan izin parkir. Proses registrasi hanya memerlukan beberapa langkah sederhana.</p>
                 <div class="hero-actions">
-                    <button class="btn btn-primary" data-modal="registerModal">Registrasi Kendaraan</button>
-                    <button class="btn btn-ghost" data-modal="parkirModal">Check-In Parkir</button>
+                    <button class="btn btn-primary" onclick="document.getElementById('form-registrasi').scrollIntoView({ behavior: 'smooth' })"><i class="fas fa-plus-circle"></i> Daftar Kendaraan</button>
+                    <button class="btn btn-ghost" onclick="document.getElementById('parkir-masuk').scrollIntoView({ behavior: 'smooth' })"><i class="fas fa-sign-in-alt"></i> Check-In Parkir</button>
                 </div>
             </div>
             <div class="hero-media">
-                <img src="https://cdn.vectorstock.com/i/750p/62/31/using-parking-app-isolated-cartoon-vector-54426231.avif" alt="Ilustrasi aplikasi parkir">
-            </div>
-        </section>
-
-        <section class="insight-section bubble-panel" id="insight">
-            <div class="insight-header">
-                <h2>Highlight Parkir Cerdas</h2>
-            </div>
-            <div class="insight-grid">
-                <article class="insight-card variant-a">
-                    <div class="insight-icon"><i class="fas fa-headset"></i></div>
-                    <h3>Lapor Kehilangan</h3>
-                    <p>Sampaikan insiden kehilangan atau kerusakan kendaraan dan pantau tindak lanjutnya lewat formulir terintegrasi.</p>
-                    <div class="insight-media">
-                        <img src="https://cdn.vectorstock.com/i/750p/37/84/valet-parking-service-isolated-cartoon-vector-55303784.avif" alt="Ilustrasi valet parkir">
-                    </div>
-                </article>
-                <article class="insight-card variant-b">
-                    <div class="insight-icon"><i class="fas fa-mobile-screen"></i></div>
-                    <h3>Aplikasi Parkir Aktif</h3>
-                    <p>Pengguna dapat langsung melakukan check-in melalui gawai dan memantau riwayat parkir pribadi.</p>
-                    <div class="insight-media">
-                        <img src="https://cdn.vectorstock.com/i/750p/62/31/using-parking-app-isolated-cartoon-vector-54426231.avif" alt="Ilustrasi aplikasi parkir">
-                    </div>
-                </article>
-                <article class="insight-card variant-c">
-                    <div class="insight-icon"><i class="fas fa-traffic-light"></i></div>
-                    <h3>Registrasi Kendaraan</h3>
-                    <p>Masukkan data kendaraan baru kapan saja sehingga akses area parkir langsung tersinkron dengan akun Anda.</p>
-                    <div class="insight-media">
-                        <img src="https://cdn.vectorstock.com/i/750p/52/62/bay-indicator-isolated-cartoon-vector-43575262.avif" alt="Ilustrasi indikator slot parkir">
-                    </div>
-                </article>
-            </div>
-        </section>
-
-        <section id="statistik" class="bubble-panel">
-            <div class="section-heading">
-                <h2>Ringkasan Hari Ini</h2>
-            </div>
-            <div class="stats-grid">
-                <article class="stat-card">
-                    <div class="stat-icon"><i class="fas fa-car"></i></div>
-                    <div class="stat-value">2</div>
-                    <div class="stat-label">Kendaraan Terdaftar</div>
-                </article>
-                <article class="stat-card">
-                    <div class="stat-icon"><i class="fas fa-parking"></i></div>
-                    <div class="stat-value">1</div>
-                    <div class="stat-label">Parkir Aktif</div>
-                </article>
-                <article class="stat-card">
-                    <div class="stat-icon"><i class="fas fa-clock"></i></div>
-                    <div class="stat-value">24</div>
-                    <div class="stat-label">Total Parkir Bulan Ini</div>
-                </article>
-                <article class="stat-card">
-                    <div class="stat-icon"><i class="fas fa-flag"></i></div>
-                    <div class="stat-value">0</div>
-                    <div class="stat-label">Laporan Aktif</div>
-                </article>
-            </div>
-        </section>
-
-        <section id="layanan" class="bubble-panel">
-            <div class="section-heading">
-                <h2>Aksi Cepat</h2>
-            </div>
-            <div class="actions-grid">
-                <article class="action-card">
-                    <div class="stat-icon"><i class="fas fa-car-side"></i></div>
-                    <h3>Registrasi Kendaraan</h3>
-                    <p>Tambahkan kendaraan baru agar dapat mengakses area parkir kampus secara resmi.</p>
-                    <button class="btn btn-primary" data-modal="registerModal">Daftarkan Sekarang</button>
-                </article>
-                <article class="action-card">
-                    <div class="stat-icon"><i class="fas fa-sign-in-alt"></i></div>
-                    <h3>Check-In Parkir</h3>
-                    <p>Catat waktu masuk kendaraan ketika tiba di area parkir tujuan.</p>
-                    <button class="btn btn-primary" data-modal="parkirModal">Mulai Parkir</button>
-                </article>
-                <article class="action-card">
-                        <div class="stat-icon"><i class="fas fa-sign-out-alt"></i></div>
-                    <h3>Check-Out Parkir</h3>
-                    <p>Segera tutup sesi parkir saat Anda meninggalkan area untuk menjaga akurasi data.</p>
-                    <button class="btn btn-primary" data-modal="keluarModal">Selesaikan Parkir</button>
-                </article>
-                <article class="action-card">
-                    <div class="stat-icon"><i class="fas fa-exclamation-triangle"></i></div>
-                    <h3>Lapor Kehilangan</h3>
-                    <p>Laporkan insiden kehilangan atau kerusakan kendaraan dengan formulir terintegrasi.</p>
-                    <button class="btn btn-primary" data-modal="laporModal">Buat Laporan</button>
-                </article>
-            </div>
-        </section>
-
-        <section id="aktivitas" class="bubble-panel">
-            <div class="section-heading">
-                <h2>Aktivitas Terbaru</h2>
-            </div>
-            <div class="activity-list">
-                <div class="activity-item">
-                    <div class="activity-icon"><i class="fas fa-parking"></i></div>
+                <img src="https://img.freepik.com/free-vector/parking-concept-illustration_114360-8499.jpg" alt="Ilustrasi parkir kampus">
+                <div class="profile-chip">
+                    <img src="https://ui-avatars.com/api/?name=Andi+Pratama&background=3A6BFF&color=fff&bold=true" alt="Andi Pratama">
                     <div>
-                        <strong>Check-In Parkir Berhasil</strong>
-                        <div>Honda Beat - Area Parkir A (Gedung Rektorat)</div>
+                        <div class="chip-title">Andi Pratama</div>
+                        <div class="chip-subtitle">pengguna</div>
                     </div>
-                    <span class="activity-meta">10:30</span>
-                </div>
-                <div class="activity-item">
-                    <div class="activity-icon"><i class="fas fa-car"></i></div>
-                    <div>
-                        <strong>Check-Out Parkir</strong>
-                        <div>Toyota Avanza - Area Parkir B (Fakultas Teknik)</div>
-                    </div>
-                    <span class="activity-meta">Kemarin</span>
-                </div>
-                <div class="activity-item">
-                    <div class="activity-icon"><i class="fas fa-car-side"></i></div>
-                    <div>
-                        <strong>Kendaraan Baru Terdaftar</strong>
-                        <div>Mitsubishi Xpander - BE 9876 KL</div>
-                    </div>
-                    <span class="activity-meta">2 hari lalu</span>
                 </div>
             </div>
         </section>
+
+        <section class="bubble-panel" id="form-registrasi">
+            <div class="section-heading">
+                <div>
+                    <h2>Registrasi Kendaraan Baru</h2>
+                    <p>Daftarkan kendaraan pribadi Anda dengan melengkapi informasi di bawah ini. Pastikan data yang diinput sudah benar.</p>
+                </div>
+                <div class="section-actions">
+                    <span class="badge-soft"><i class="fas fa-car"></i> Form Pendaftaran</span>
+                </div>
+            </div>
+            <div class="record-grid">
+                <article class="record-card">
+                    <div class="record-header">
+                        <h3><i class="fas fa-clipboard-list"></i> Data Kendaraan</h3>
+                        <span>Wajib Diisi</span>
+                    </div>
+                    <form class="record-form" id="formRegistrasiKendaraan">
+                        <div class="form-group">
+                            <label for="platNomor">Plat Nomor Kendaraan</label>
+                            <input type="text" id="platNomor" class="form-control" placeholder="B 1234 ABC" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="merkKendaraan">Merk Kendaraan</label>
+                            <input type="text" id="merkKendaraan" class="form-control" placeholder="Honda, Yamaha, Toyota, dll." required>
+                        </div>
+                        <div class="form-group">
+                            <label for="tipeKendaraan">Tipe Kendaraan</label>
+                            <input type="text" id="tipeKendaraan" class="form-control" placeholder="Beat, NMAX, Avanza, dll." required>
+                        </div>
+                        <div class="form-group">
+                            <label for="warnaKendaraan">Warna Kendaraan</label>
+                            <input type="text" id="warnaKendaraan" class="form-control" placeholder="Hitam, Putih, Merah, dll." required>
+                        </div>
+                        <div class="form-group">
+                            <label for="tahunKendaraan">Tahun Pembuatan</label>
+                            <input type="number" id="tahunKendaraan" class="form-control" placeholder="2022" min="1980" max="2025" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="fotoKendaraan">Foto Dokumen (STNK/KTP)</label>
+                            <div class="upload-area" onclick="document.getElementById('fotoKendaraan').click()">
+                                <i class="fas fa-cloud-upload-alt"></i>
+                                <p><strong>Klik untuk upload foto</strong><br>Format: JPG, PNG (Max 2MB)</p>
+                                <input type="file" id="fotoKendaraan" accept="image/*">
+                            </div>
+                            <small class="form-text text-muted">Upload foto STNK dan KTP untuk verifikasi</small>
+                        </div>
+                        <div class="record-actions">
+                            <button type="submit" class="btn btn-primary btn-sm"><i class="fas fa-save"></i> Daftar Kendaraan</button>
+                            <button type="reset" class="btn btn-outline btn-sm"><i class="fas fa-eraser"></i> Reset Form</button>
+                        </div>
+                    </form>
+                </article>
+                <article class="table-card">
+                    <div class="table-header">
+                        <h3><i class="fas fa-car-side"></i> Kendaraan Terdaftar</h3>
+                    </div>
+                    <div class="table-responsive">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Plat Nomor</th>
+                                    <th>Merk/Tipe</th>
+                                    <th>Warna</th>
+                                    <th>Tahun</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>B 1234 ABC</strong></td>
+                                    <td>Honda Beat</td>
+                                    <td>Hitam</td>
+                                    <td>2020</td>
+                                    <td><span class="status-badge status-success">Aktif</span></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>B 5678 XYZ</strong></td>
+                                    <td>Yamaha NMAX</td>
+                                    <td>Putih</td>
+                                    <td>2021</td>
+                                    <td><span class="status-badge status-success">Aktif</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </article>
+            </div>
+        </section>
+
+        <section class="bubble-panel" id="lapor-kehilangan">
+            <div class="section-heading">
+                <div>
+                    <h2>Lapor Kehilangan Kendaraan</h2>
+                    <p>Jika kendaraan Anda hilang di area kampus, segera laporkan dengan mengisi formulir di bawah ini.</p>
+                </div>
+                <div class="section-actions">
+                    <span class="badge-soft"><i class="fas fa-exclamation-triangle"></i> Laporan</span>
+                </div>
+            </div>
+            <div class="record-grid">
+                <article class="record-card">
+                    <div class="record-header">
+                        <h3><i class="fas fa-file-alt"></i> Form Laporan Kehilangan</h3>
+                        <span class="status-badge status-danger">Urgent</span>
+                    </div>
+                    <form class="record-form" onsubmit="return false;">
+                        <div class="form-group">
+                            <label for="kendaraanHilang">Pilih Kendaraan yang Hilang</label>
+                            <select id="kendaraanHilang" class="form-control" required>
+                                <option value="" disabled selected>Pilih kendaraan</option>
+                                <option>B 1234 ABC - Honda Beat</option>
+                                <option>B 5678 XYZ - Yamaha NMAX</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="lokasiHilang">Lokasi Terakhir Parkir</label>
+                            <select id="lokasiHilang" class="form-control" required>
+                                <option value="" disabled selected>Pilih lokasi</option>
+                                <option>Parkiran A - Gedung Rektorat</option>
+                                <option>Parkiran B - Fakultas Teknik</option>
+                                <option>Parkiran C - Fakultas Ekonomi</option>
+                                <option>Gerbang Teknik</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="waktuHilang">Waktu Kejadian</label>
+                            <input type="datetime-local" id="waktuHilang" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="kronologiHilang">Deskripsi Kronologi</label>
+                            <textarea id="kronologiHilang" class="form-control" rows="4" placeholder="Jelaskan secara detail kronologi kehilangan kendaraan Anda..." required></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="buktiPendukung">Bukti Pendukung (Opsional)</label>
+                            <div class="upload-area" onclick="document.getElementById('buktiPendukung').click()">
+                                <i class="fas fa-camera"></i>
+                                <p><strong>Upload foto lokasi parkir terakhir</strong><br>Format: JPG, PNG (Max 5MB)</p>
+                                <input type="file" id="buktiPendukung" accept="image/*" multiple>
+                            </div>
+                        </div>
+                        <div class="record-actions">
+                            <button type="submit" class="btn btn-danger btn-sm"><i class="fas fa-paper-plane"></i> Kirim Laporan</button>
+                            <button type="reset" class="btn btn-outline btn-sm"><i class="fas fa-times"></i> Batal</button>
+                        </div>
+                    </form>
+                </article>
+                <article class="table-card">
+                    <div class="table-header">
+                        <h3><i class="fas fa-list-alt"></i> Status Laporan Anda</h3>
+                    </div>
+                    <div class="table-responsive">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Tanggal</th>
+                                    <th>Kendaraan</th>
+                                    <th>Lokasi</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>28 Nov 2025</td>
+                                    <td><strong>B 9012 DEF</strong></td>
+                                    <td>Parkiran C</td>
+                                    <td><span class="status-badge status-pending">Dalam Investigasi</span></td>
+                                </tr>
+                                <tr>
+                                    <td>15 Nov 2025</td>
+                                    <td><strong>B 3456 GHI</strong></td>
+                                    <td>Parkiran A</td>
+                                    <td><span class="status-badge status-success">Ditemukan</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </article>
+            </div>
+        </section>
+
+        <section class="bubble-panel" id="parkir-masuk">
+            <div class="section-heading">
+                <div>
+                    <h2>Melakukan Parkir (Check-In)</h2>
+                    <p>Catat kendaraan Anda saat memasuki area parkir kampus untuk mendapatkan tiket parkir.</p>
+                </div>
+                <div class="section-actions">
+                    <span class="badge-soft"><i class="fas fa-sign-in-alt"></i> Parkir Masuk</span>
+                </div>
+            </div>
+            <div class="record-grid">
+                <article class="record-card">
+                    <div class="record-header">
+                        <h3><i class="fas fa-parking"></i> Form Check-In Parkir</h3>
+                        <span>Catat Masuk</span>
+                    </div>
+                    <form class="record-form" id="form-parkir-masuk" onsubmit="submitParkirMasuk(event)">
+                        <div class="form-group">
+                            <label for="kendaraanMasuk">Pilih Kendaraan</label>
+                            <select id="kendaraanMasuk" class="form-control" required>
+                                <option value="" disabled selected>Pilih kendaraan terdaftar</option>
+                                <option>B 1234 ABC - Honda Beat (Hitam)</option>
+                                <option>B 5678 XYZ - Yamaha NMAX (Putih)</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="lokasiParkirMasuk">Lokasi Parkir</label>
+                            <select id="lokasiParkirMasuk" class="form-control" required>
+                                <option value="" disabled selected>Pilih lokasi parkir</option>
+                                <option>Parkiran A - Gedung Rektorat</option>
+                                <option>Parkiran B - Fakultas Teknik</option>
+                                <option>Parkiran C - Fakultas Ekonomi</option>
+                                <option>Parkiran D - Perpustakaan</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="waktuMasuk">Waktu Masuk</label>
+                            <input type="datetime-local" id="waktuMasuk" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="catatanMasuk">Catatan (Opsional)</label>
+                            <textarea id="catatanMasuk" class="form-control" rows="3" placeholder="Tambahkan catatan jika diperlukan"></textarea>
+                        </div>
+                        <div class="record-actions">
+                            <button type="submit" class="btn btn-primary"><i class="fas fa-check"></i> Konfirmasi Check-In</button>
+                        </div>
+                    </form>
+                </article>
+                <article class="table-card">
+                    <div class="table-header">
+                        <h3><i class="fas fa-car"></i> Kendaraan Parkir Aktif</h3>
+                    </div>
+                    <div class="table-responsive">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Kendaraan</th>
+                                    <th>Lokasi</th>
+                                    <th>Waktu Masuk</th>
+                                    <th>Durasi</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>B 1234 ABC</strong></td>
+                                    <td>Parkiran A</td>
+                                    <td>07:30 AM</td>
+                                    <td><span class="status-badge status-active">4 jam 15 menit</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </article>
+            </div>
+        </section>
+
+        <section class="bubble-panel" id="parkir-keluar">
+            <div class="section-heading">
+                <div>
+                    <h2>Melakukan Keluar Parkir (Check-Out)</h2>
+                    <p>Catat kendaraan Anda saat keluar dari area parkir kampus untuk menyelesaikan sesi parkir.</p>
+                </div>
+                <div class="section-actions">
+                    <span class="badge-soft"><i class="fas fa-sign-out-alt"></i> Parkir Keluar</span>
+                </div>
+            </div>
+            <article class="record-card">
+                <div class="record-header">
+                    <h3><i class="fas fa-car-side"></i> Form Check-Out Parkir</h3>
+                    <span>Catat Keluar</span>
+                </div>
+                <form class="record-form" id="form-parkir-keluar" onsubmit="return false;">
+                    <div class="form-group">
+                        <label for="kendaraanKeluar">Pilih Kendaraan Parkir Aktif</label>
+                        <select id="kendaraanKeluar" class="form-control" required>
+                            <option value="" disabled selected>Pilih kendaraan yang akan keluar</option>
+                            <option>B 1234 ABC - Parkiran A (Masuk: 07:30 AM)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="waktuKeluar">Waktu Keluar</label>
+                        <input type="datetime-local" id="waktuKeluar" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Ringkasan Parkir</label>
+                        <div style="background: rgba(58, 107, 255, 0.08); padding: 16px; border-radius: 12px; margin-top: 8px;">
+                            <p style="margin: 0 0 8px 0; font-size: 14px; color: var(--primary-dark);"><strong>Durasi:</strong> <span id="durasiParkir">-</span></p>
+                            <p style="margin: 0; font-size: 14px; color: var(--primary-dark);"><strong>Biaya:</strong> <span id="biayaParkir">Gratis (Civitas Akademika)</span></p>
+                        </div>
+                    </div>
+                    <div class="record-actions">
+                        <button type="submit" class="btn btn-success"><i class="fas fa-check-circle"></i> Konfirmasi Check-Out</button>
+                    </div>
+                </form>
+            </article>
+        </section>
+
     </main>
 
-    <div class="modal" id="registerModal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3>Registrasi Kendaraan</h3>
-                <button class="close-btn" data-close>&times;</button>
-            </div>
-            <form id="registerForm">
-                <div class="form-group">
-                    <label for="jenisKendaraan">Jenis Kendaraan</label>
-                    <select id="jenisKendaraan" class="form-control" required>
-                        <option value="">Pilih jenis</option>
-                        <option value="Motor">Motor</option>
-                        <option value="Mobil">Mobil</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="platNomor">Plat Nomor</label>
-                    <input type="text" id="platNomor" class="form-control" placeholder="Contoh: BE 1234 XX" required>
-                </div>
-                <div class="form-group">
-                    <label for="merkKendaraan">Merk &amp; Tipe</label>
-                    <input type="text" id="merkKendaraan" class="form-control" placeholder="Contoh: Honda Beat" required>
-                </div>
-                <div class="form-group">
-                    <label for="warnaKendaraan">Warna Kendaraan</label>
-                    <input type="text" id="warnaKendaraan" class="form-control" placeholder="Contoh: Hitam" required>
-                </div>
-                <button type="submit" class="btn btn-primary btn-full">Simpan Kendaraan</button>
-            </form>
-        </div>
-    </div>
-
-    <div class="modal" id="parkirModal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3>Check-In Parkir</h3>
-                <button class="close-btn" data-close>&times;</button>
-            </div>
-            <form id="parkirForm">
-                <div class="form-group">
-                    <label for="kendaraanParkir">Pilih Kendaraan</label>
-                    <select id="kendaraanParkir" class="form-control" required>
-                        <option value="">Pilih kendaraan</option>
-                        <option>Honda Beat - BE 1234 AA</option>
-                        <option>Toyota Avanza - BE 5678 CD</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="lokasiParkir">Lokasi Parkir</label>
-                    <select id="lokasiParkir" class="form-control" required>
-                        <option value="">Pilih lokasi</option>
-                        <option>Area A · Gedung Rektorat</option>
-                        <option>Area B · Fakultas Teknik</option>
-                        <option>Area C · Perpustakaan</option>
-                    </select>
-                </div>
-                <button type="submit" class="btn btn-primary btn-full">Konfirmasi Check-In</button>
-            </form>
-        </div>
-    </div>
-
-    <div class="modal" id="keluarModal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3>Check-Out Parkir</h3>
-                <button class="close-btn" data-close>&times;</button>
-            </div>
-            <div class="form-group">
-                <label>Parkir Aktif</label>
-                <div class="action-card" style="box-shadow:none; border-color: rgba(221,227,240,0.9);">
-                    <strong>Honda Beat - Area A</strong>
-                    <span>Masuk pukul 10:30 · Durasi 02:15</span>
-                </div>
-            </div>
-            <button class="btn btn-primary btn-full" id="keluarBtn">Selesaikan Parkir</button>
-        </div>
-    </div>
-
-    <div class="modal" id="laporModal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3>Lapor Kehilangan</h3>
-                <button class="close-btn" data-close>&times;</button>
-            </div>
-            <form id="laporForm">
-                <div class="form-group">
-                    <label for="kendaraanHilang">Kendaraan</label>
-                    <select id="kendaraanHilang" class="form-control" required>
-                        <option value="">Pilih kendaraan</option>
-                        <option>Honda Beat - BE 1234 AA</option>
-                        <option>Toyota Avanza - BE 5678 CD</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="lokasiHilang">Lokasi</label>
-                    <input type="text" id="lokasiHilang" class="form-control" placeholder="Area parkir" required>
-                </div>
-                <div class="form-group">
-                    <label for="waktuHilang">Perkiraan Waktu</label>
-                    <input type="datetime-local" id="waktuHilang" class="form-control" required>
-                </div>
-                <div class="form-group">
-                    <label for="keterangan">Keterangan Tambahan</label>
-                    <textarea id="keterangan" class="form-control" placeholder="Jelaskan detail kejadian..."></textarea>
-                </div>
-                <button type="submit" class="btn btn-primary btn-full">Kirim Laporan</button>
-            </form>
-        </div>
-    </div>
-
+    <script src="js/database-api.js"></script>
     <script>
-        const modalTriggers = document.querySelectorAll('[data-modal]');
-        const closeButtons = document.querySelectorAll('[data-close]');
+        // Cek login
+        const currentUser = db.getCurrentUser();
+        if (!currentUser || currentUser.role !== 'pengguna') {
+            alert('⛔ Anda harus login terlebih dahulu!');
+            window.location.href = 'login.html';
+        }
 
-        modalTriggers.forEach(trigger => {
-            trigger.addEventListener('click', () => {
-                const target = document.getElementById(trigger.dataset.modal);
-                if (target) target.style.display = 'flex';
+        // Load data pengguna
+        function loadUserData() {
+            const kendaraanList = db.getKendaraanByPemilik(currentUser.id);
+            const transaksiAktif = db.getTransaksiAktif().filter(t => t.penggunaId === currentUser.id);
+            const laporanUser = db.getAllLaporan().filter(l => l.penggunaId === currentUser.id);
+
+            // Update dropdown kendaraan di parkir masuk
+            const selectMasuk = document.getElementById('kendaraanMasuk');
+            selectMasuk.innerHTML = '<option value="" disabled selected>Pilih kendaraan terdaftar</option>';
+            kendaraanList.filter(k => k.status === 'aktif').forEach(k => {
+                selectMasuk.innerHTML += `<option value="${k.id}">${k.platNomor} - ${k.merk} ${k.tipe} (${k.warna})</option>`;
+            });
+
+            // Update dropdown kendaraan di parkir keluar
+            const selectKeluar = document.getElementById('kendaraanKeluar');
+            selectKeluar.innerHTML = '<option value="" disabled selected>Pilih kendaraan yang akan keluar</option>';
+            transaksiAktif.forEach(t => {
+                const waktuMasuk = new Date(t.waktuMasuk).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+                selectKeluar.innerHTML += `<option value="${t.id}">${t.platNomor} - ${t.lokasiParkir} (Masuk: ${waktuMasuk})</option>`;
+            });
+
+            // Update dropdown kendaraan di lapor kehilangan
+            const selectLapor = document.getElementById('kendaraanHilang');
+            selectLapor.innerHTML = '<option value="" disabled selected>Pilih kendaraan yang hilang</option>';
+            kendaraanList.forEach(k => {
+                selectLapor.innerHTML += `<option value="${k.id}">${k.platNomor} - ${k.merk} ${k.tipe}</option>`;
+            });
+
+            // Update tabel kendaraan terdaftar
+            const tbody = document.querySelector('#form-registrasi table tbody');
+            tbody.innerHTML = '';
+            kendaraanList.forEach(k => {
+                const statusBadge = k.status === 'aktif' ? 'status-success' : k.status === 'pending' ? 'status-pending' : 'status-danger';
+                const statusText = k.status === 'aktif' ? 'Aktif' : k.status === 'pending' ? 'Pending' : 'Nonaktif';
+                tbody.innerHTML += `
+                    <tr>
+                        <td><strong>${k.platNomor}</strong></td>
+                        <td>${k.merk} ${k.tipe}</td>
+                        <td>${k.warna}</td>
+                        <td>${k.tahunPembuatan || k.tahun}</td>
+                        <td><span class="status-badge ${statusBadge}">${statusText}</span></td>
+                    </tr>
+                `;
+            });
+
+            // Update tabel parkir aktif
+            const tbodyParkir = document.querySelector('#parkir-masuk table tbody');
+            tbodyParkir.innerHTML = '';
+            transaksiAktif.forEach(t => {
+                const waktuMasuk = new Date(t.waktuMasuk);
+                const now = new Date();
+                const durasiMenit = Math.floor((now - waktuMasuk) / (1000 * 60));
+                const jam = Math.floor(durasiMenit / 60);
+                const menit = durasiMenit % 60;
+                const durasi = `${jam} jam ${menit} menit`;
+                const waktuStr = waktuMasuk.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+
+                tbodyParkir.innerHTML += `
+                    <tr>
+                        <td><strong>${t.platNomor}</strong></td>
+                        <td>${t.lokasiParkir}</td>
+                        <td>${waktuStr}</td>
+                        <td><span class="status-badge status-active">${durasi}</span></td>
+                    </tr>
+                `;
+            });
+
+            // Update tabel laporan kehilangan
+            const tbodyLaporan = document.querySelector('#lapor-kehilangan table tbody');
+            tbodyLaporan.innerHTML = '';
+            laporanUser.forEach(l => {
+                const tanggal = new Date(l.tanggalLapor).toLocaleDateString('id-ID');
+                const statusClass = l.status === 'Selesai' ? 'status-success' : l.status === 'Investigasi' ? 'status-pending' : 'status-active';
+                
+                tbodyLaporan.innerHTML += `
+                    <tr>
+                        <td><strong>${l.id}</strong></td>
+                        <td>${l.platNomor}</td>
+                        <td>${tanggal}</td>
+                        <td>${l.lokasiKehilangan}</td>
+                        <td><span class="status-badge ${statusClass}">${l.status}</span></td>
+                    </tr>
+                `;
+            });
+        }
+
+        // Navigation
+        document.querySelectorAll('.nav-links a').forEach(link => {
+            link.addEventListener('click', function(event) {
+                const target = this.getAttribute('href');
+                if (target && target.startsWith('#')) {
+                    event.preventDefault();
+                    document.querySelectorAll('.nav-links a').forEach(item => item.classList.remove('active'));
+                    this.classList.add('active');
+                    const section = document.querySelector(target);
+                    if (section) {
+                        section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }
+                }
             });
         });
 
-        closeButtons.forEach(btn => {
-            btn.addEventListener('click', () => {
-                btn.closest('.modal').style.display = 'none';
+        // Handle registrasi kendaraan
+        const formRegistrasi = document.getElementById('formRegistrasiKendaraan');
+        if (formRegistrasi) {
+            formRegistrasi.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const fotoInput = document.getElementById('fotoKendaraan');
+                let fotoDokumen = null;
+                if (fotoInput.files && fotoInput.files[0]) {
+                    fotoDokumen = fotoInput.files[0].name; // Simpan nama file
+                }
+                
+                const formData = {
+                    pemilikId: currentUser.id,
+                    platNomor: document.getElementById('platNomor').value,
+                    merk: document.getElementById('merkKendaraan').value,
+                    tipe: document.getElementById('tipeKendaraan').value,
+                    warna: document.getElementById('warnaKendaraan').value,
+                    tahunPembuatan: parseInt(document.getElementById('tahunKendaraan').value),
+                    fotoDokumen: fotoDokumen
+                };
+
+                db.addKendaraan(formData);
+                alert('✅ Kendaraan berhasil didaftarkan!\n\nData kendaraan Anda akan diverifikasi oleh admin/petugas dalam 1x24 jam.');
+                this.reset();
+                loadUserData();
             });
+        }
+
+        // Handle lapor kehilangan
+        document.querySelector('#lapor-kehilangan form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const kendaraanId = document.getElementById('kendaraanHilang').value;
+            const kendaraan = db.getAllKendaraan().find(k => k.id === kendaraanId);
+            
+            const laporanData = {
+                kendaraanId: kendaraanId,
+                platNomor: kendaraan.platNomor,
+                penggunaId: currentUser.id,
+                pelaporNama: currentUser.nama,
+                lokasiKehilangan: document.getElementById('lokasiHilang').value,
+                waktuKejadian: document.getElementById('waktuHilang').value,
+                kronologi: document.getElementById('kronologiHilang').value,
+                buktiPendukung: document.getElementById('buktiPendukung').value || '',
+                petugasId: null
+            };
+
+            db.addLaporan(laporanData);
+            alert('✅ Laporan kehilangan berhasil dikirim!\n\nPetugas keamanan akan segera menindaklanjuti laporan Anda.');
+            this.reset();
+            loadUserData();
         });
 
-        window.addEventListener('click', (event) => {
-            if (event.target.classList.contains('modal')) {
-                event.target.style.display = 'none';
+        // Handle check-in parkir
+        document.getElementById('form-parkir-masuk').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const kendaraanId = document.getElementById('kendaraanMasuk').value;
+            const kendaraan = db.getAllKendaraan().find(k => k.id === kendaraanId);
+            
+            const transaksiData = {
+                kendaraanId: kendaraanId,
+                platNomor: kendaraan.platNomor,
+                penggunaId: currentUser.id,
+                lokasiParkir: document.getElementById('lokasiParkirMasuk').value
+            };
+
+            db.checkIn(transaksiData);
+            alert('✅ Check-In berhasil!\n\nKendaraan Anda telah tercatat masuk area parkir.');
+            this.reset();
+            loadUserData();
+        });
+
+        // Handle check-out parkir
+        document.getElementById('form-parkir-keluar').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const transaksiId = document.getElementById('kendaraanKeluar').value;
+            const result = db.checkOut(transaksiId);
+            
+            if (result) {
+                const jam = Math.floor(result.durasi / 60);
+                const menit = result.durasi % 60;
+                alert(`✅ Check-Out berhasil!\n\nDurasi Parkir: ${jam} jam ${menit} menit\nBiaya: Gratis (Civitas Akademika)\n\nTerima kasih telah menggunakan layanan parkir kampus.`);
+                this.reset();
+                loadUserData();
             }
         });
 
-        document.getElementById('registerForm').addEventListener('submit', (event) => {
-            event.preventDefault();
-            alert('Kendaraan berhasil ditambahkan.');
-            event.target.reset();
-            document.getElementById('registerModal').style.display = 'none';
-        });
+        // Load data saat halaman dimuat
+        loadUserData();
 
-        document.getElementById('parkirForm').addEventListener('submit', (event) => {
-            event.preventDefault();
-            alert('Check-in parkir tercatat.');
-            event.target.reset();
-            document.getElementById('parkirModal').style.display = 'none';
-        });
-
-        document.getElementById('laporForm').addEventListener('submit', (event) => {
-            event.preventDefault();
-            alert('Laporan kehilangan terkirim.');
-            event.target.reset();
-            document.getElementById('laporModal').style.display = 'none';
-        });
-
-        document.getElementById('keluarBtn').addEventListener('click', () => {
-            alert('Sesi parkir selesai. Terima kasih sudah menggunakan SIPARKIR UNILA.');
-            document.getElementById('keluarModal').style.display = 'none';
-        });
+        // Refresh data setiap 30 detik
+        setInterval(loadUserData, 30000);
     </script>
 </body>
 </html>

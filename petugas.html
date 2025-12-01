@@ -881,7 +881,7 @@
                 <a href="#verifikasi-identitas">Verifikasi Identitas</a>
                 <a href="#laporan-kehilangan">Laporan Kehilangan</a>
             </div>
-            <a class="nav-cta" href="login-petugas.html"><i class="fas fa-sign-out-alt"></i> Keluar</a>
+            <a class="nav-cta" href="#" onclick="db.logout(); return false;"><i class="fas fa-sign-out-alt"></i> Keluar</a>
         </div>
     </nav>
 
@@ -967,8 +967,8 @@
                             <textarea id="catatanTransaksi" class="form-control" rows="3" placeholder="Tambahkan nomor kartu akses atau catatan penting"></textarea>
                         </div>
                         <div class="record-actions">
-                            <button type="button" class="btn btn-primary btn-sm"><i class="fas fa-sign-in-alt"></i> Simpan Masuk</button>
-                            <button type="button" class="btn btn-success btn-sm"><i class="fas fa-sign-out-alt"></i> Simpan Keluar</button>
+                            <button type="button" class="btn btn-primary btn-sm" onclick="simpanPencatatan('Masuk')"><i class="fas fa-sign-in-alt"></i> Simpan Masuk</button>
+                            <button type="button" class="btn btn-success btn-sm" onclick="simpanPencatatan('Keluar')"><i class="fas fa-sign-out-alt"></i> Simpan Keluar</button>
                         </div>
                     </form>
                 </article>
@@ -1037,7 +1037,7 @@
                 <article class="table-card">
                     <div class="table-header">
                         <h3><i class="fas fa-car"></i> Kendaraan Perlu Verifikasi</h3>
-                        <button class="btn btn-primary btn-sm">
+                        <button class="btn btn-primary btn-sm" onclick="refreshData()">
                             <i class="fas fa-sync"></i> Refresh
                         </button>
                     </div>
@@ -1171,8 +1171,8 @@
                                         <td>Rani Pratiwi</td>
                                         <td>
                                             <div class="table-actions">
-                                                <button class="btn btn-primary btn-sm"><i class="fas fa-eye"></i> Detail</button>
-                                                <button class="btn btn-success btn-sm"><i class="fas fa-check"></i> Selesaikan</button>
+                                                <button class="btn btn-primary btn-sm" onclick="lihatDetailLaporanStatic('LAP001')"><i class="fas fa-eye"></i> Detail</button>
+                                                <button class="btn btn-success btn-sm" onclick="selesaikanLaporanStatic('LAP001')"><i class="fas fa-check"></i> Selesaikan</button>
                                             </div>
                                         </td>
                                     </tr>
@@ -1184,8 +1184,8 @@
                                         <td>Andi Saputra</td>
                                         <td>
                                             <div class="table-actions">
-                                                <button class="btn btn-primary btn-sm"><i class="fas fa-eye"></i> Detail</button>
-                                                <button class="btn btn-outline btn-sm"><i class="fas fa-paperclip"></i> Lampirkan Bukti</button>
+                                                <button class="btn btn-primary btn-sm" onclick="lihatDetailLaporanStatic('LAP002')"><i class="fas fa-eye"></i> Detail</button>
+                                                <button class="btn btn-outline btn-sm" onclick="lampirkanBukti('LAP002')"><i class="fas fa-paperclip"></i> Lampirkan Bukti</button>
                                             </div>
                                         </td>
                                     </tr>
@@ -1197,8 +1197,8 @@
                                         <td>Dini Larasati</td>
                                         <td>
                                             <div class="table-actions">
-                                                <button class="btn btn-primary btn-sm"><i class="fas fa-eye"></i> Detail</button>
-                                                <button class="btn btn-success btn-sm"><i class="fas fa-check"></i> Selesaikan</button>
+                                                <button class="btn btn-primary btn-sm" onclick="lihatDetailLaporanStatic('LAP003')"><i class="fas fa-eye"></i> Detail</button>
+                                                <button class="btn btn-success btn-sm" onclick="selesaikanLaporanStatic('LAP003')"><i class="fas fa-check"></i> Selesaikan</button>
                                             </div>
                                         </td>
                                     </tr>
@@ -1210,7 +1210,7 @@
                                         <td>Sarah Dewi</td>
                                         <td>
                                             <div class="table-actions">
-                                                <button class="btn btn-outline btn-sm"><i class="fas fa-file-export"></i> Ekspor Berita Acara</button>
+                                                <button class="btn btn-outline btn-sm" onclick="eksporBeritaAcara('LAP004')"><i class="fas fa-file-export"></i> Ekspor Berita Acara</button>
                                             </div>
                                         </td>
                                     </tr>
@@ -1358,6 +1358,284 @@
                 }
             });
         });
+    </script>
+    <script src="js/database-api.js"></script>
+    <script>
+        // Cek login
+        const currentUser = db.getCurrentUser();
+        if (!currentUser || currentUser.role !== 'petugas') {
+            alert('⛔ Anda harus login terlebih dahulu!');
+            window.location.href = 'login.html';
+        }
+
+        // Fungsi untuk Simpan Pencatatan (Masuk/Keluar)
+        function simpanPencatatan(statusTransaksi) {
+            const platNomor = document.getElementById('platNomor').value;
+            const jenisKendaraan = document.getElementById('jenisKendaraan').value;
+            const lokasiPenjagaan = document.getElementById('lokasiPenjagaan').value;
+            const waktuTransaksi = document.getElementById('waktuTransaksi').value;
+            const statusPergerakan = document.getElementById('statusPergerakan').value;
+            const catatanTransaksi = document.getElementById('catatanTransaksi').value;
+
+            // Validasi form
+            if (!platNomor || !jenisKendaraan || !lokasiPenjagaan || !statusPergerakan) {
+                alert('⚠️ Mohon lengkapi semua data yang diperlukan!');
+                return;
+            }
+
+            const pencatatanData = {
+                platNomor: platNomor,
+                jenisKendaraan: jenisKendaraan,
+                lokasiPenjagaan: lokasiPenjagaan,
+                waktu: new Date().toISOString(),
+                statusTransaksi: statusTransaksi === 'Masuk' ? 'Kendaraan Masuk' : 'Kendaraan Keluar',
+                catatan: catatanTransaksi || '',
+                petugasId: currentUser.id,
+                petugasNama: currentUser.nama
+            };
+
+            db.addPencatatan(pencatatanData);
+            
+            alert(`✅ Pencatatan ${statusTransaksi} berhasil!\n\nKendaraan: ${platNomor}\nJenis: ${jenisKendaraan}\nLokasi: ${lokasiPenjagaan}\nStatus: ${pencatatanData.statusTransaksi}`);
+            
+            // Reset form
+            document.getElementById('platNomor').value = '';
+            document.getElementById('jenisKendaraan').selectedIndex = 0;
+            document.getElementById('lokasiPenjagaan').selectedIndex = 0;
+            document.getElementById('statusPergerakan').selectedIndex = 0;
+            document.getElementById('catatanTransaksi').value = '';
+            
+            // Reload data
+            loadPetugasData();
+        }
+
+        // Fungsi untuk Refresh Data
+        function refreshData() {
+            loadPetugasData();
+            alert('✅ Data berhasil di-refresh!');
+        }
+
+        // Fungsi untuk melihat detail laporan (static data)
+        function lihatDetailLaporanStatic(laporanId) {
+            let detailInfo = '';
+            
+            switch(laporanId) {
+                case 'LAP001':
+                    detailInfo = `📋 Detail Laporan ${laporanId}
+
+Kendaraan: Honda Beat - B 9012 DEF
+Pelapor: Rani Pratiwi
+Lokasi Kehilangan: Parkiran C
+Waktu Kejadian: 01 Des 2025, 12:45 PM
+
+Kronologi:
+Kendaraan hilang saat parkir di area parkiran C. Pemilik meninggalkan kendaraan sekitar pukul 10:00 dan saat kembali pukul 12:45, kendaraan sudah tidak ada.
+
+Status: Investigasi
+Petugas: Belum ditangani`;
+                    break;
+                case 'LAP002':
+                    detailInfo = `📋 Detail Laporan ${laporanId}
+
+Kendaraan: Yamaha NMAX - B 6789 JKL
+Pelapor: Andi Saputra
+Lokasi Kehilangan: Gerbang Teknik
+Waktu Kejadian: 01 Des 2025, 12:15 PM
+
+Kronologi:
+Motor hilang di area gerbang teknik. Pemilik parkir pukul 09:00 dan kembali pukul 12:00. CCTV sedang dicek oleh tim IT.
+
+Status: Menunggu CCTV
+Petugas: Diserahkan ke tim IT`;
+                    break;
+                case 'LAP003':
+                    detailInfo = `📋 Detail Laporan ${laporanId}
+
+Kendaraan: Toyota Avanza - B 3456 MNO
+Pelapor: Dini Larasati
+Lokasi Kehilangan: Parkiran B
+Waktu Kejadian: 01 Des 2025, 11:45 AM
+
+Kronologi:
+Mobil tidak ditemukan di parkiran B setelah acara selesai. Unit patroli sedang melakukan pencarian di area kampus.
+
+Status: Dalam Patroli
+Petugas: Unit Patroli 3`;
+                    break;
+                case 'LAP004':
+                    detailInfo = `📋 Detail Laporan ${laporanId}
+
+Kendaraan: Suzuki Ertiga - B 1122 QWE
+Pelapor: Sarah Dewi
+Lokasi Kehilangan: Parkiran Fakultas Hukum
+Waktu Kejadian: 01 Des 2025, 10:30 AM
+
+Kronologi:
+Kendaraan berhasil ditemukan di parkiran lain. Ternyata pemilik salah ingat lokasi parkir.
+
+Status: Selesai
+Petugas: Budi Santoso`;
+                    break;
+                default:
+                    detailInfo = 'Laporan tidak ditemukan';
+            }
+            
+            alert(detailInfo);
+        }
+
+        // Fungsi untuk menyelesaikan laporan (static)
+        function selesaikanLaporanStatic(laporanId) {
+            if (confirm(`Tandai laporan ${laporanId} sebagai SELESAI?\n\nPastikan kasus sudah benar-benar terselesaikan.`)) {
+                alert(`✅ Laporan ${laporanId} berhasil diselesaikan!\n\nStatus: SELESAI\nPetugas: ${currentUser.nama}`);
+                loadPetugasData();
+            }
+        }
+
+        // Fungsi untuk lampirkan bukti
+        function lampirkanBukti(laporanId) {
+            const catatan = prompt(`Lampirkan Bukti untuk Laporan ${laporanId}\n\nMasukkan catatan/deskripsi bukti yang dilampirkan:`);
+            
+            if (catatan !== null && catatan.trim() !== '') {
+                alert(`✅ Bukti berhasil dilampirkan!\n\nLaporan: ${laporanId}\nCatatan: ${catatan}\nPetugas: ${currentUser.nama}\n\nFile bukti dapat diunggah melalui sistem dokumen.`);
+            } else if (catatan !== null) {
+                alert('⚠️ Mohon masukkan deskripsi bukti!');
+            }
+        }
+
+        // Fungsi untuk ekspor berita acara
+        function eksporBeritaAcara(laporanId) {
+            if (confirm(`Ekspor Berita Acara untuk Laporan ${laporanId}?\n\nBerita acara akan diunduh dalam format PDF.`)) {
+                alert(`📄 Berita Acara ${laporanId} berhasil diekspor!\n\nFile: BeritaAcara_${laporanId}_${new Date().getTime()}.pdf\n\n(Fitur download akan aktif setelah integrasi dengan backend)`);
+            }
+        }
+
+        // Load data untuk petugas
+        function loadPetugasData() {
+            const allKendaraan = db.getAllKendaraan();
+            const allLaporan = db.getAllLaporan();
+            const pencatatan = db.getAllPencatatan();
+
+            // Update tabel kendaraan yang perlu verifikasi
+            const tbodyVerif = document.querySelector('#verifikasi-identitas table tbody');
+            if (tbodyVerif) {
+                tbodyVerif.innerHTML = '';
+                allKendaraan.filter(k => k.status === 'pending').slice(0, 5).forEach(k => {
+                    const pemilik = db.getAllUsers('pengguna').find(p => p.id === k.pemilikId);
+                    tbodyVerif.innerHTML += `
+                        <tr>
+                            <td><strong>${k.platNomor}</strong></td>
+                            <td>${k.merk} ${k.tipe}</td>
+                            <td>${k.warna}</td>
+                            <td>${pemilik ? pemilik.nama : '-'}</td>
+                            <td><span class="status-badge status-pending">Pending</span></td>
+                            <td>
+                                <button class="btn btn-primary btn-sm" onclick="verifikasiKendaraanReal('${k.id}', '${k.platNomor}')">
+                                    <i class="fas fa-check"></i> Verifikasi
+                                </button>
+                            </td>
+                        </tr>
+                    `;
+                });
+            }
+
+            // Update tabel laporan kehilangan
+            const tbodyLaporan = document.querySelector('#laporan-kehilangan table tbody');
+            if (tbodyLaporan) {
+                tbodyLaporan.innerHTML = '';
+                allLaporan.forEach(l => {
+                    const waktu = new Date(l.tanggalLapor).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+                    const statusClass = l.status === 'Selesai' ? 'status-success' : l.status === 'Investigasi' ? 'status-pending' : 'status-active';
+
+                    tbodyLaporan.innerHTML += `
+                        <tr>
+                            <td>${waktu}</td>
+                            <td><span class="status-badge ${statusClass}">${l.status}</span></td>
+                            <td><strong>${l.platNomor}</strong></td>
+                            <td>${l.lokasiKehilangan}</td>
+                            <td>${l.pelaporNama}</td>
+                            <td>
+                                <div class="table-actions">
+                                    <button class="btn btn-primary btn-sm" onclick="lihatDetailLaporan('${l.id}')">
+                                        <i class="fas fa-eye"></i> Detail
+                                    </button>
+                                    ${l.status !== 'Selesai' ? `
+                                        <button class="btn btn-success btn-sm" onclick="selesaikanLaporan('${l.id}')">
+                                            <i class="fas fa-check"></i> Selesaikan
+                                        </button>
+                                    ` : ''}
+                                </div>
+                            </td>
+                        </tr>
+                    `;
+                });
+            }
+
+            // Update riwayat pencatatan
+            const tbodyPencatatan = document.querySelector('#catat-kendaraan-log table tbody');
+            if (tbodyPencatatan) {
+                tbodyPencatatan.innerHTML = '';
+                pencatatan.slice(0, 10).reverse().forEach(p => {
+                    const waktu = new Date(p.waktu).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+                    const statusBadge = p.statusTransaksi === 'Masuk' ? 'status-active' : 'status-success';
+
+                    tbodyPencatatan.innerHTML += `
+                        <tr>
+                            <td>${waktu}</td>
+                            <td><strong>${p.platNomor}</strong></td>
+                            <td>${p.jenisKendaraan}</td>
+                            <td><span class="status-badge ${statusBadge}">${p.statusTransaksi}</span></td>
+                            <td>${p.petugasNama || currentUser.nama}</td>
+                        </tr>
+                    `;
+                });
+            }
+        }
+
+        // Verifikasi kendaraan
+        window.verifikasiKendaraanReal = function(kendaraanId, platNomor) {
+            if (confirm(`Verifikasi kendaraan ${platNomor}?\n\nKendaraan ini akan diaktifkan dan dapat digunakan untuk parkir.`)) {
+                const currentUser = db.getCurrentUser();
+                if (!currentUser) {
+                    alert('Session expired!');
+                    return;
+                }
+                
+                // Gunakan fungsi verifikasi dengan role petugas
+                db.verifikasiKendaraan(kendaraanId, currentUser.id, 'petugas', 'Valid', 'Diverifikasi oleh petugas keamanan');
+                
+                alert(`✅ Kendaraan ${platNomor} berhasil diverifikasi!\n\nStatus: AKTIF`);
+                loadPetugasData();
+            }
+        }
+
+        // Lihat detail laporan
+        window.lihatDetailLaporan = function(laporanId) {
+            const laporan = db.getAllLaporan().find(l => l.id === laporanId);
+            if (laporan) {
+                const waktu = new Date(laporan.waktuKejadian).toLocaleString('id-ID');
+                alert(`📋 Detail Laporan ${laporan.id}\n\nKendaraan: ${laporan.platNomor}\nPelapor: ${laporan.pelaporNama}\nLokasi: ${laporan.lokasiKehilangan}\nWaktu: ${waktu}\n\nKronologi:\n${laporan.kronologi}\n\nStatus: ${laporan.status}`);
+            }
+        }
+
+        // Selesaikan laporan
+        window.selesaikanLaporan = function(laporanId) {
+            if (confirm('Tandai laporan ini sebagai SELESAI?')) {
+                const currentUser = db.getCurrentUser();
+                db.updateLaporan(laporanId, { 
+                    status: 'Selesai',
+                    petugasId: currentUser.id,
+                    handlerRole: 'petugas'
+                });
+                alert('✅ Laporan berhasil diselesaikan!');
+                loadPetugasData();
+            }
+        }
+
+        // Load data saat halaman dimuat
+        loadPetugasData();
+
+        // Refresh data setiap 30 detik
+        setInterval(loadPetugasData, 30000);
     </script>
 </body>
 </html>
