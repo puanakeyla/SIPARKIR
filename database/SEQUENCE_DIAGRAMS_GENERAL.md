@@ -8,32 +8,49 @@
 
 ```mermaid
 sequenceDiagram
-    actor User as Pengguna/Admin/Petugas
+    actor User as "Pengguna/Admin/Petugas"
     participant System as Sistem SIPARKIR
     participant Auth as Authentication Module
     participant DB as Database
 
     activate User
-    User->>+System: Masukkan username dan password
-    System->>+Auth: Validasi kredensial
-    Auth->>+DB: Cek data user
-    DB-->>-Auth: Data user ditemukan
-    Auth->>Auth: Verifikasi password
+    User->>System: Masukkan username dan password
+    deactivate User
+    
+    activate System
+    System->>Auth: Validasi kredensial
+    deactivate System
+    
     activate Auth
+    Auth->>DB: Cek data user
     deactivate Auth
+    
+    activate DB
+    DB-->>Auth: Data user ditemukan
+    deactivate DB
+    
+    activate Auth
+    Auth->>Auth: Verifikasi password
+    deactivate Auth
+    
     alt Password benar
+        activate Auth
         Auth-->>System: Autentikasi berhasil
         deactivate Auth
-        System->>System: Simpan session
+        
         activate System
+        System->>System: Simpan session
+        System-->>User: Redirect ke dashboard sesuai role
         deactivate System
-        System-->>-User: Redirect ke dashboard sesuai role
     else Password salah
+        activate Auth
         Auth-->>System: Autentikasi gagal
         deactivate Auth
-        System-->>-User: Tampilkan pesan error
+        
+        activate System
+        System-->>User: Tampilkan pesan error
+        deactivate System
     end
-    deactivate User
 ```
 
 **Deskripsi Alur:**
@@ -59,24 +76,34 @@ sequenceDiagram
     participant Storage as File Storage
     participant DB as Database
 
-    activate Pengguna
-    Pengguna->>+System: Akses form registrasi kendaraan
-    System-->>-Pengguna: Tampilkan form input
-    Pengguna->>+System: Isi data kendaraan<br/>(plat nomor, jenis, merk, warna, foto)
-    System->>+Validation: Validasi data input
+    Pengguna->>System: Akses form registrasi kendaraan
+    activate System
+    System-->>Pengguna: Tampilkan form input
+    Pengguna->>System: Isi data kendaraan
+    Note over Pengguna, System: Plat nomor, jenis, merk, warna, foto
+    System->>Validation: Validasi data input
+    activate Validation
     
     alt Data valid
-        Validation-->>-System: Data valid
-        System->>+Storage: Upload foto kendaraan
-        Storage-->>-System: Foto tersimpan
-        System->>+DB: Simpan data kendaraan
-        DB-->>-System: Data tersimpan dengan ID unik
-        System-->>-Pengguna: Registrasi berhasil + tampilkan detail
+        Validation-->>System: Data valid
+        System->>Storage: Upload foto kendaraan
+        activate Storage
+        Storage-->>System: Foto tersimpan
+        deactivate Storage
+
+        System->>DB: Simpan data kendaraan
+        activate DB
+        DB-->>System: Data tersimpan dengan ID unik
+        deactivate DB
+        
+        System-->>Pengguna: Registrasi berhasil + tampilkan detail
     else Data tidak valid
-        Validation-->>-System: Data tidak valid
-        System-->>-Pengguna: Tampilkan pesan error validasi
+        Validation-->>System: Data tidak valid
+        System-->>Pengguna: Tampilkan pesan error validasi
     end
-    deactivate Pengguna
+    
+    deactivate Validation
+    deactivate System
 ```
 
 **Deskripsi Alur:**
@@ -103,26 +130,41 @@ sequenceDiagram
     participant DB as Database
     participant Notification as Notification Module
 
-    activate Pengguna
-    Pengguna->>+System: Pilih kendaraan untuk parkir
-    System-->>-Pengguna: Tampilkan form check-in
-    Pengguna->>+System: Pilih lokasi parkir dan konfirmasi
-    System->>+Validation: Validasi status kendaraan
-    
+    Pengguna->>System: Pilih kendaraan untuk parkir
+    activate System
+    System-->>Pengguna: Tampilkan form check-in
+    Pengguna->>System: Pilih lokasi parkir dan konfirmasi
+    System->>Validation: Validasi status kendaraan
+    activate Validation
+
     alt Kendaraan belum parkir
-        Validation-->>-System: Status valid untuk check-in
-        System->>+DB: Catat waktu masuk dan lokasi
-        DB-->>-System: Data parkir tersimpan
-        System->>+DB: Update status kendaraan menjadi "Parkir"
-        DB-->>-System: Status terupdate
-        System->>+Notification: Kirim notifikasi check-in
-        Notification-->>-Pengguna: Notifikasi check-in berhasil
-        System-->>-Pengguna: Tampilkan bukti parkir dengan waktu masuk
+        Validation-->>System: Status valid untuk check-in
+
+        System->>DB: Catat waktu masuk dan lokasi
+        activate DB
+        DB-->>System: Data parkir tersimpan
+        deactivate DB
+
+        System->>DB: Update status kendaraan menjadi "Parkir"
+        activate DB
+        DB-->>System: Status terupdate
+        deactivate DB
+
+        System->>Notification: Kirim notifikasi check-in
+        activate Notification
+        Notification-->>Pengguna: Notifikasi check-in berhasil
+        deactivate Notification
+
+        System-->>Pengguna: Tampilkan bukti parkir dengan waktu masuk
+
     else Kendaraan sudah parkir
-        Validation-->>-System: Kendaraan sedang parkir
-        System-->>-Pengguna: Tampilkan pesan "Kendaraan sudah parkir"
+        Validation-->>System: Kendaraan sedang parkir
+        System-->>Pengguna: Tampilkan pesan "Kendaraan sudah parkir"
     end
-    deactivate Pengguna
+
+    deactivate Validation
+    deactivate System
+
 ```
 
 **Deskripsi Alur:**
@@ -150,26 +192,44 @@ sequenceDiagram
     participant DB as Database
     participant Notification as Notification Module
 
-    activate Pengguna
-    Pengguna->>+System: Pilih kendaraan untuk keluar
-    System->>+Validation: Validasi status parkir aktif
-    
+    Pengguna->>System: Pilih kendaraan untuk keluar
+    activate System
+
+    System->>Validation: Validasi status parkir aktif
+    activate Validation
+
     alt Ada parkir aktif
-        Validation-->>-System: Parkir aktif ditemukan
-        System->>+Calculation: Hitung durasi parkir
-        Calculation-->>-System: Durasi = waktu keluar - waktu masuk
-        System->>+DB: Catat waktu keluar dan durasi
-        DB-->>-System: Data terupdate
-        System->>+DB: Update status kendaraan menjadi "Tidak Parkir"
-        DB-->>-System: Status terupdate
-        System->>+Notification: Kirim notifikasi check-out
-        Notification-->>-Pengguna: Notifikasi dengan durasi parkir
-        System-->>-Pengguna: Tampilkan ringkasan parkir<br/>(waktu masuk, keluar, durasi)
+        Validation-->>System: Parkir aktif ditemukan
+
+        System->>Calculation: Hitung durasi parkir
+        activate Calculation
+        Calculation-->>System: Durasi = waktu keluar - waktu masuk
+        deactivate Calculation
+
+        System->>DB: Catat waktu keluar dan durasi
+        activate DB
+        DB-->>System: Data terupdate
+        deactivate DB
+
+        System->>DB: Update status kendaraan menjadi "Tidak Parkir"
+        activate DB
+        DB-->>System: Status terupdate
+        deactivate DB
+
+        System->>Notification: Kirim notifikasi check-out
+        activate Notification
+        Notification-->>Pengguna: Notifikasi dengan durasi parkir
+        deactivate Notification
+
+        System-->>Pengguna: Tampilkan ringkasan parkir (waktu masuk, keluar, durasi)
+
     else Tidak ada parkir aktif
-        Validation-->>-System: Kendaraan tidak sedang parkir
-        System-->>-Pengguna: Tampilkan pesan "Kendaraan tidak parkir"
+        Validation-->>System: Kendaraan tidak sedang parkir
+        System-->>Pengguna: Tampilkan pesan "Kendaraan tidak parkir"
     end
-    deactivate Pengguna
+
+    deactivate Validation
+    deactivate System
 ```
 
 **Deskripsi Alur:**
@@ -196,30 +256,46 @@ sequenceDiagram
     participant Notification as Notification Module
     participant Petugas as Petugas Keamanan
 
-    activate Pengguna
-    Pengguna->>+System: Akses form laporan kehilangan
-    System-->>-Pengguna: Tampilkan form laporan
-    Pengguna->>+System: Isi detail kehilangan<br/>(kendaraan, kronologi, lokasi, waktu)
-    System->>+Validation: Validasi kelengkapan data
+    Pengguna->>System: Akses form laporan kehilangan
+    activate System
+    System-->>Pengguna: Tampilkan form laporan
+
+    Pengguna->>System: Isi detail kehilangan (kendaraan, kronologi, lokasi, waktu)
     
+    System->>Validation: Validasi kelengkapan data
+    activate Validation
+
     alt Data lengkap
-        Validation-->>-System: Data valid
-        System->>+DB: Simpan laporan dengan status "Pending"
-        DB-->>-System: Laporan tersimpan dengan ID unik
-        System->>+DB: Update status kendaraan menjadi "Hilang"
-        DB-->>-System: Status terupdate
-        System->>+Notification: Kirim notifikasi ke Petugas
+        Validation-->>System: Data valid
+
+        System->>DB: Simpan laporan dengan status "Pending"
+        activate DB
+        DB-->>System: Laporan tersimpan dengan ID unik
+        deactivate DB
+
+        System->>DB: Update status kendaraan menjadi "Hilang"
+        activate DB
+        DB-->>System: Status terupdate
+        deactivate DB
+
+        System->>Notification: Kirim notifikasi ke Petugas
+        activate Notification
         Notification-->>Petugas: Alert laporan kehilangan baru
         activate Petugas
         deactivate Petugas
-        Notification->>Notification: Kirim konfirmasi ke Pengguna
-        Notification-->>-Pengguna: Laporan berhasil dibuat
-        System-->>-Pengguna: Tampilkan nomor laporan dan status
+
+        Notification-->>Pengguna: Laporan berhasil dibuat
+        deactivate Notification
+
+        System-->>Pengguna: Tampilkan nomor laporan dan status
+
     else Data tidak lengkap
-        Validation-->>-System: Data tidak valid
-        System-->>-Pengguna: Tampilkan field yang harus dilengkapi
+        Validation-->>System: Data tidak valid
+        System-->>Pengguna: Tampilkan field yang harus dilengkapi
     end
-    deactivate Pengguna
+
+    deactivate Validation
+    deactivate System
 ```
 
 **Deskripsi Alur:**
@@ -584,65 +660,38 @@ sequenceDiagram
 sequenceDiagram
     actor Petugas as Petugas Keamanan
     participant System as Sistem SIPARKIR
-    participant Filter as Filter Module
+    participant Search as Search Module
     participant DB as Database
-    participant Investigation as Investigation Module
-    participant Notification as Notification Module
-    actor Pengguna
+    participant Display as Display Module
+    participant Log as Logging Module
 
-    activate Petugas
-    Petugas->>+System: Akses daftar laporan kehilangan
-    System->>+Filter: Filter laporan by status
-    Filter->>+DB: Query laporan status "Pending"
-    DB-->>-Filter: Daftar laporan pending
-    Filter-->>-System: Filtered data
-    System-->>-Petugas: Tampilkan tabel laporan pending
+    Petugas->>System: Input plat nomor kendaraan
     
-    Petugas->>+System: Pilih laporan untuk ditangani
-    System->>+DB: Ambil detail laporan lengkap
-    DB-->>-System: Detail laporan + kronologi
-    System-->>-Petugas: Tampilkan detail:<br/>- Data kendaraan<br/>- Kronologi kehilangan<br/>- Lokasi dan waktu<br/>- Data pelapor
-    
-    Petugas->>+System: Input tindak lanjut investigasi
-    Note over Petugas: Tindak lanjut:<br/>- Review CCTV<br/>- Koordinasi satpam<br/>- Pencarian area parkir
-    
-    System->>+Investigation: Simpan catatan investigasi
-    Investigation->>+DB: Update laporan dengan tindak lanjut
-    DB-->>-Investigation: Data terupdate
-    Investigation->>+DB: Update status "In Progress"
-    DB-->>-Investigation: Status terupdate
-    Investigation-->>-System: Update selesai
-    System->>+Notification: Kirim update ke pelapor
-    Notification-->>Pengguna: Notifikasi progress investigasi
-    activate Pengguna
-    deactivate Pengguna
-    Notification-->>-System: Notifikasi terkirim
-    System-->>-Petugas: Konfirmasi update tersimpan
-    
-    alt Kendaraan ditemukan
-        Petugas->>+System: Klik "Tandai Resolved"
-        System->>+DB: Update status laporan "Resolved"
-        DB-->>-System: Status terupdate
-        System->>+DB: Update status kendaraan "Tidak Parkir"
-        DB-->>-System: Status kendaraan terupdate
-        System->>+Notification: Kirim notifikasi kendaraan ditemukan
-        Notification-->>Pengguna: Notifikasi kendaraan ditemukan
-        activate Pengguna
-        deactivate Pengguna
-        Notification-->>-System: Notifikasi terkirim
-        System-->>-Petugas: Laporan selesai ditangani
-    else Kendaraan tidak ditemukan
-        Petugas->>+System: Update dengan status akhir investigasi
-        System->>+DB: Catat hasil investigasi
-        DB-->>-System: Hasil tersimpan
-        System->>+Notification: Kirim update ke pelapor
-        Notification-->>Pengguna: Notifikasi hasil investigasi
-        activate Pengguna
-        deactivate Pengguna
-        Notification-->>-System: Notifikasi terkirim
-        System-->>-Petugas: Update selesai
+    System->>+Search: Cari data kendaraan
+    Search->>+DB: Query kendaraan by plat nomor
+    DB-->>-Search: Data kendaraan + pemilik + foto
+    Search-->>-System: Data lengkap kendaraan
+
+    System->>+Display: Tampilkan data kendaraan
+    Display-->>-Petugas: Menampilkan:<br/>• Foto kendaraan<br/>• Plat nomor<br/>• Merk, jenis, warna<br/>• Data pemilik<br/>• Status parkir
+
+    Petugas->>Petugas: Cocokkan data dengan fisik kendaraan
+
+    alt Verifikasi berhasil
+        Petugas->>System: Konfirmasi "Identitas Valid"
+        System->>+Log: Catat log valid
+        Log->>+DB: Simpan log verifikasi
+        DB-->>-Log: Log tersimpan
+        Log-->>-System: Log selesai
+        System-->>Petugas: Tampilkan "Identitas Valid ✓"
+    else Verifikasi gagal
+        Petugas->>System: Konfirmasi "Identitas Tidak Valid"
+        System->>+Log: Catat log gagal
+        Log->>+DB: Simpan log verifikasi gagal
+        DB-->>-Log: Log tersimpan
+        Log-->>-System: Log selesai
+        System-->>Petugas: Tampilkan "Identitas Tidak Valid ✗"
     end
-    deactivate Petugas
 ```
 
 **Deskripsi Alur:**
