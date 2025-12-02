@@ -1,6 +1,6 @@
 # SIPARKIR UNILA - Sistem Parkir Kampus
 
-Sistem Informasi Parkir Universitas Lampung yang terintegrasi dengan database real-time menggunakan localStorage.
+Sistem Informasi Parkir Universitas Lampung yang terintegrasi dengan database MySQL real-time menggunakan XAMPP.
 
 ## 🚀 Fitur Utama
 
@@ -30,14 +30,28 @@ Sistem Informasi Parkir Universitas Lampung yang terintegrasi dengan database re
 ## 📦 Struktur File
 
 ```
-APPL/
+SIPARKIR/
+├── api/
+│   ├── config.php           # Konfigurasi database MySQL
+│   ├── login.php            # API endpoint login
+│   ├── kendaraan.php        # API endpoint kendaraan
+│   ├── transaksi.php        # API endpoint transaksi parkir
+│   ├── verifikasi.php       # API endpoint verifikasi
+│   └── audit.php            # API endpoint audit log
+├── database/
+│   ├── siparkir.sql         # Database schema MySQL
+│   ├── siparkir_postgresql.sql  # Database schema PostgreSQL
+│   └── MAPPING_SQL_vs_CLASS_vs_APP.md
 ├── js/
-│   └── database.js          # Database manager (localStorage)
+│   ├── database.js          # Database helper (localStorage fallback)
+│   └── database-api.js      # API client helper
 ├── login.html               # Halaman login universal (3 role)
 ├── pengguna.html            # Dashboard pengguna
-├── petugas.html             # Dashboard petugas
-├── admin.html               # Dashboard admin
-└── README.md                # Dokumentasi ini
+├── petugas.html             # Dashboard petugas keamanan
+├── admin.html               # Dashboard administrator
+├── test-database.html       # Testing database connection
+├── README.md                # Dokumentasi ini
+└── SETUP_XAMPP.md           # Panduan setup XAMPP
 ```
 
 ---
@@ -61,108 +75,152 @@ APPL/
 
 ---
 
-## 💾 Database Structure (localStorage)
+## 💾 Database Structure (MySQL)
 
-### **1. siparkir_pengguna**
-```javascript
-{
-    id: 'USR001',
-    nama: 'Andi Pratama',
-    email: 'pengguna@unila.ac.id',
-    password: 'pengguna123',
-    nim: '2315061001',
-    role: 'pengguna',
-    status: 'aktif'
-}
+Database: `siparkir`
+
+### **Tabel Utama:**
+
+### **1. admin**
+```sql
+CREATE TABLE admin (
+    id_admin VARCHAR(10) PRIMARY KEY,
+    nama VARCHAR(100) NOT NULL,
+    email VARCHAR(100) UNIQUE NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    role VARCHAR(20) DEFAULT 'admin',
+    status VARCHAR(20) DEFAULT 'aktif',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
 ```
 
-### **2. siparkir_petugas**
-```javascript
-{
-    id: 'PTG001',
-    nama: 'Budi Santoso',
-    email: 'petugas@unila.ac.id',
-    password: 'petugas123',
-    nip: '198501012010011001',
-    shift: 'Pagi (07:00 - 15:00)',
-    role: 'petugas',
-    status: 'aktif'
-}
+### **2. pengguna**
+```sql
+CREATE TABLE pengguna (
+    id_pengguna VARCHAR(10) PRIMARY KEY,
+    nama VARCHAR(100) NOT NULL,
+    email VARCHAR(100) UNIQUE NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    nim VARCHAR(20) UNIQUE,
+    no_telepon VARCHAR(20),
+    alamat TEXT,
+    role VARCHAR(20) DEFAULT 'pengguna',
+    status VARCHAR(20) DEFAULT 'aktif',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
 ```
 
-### **3. siparkir_admin**
-```javascript
-{
-    id: 'ADM001',
-    nama: 'Administrator',
-    email: 'admin@unila.ac.id',
-    password: 'admin123',
-    role: 'admin',
-    status: 'aktif'
-}
+### **3. petugas_keamanan**
+```sql
+CREATE TABLE petugas_keamanan (
+    id_petugas VARCHAR(10) PRIMARY KEY,
+    nama VARCHAR(100) NOT NULL,
+    email VARCHAR(100) UNIQUE NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    nip VARCHAR(30) UNIQUE,
+    no_telepon VARCHAR(20),
+    shift VARCHAR(50),
+    role VARCHAR(20) DEFAULT 'petugas',
+    status VARCHAR(20) DEFAULT 'aktif',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
 ```
 
-### **4. siparkir_kendaraan**
-```javascript
-{
-    id: 'KND001',
-    pemilikId: 'USR001',
-    platNomor: 'B 1234 ABC',
-    merk: 'Honda',
-    tipe: 'Beat',
-    warna: 'Hitam',
-    tahun: 2022,
-    status: 'aktif' // atau 'pending'
-}
+### **4. kendaraan**
+```sql
+CREATE TABLE kendaraan (
+    id_kendaraan VARCHAR(10) PRIMARY KEY,
+    id_pengguna VARCHAR(10),
+    plat_nomor VARCHAR(20) UNIQUE NOT NULL,
+    jenis VARCHAR(20),
+    merk VARCHAR(50),
+    warna VARCHAR(30),
+    tahun_produksi YEAR,
+    status VARCHAR(20) DEFAULT 'pending',
+    tanggal_registrasi TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (id_pengguna) REFERENCES pengguna(id_pengguna)
+);
 ```
 
-### **5. siparkir_transaksi_parkir**
-```javascript
-{
-    id: 'TRX001',
-    kendaraanId: 'KND001',
-    platNomor: 'B 1234 ABC',
-    penggunaId: 'USR001',
-    lokasiParkir: 'Parkiran A',
-    waktuMasuk: '2025-12-01T07:30:00',
-    waktuKeluar: null,
-    durasi: null,
-    status: 'aktif' // atau 'selesai'
-}
+### **5. transaksi_parkir**
+```sql
+CREATE TABLE transaksi_parkir (
+    id_transaksi VARCHAR(10) PRIMARY KEY,
+    id_kendaraan VARCHAR(10),
+    lokasi_parkir VARCHAR(100),
+    waktu_masuk TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    waktu_keluar TIMESTAMP NULL,
+    durasi_parkir INT,
+    status VARCHAR(20) DEFAULT 'aktif',
+    FOREIGN KEY (id_kendaraan) REFERENCES kendaraan(id_kendaraan)
+);
 ```
 
-### **6. siparkir_laporan_kehilangan**
-```javascript
-{
-    id: 'LAP001',
-    kendaraanId: 'KND002',
-    platNomor: 'B 5678 XYZ',
-    penggunaId: 'USR001',
-    pelaporNama: 'Andi Pratama',
-    lokasiKehilangan: 'Parkiran B',
-    waktuKejadian: '2025-12-01T10:30:00',
-    kronologi: 'Kendaraan hilang saat parkir...',
-    buktiPendukung: '',
-    status: 'Investigasi', // atau 'Selesai'
-    petugasId: null,
-    tanggalLapor: '2025-12-01T10:35:00'
-}
+### **6. laporan_kehilangan**
+```sql
+CREATE TABLE laporan_kehilangan (
+    id_laporan VARCHAR(10) PRIMARY KEY,
+    id_kendaraan VARCHAR(10),
+    id_pengguna VARCHAR(10),
+    lokasi_kehilangan VARCHAR(100),
+    waktu_kejadian TIMESTAMP,
+    kronologi TEXT,
+    status VARCHAR(20) DEFAULT 'Investigasi',
+    id_petugas VARCHAR(10),
+    tanggal_lapor TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (id_kendaraan) REFERENCES kendaraan(id_kendaraan),
+    FOREIGN KEY (id_pengguna) REFERENCES pengguna(id_pengguna),
+    FOREIGN KEY (id_petugas) REFERENCES petugas_keamanan(id_petugas)
+);
 ```
 
-### **7. siparkir_pencatatan_petugas**
-```javascript
-{
-    id: 'PNC001',
-    platNomor: 'B 1234 ABC',
-    jenisKendaraan: 'Motor',
-    lokasiPenjagaan: 'Gerbang Utama',
-    statusTransaksi: 'Masuk', // atau 'Keluar'
-    catatan: '',
-    petugasId: 'PTG001',
-    petugasNama: 'Budi Santoso',
-    waktu: '2025-12-01T07:45:00'
-}
+### **7. pencatatan_petugas**
+```sql
+CREATE TABLE pencatatan_petugas (
+    id_pencatatan VARCHAR(10) PRIMARY KEY,
+    id_petugas VARCHAR(10),
+    plat_nomor VARCHAR(20),
+    jenis_kendaraan VARCHAR(20),
+    lokasi_penjagaan VARCHAR(100),
+### **1. Login**
+1. User masuk ke `login.html`
+2. Input email & password
+3. Sistem kirim request ke `api/login.php`
+4. API query MySQL database untuk validasi kredensial
+5. Jika valid, return user data dan set session
+6. Redirect ke dashboard sesuai role (admin/pengguna/petugas)
 ```
+
+### **8. verifikasi_kendaraan**
+```sql
+CREATE TABLE verifikasi_kendaraan (
+    id_verifikasi VARCHAR(10) PRIMARY KEY,
+    id_kendaraan VARCHAR(10),
+    id_verifikator VARCHAR(10),
+    tanggal_verifikasi TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    status_verifikasi VARCHAR(20),
+    catatan TEXT,
+    FOREIGN KEY (id_kendaraan) REFERENCES kendaraan(id_kendaraan)
+);
+```
+
+### **9. audit_log**
+```sql
+CREATE TABLE audit_log (
+    id_log VARCHAR(10) PRIMARY KEY,
+    id_user VARCHAR(10),
+    role VARCHAR(20),
+    aksi VARCHAR(100),
+    detail TEXT,
+    waktu TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+```
+
+### **Views untuk Reporting:**
+- `view_transaksi_lengkap` - Join transaksi dengan data kendaraan & pengguna
+- `view_laporan_lengkap` - Join laporan dengan data kendaraan & petugas
+- `view_kendaraan_lengkap` - Join kendaraan dengan data pemilik
+- `view_statistik_parkir` - Agregasi data parkir untuk dashboard
 
 ---
 
@@ -213,11 +271,35 @@ APPL/
 
 Data auto-refresh setiap 30 detik.
 
----
-
 ## 🔧 Cara Menggunakan
 
-1. **Buka file `login.html`** di browser
+### **Persiapan (Setup XAMPP):**
+
+1. **Install XAMPP** (jika belum ada)
+2. **Start Apache & MySQL** di XAMPP Control Panel
+3. **Import Database:**
+   ```powershell
+   # Masuk ke direktori MySQL
+   cd C:\xampp\mysql\bin
+   
+   # Buat database
+   .\mysql.exe -u root -e "CREATE DATABASE IF NOT EXISTS siparkir CHARACTER SET utf8mb4"
+   
+   # Import SQL file
+   .\mysql.exe -u root siparkir -e "source C:/xampp/htdocs/SIPARKIR/database/siparkir.sql"
+   
+   # Verifikasi
+   .\mysql.exe -u root siparkir -e "SHOW TABLES"
+   ```
+4. **Pastikan file ada di:** `C:\xampp\htdocs\SIPARKIR\`
+
+### **Menggunakan Aplikasi:**
+
+1. **Buka browser** dan akses `http://localhost/SIPARKIR/login.html`
+2. **Login** dengan salah satu kredensial di atas
+3. **Mulai gunakan fitur** sesuai role Anda
+
+> **Catatan:** Pastikan XAMPP Apache & MySQL sedang running!
 2. **Login** dengan salah satu kredensial di atas
 3. **Mulai gunakan fitur** sesuai role Anda
 
@@ -230,27 +312,41 @@ Data auto-refresh setiap 30 detik.
 4. Setelah terverifikasi, lakukan check-in parkir
 5. Setelah selesai parkir, lakukan check-out
 
-#### **B. Sebagai Petugas:**
-1. Login → `petugas@unila.ac.id` / `petugas123`
-2. Verifikasi kendaraan yang pending
-3. Catat kendaraan keluar/masuk di pos jaga
-4. Tangani laporan kehilangan dari pengguna
+## 🛠️ Teknologi yang Digunakan
 
-#### **C. Sebagai Admin:**
-1. Login → `admin@unila.ac.id` / `admin123`
-2. Monitoring dashboard (lihat statistik real-time)
-3. Kelola database kendaraan & pengguna
-4. Tambah petugas baru
-5. Verifikasi kendaraan jika diperlukan
+- **Frontend:** HTML5, CSS3, JavaScript (Vanilla ES6+)
+- **Backend:** PHP 8.x with PDO
+- **Database:** MySQL 5.7+ (via XAMPP)
+- **Server:** Apache 2.4 (XAMPP)
+- **API:** RESTful API with JSON responses
+- **Icons:** Font Awesome 6.4.0
+- **Charts:** Chart.js (untuk admin dashboard)
+- **Fonts:** Google Fonts (Poppins)
+## 📝 Catatan Penting
 
----
+1. **Data disimpan di MySQL database** - Data persisten dan aman
+2. **Memerlukan XAMPP** - Apache dan MySQL harus running
+3. **Database Config** - `api/config.php` (host: localhost, user: root, no password)
+4. **API Endpoints** - Semua API ada di folder `api/`
+5. **Fallback localStorage** - Jika API gagal, sistem fallback ke localStorage
+6. **Password plain-text** - Untuk demo purposes only (production harus di-hash)
+7. **Auto-refresh 30 detik** - Bisa disesuaikan di script masing-masing halaman
+## 🔮 Future Development
 
-## 🌟 Fitur Unggulan
-
-✅ **Real-Time Sync** - Semua data tersinkron antar halaman  
-✅ **Session Management** - Login persisten sampai logout  
-✅ **Auto Refresh** - Data update otomatis setiap 30 detik  
-✅ **Role-Based Access** - Setiap role punya akses berbeda  
+- [x] Database MySQL dengan XAMPP
+- [x] RESTful API dengan PHP
+- [ ] Password hashing (bcrypt/Argon2)
+- [ ] Session management dengan PHP sessions
+- [ ] Real-time notification (WebSocket)
+- [ ] Export laporan ke PDF/Excel
+- [ ] Upload foto kendaraan
+- [ ] QR Code untuk tiket parkir
+- [ ] Mobile App (React Native)
+- [ ] Email notification (PHPMailer)
+- [ ] Payment gateway (jika berbayar)
+- [ ] JWT authentication
+- [ ] Rate limiting & security headers
+- [ ] Backup & restore database punya akses berbeda  
 ✅ **Data Validation** - Form validation & error handling  
 ✅ **Responsive Design** - Compatible dengan berbagai device  
 
