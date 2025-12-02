@@ -1655,23 +1655,6 @@
         }
 
         // Modal Functions
-        // Cek login dari localStorage
-        const currentUser = JSON.parse(localStorage.getItem('currentUser'));
-        if (!currentUser || currentUser.role !== 'admin') {
-            alert('⛔ Anda harus login sebagai admin terlebih dahulu!');
-            window.location.href = 'login.html';
-        }
-
-        // Fungsi logout
-        function logout() {
-            if (confirm('Apakah Anda yakin ingin keluar?')) {
-                localStorage.removeItem('currentUser');
-                alert('✅ Anda berhasil logout!');
-                window.location.href = 'login.html';
-            }
-        }
-
-        // Fungsi untuk membuka modal
         function openModal(modalId) {
             const modal = document.getElementById(modalId);
             if (modal) {
@@ -1825,11 +1808,20 @@
             }
         }
 
-        // Cek login
-        const currentUser = db.getCurrentUser();
+        // Cek login dari localStorage
+        const currentUser = JSON.parse(localStorage.getItem('currentUser'));
         if (!currentUser || currentUser.role !== 'admin') {
-            alert('⛔ Anda harus login terlebih dahulu!');
+            alert('⛔ Anda harus login sebagai admin terlebih dahulu!');
             window.location.href = 'login.html';
+        }
+
+        // Fungsi logout
+        function logout() {
+            if (confirm('Apakah Anda yakin ingin keluar?')) {
+                localStorage.removeItem('currentUser');
+                alert('✅ Anda berhasil logout!');
+                window.location.href = 'login.html';
+            }
         }
 
         // Load statistics untuk admin
