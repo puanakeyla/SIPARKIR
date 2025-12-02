@@ -1161,39 +1161,9 @@
                                     <th>Aksi</th>
                                 </tr>
                             </thead>
-                            <tbody>
+                            <tbody id="penggunaTableBody">
                                 <tr>
-                                    <td><strong>Puan Akeyla</strong></td>
-                                    <td>2315061001</td>
-                                    <td>puan@student.unila.ac.id</td>
-                                    <td>2 Kendaraan</td>
-                                    <td><span class="status-badge status-active">Aktif</span></td>
-                                    <td>
-                                        <button class="btn btn-warning btn-sm" onclick="editPengguna('USR001', 'Puan Akeyla')"><i class="fas fa-edit"></i> Edit</button>
-                                        <button class="btn btn-danger btn-sm" onclick="hapusPengguna('USR001', 'Puan Akeyla')"><i class="fas fa-trash"></i> Hapus</button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td><strong>Jane Smith</strong></td>
-                                    <td>2315061002</td>
-                                    <td>jane.smith@student.unila.ac.id</td>
-                                    <td>1 Kendaraan</td>
-                                    <td><span class="status-badge status-active">Aktif</span></td>
-                                    <td>
-                                        <button class="btn btn-warning btn-sm" onclick="editPengguna('USR002', 'Jane Smith')"><i class="fas fa-edit"></i> Edit</button>
-                                        <button class="btn btn-danger btn-sm" onclick="hapusPengguna('USR002', 'Jane Smith')"><i class="fas fa-trash"></i> Hapus</button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td><strong>Michael Johnson</strong></td>
-                                    <td>2315061003</td>
-                                    <td>michael.j@student.unila.ac.id</td>
-                                    <td>1 Kendaraan</td>
-                                    <td><span class="status-badge status-active">Aktif</span></td>
-                                    <td>
-                                        <button class="btn btn-warning btn-sm" onclick="editPengguna('USR003', 'Michael Johnson')"><i class="fas fa-edit"></i> Edit</button>
-                                        <button class="btn btn-danger btn-sm" onclick="hapusPengguna('USR003', 'Michael Johnson')"><i class="fas fa-trash"></i> Hapus</button>
-                                    </td>
+                                    <td colspan="6" class="text-center">Memuat data...</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -1221,39 +1191,9 @@
                                     <th>Aksi</th>
                                 </tr>
                             </thead>
-                            <tbody>
+                            <tbody id="kendaraanTableBody">
                                 <tr>
-                                    <td><strong>B 1234 ABC</strong></td>
-                                    <td>Motor</td>
-                                    <td>Honda Beat</td>
-                                    <td>Puan Akeyla</td>
-                                    <td>15 Jan 2024</td>
-                                    <td>
-                                        <button class="btn btn-warning btn-sm" onclick="editKendaraan('KND001', 'B 1234 ABC')"><i class="fas fa-edit"></i> Edit</button>
-                                        <button class="btn btn-danger btn-sm" onclick="hapusKendaraan('KND001', 'B 1234 ABC')"><i class="fas fa-trash"></i> Hapus</button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td><strong>B 5678 XYZ</strong></td>
-                                    <td>Mobil</td>
-                                    <td>Toyota Avanza</td>
-                                    <td>Jane Smith</td>
-                                    <td>10 Jan 2024</td>
-                                    <td>
-                                        <button class="btn btn-warning btn-sm" onclick="editKendaraan('KND002', 'B 5678 XYZ')"><i class="fas fa-edit"></i> Edit</button>
-                                        <button class="btn btn-danger btn-sm" onclick="hapusKendaraan('KND002', 'B 5678 XYZ')"><i class="fas fa-trash"></i> Hapus</button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td><strong>B 9012 DEF</strong></td>
-                                    <td>Motor</td>
-                                    <td>Yamaha NMAX</td>
-                                    <td>Michael Johnson</td>
-                                    <td>08 Jan 2024</td>
-                                    <td>
-                                        <button class="btn btn-warning btn-sm" onclick="editKendaraan('KND003', 'B 9012 DEF')"><i class="fas fa-edit"></i> Edit</button>
-                                        <button class="btn btn-danger btn-sm" onclick="hapusKendaraan('KND003', 'B 9012 DEF')"><i class="fas fa-trash"></i> Hapus</button>
-                                    </td>
+                                    <td colspan="6" class="text-center">Memuat data...</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -1279,28 +1219,9 @@
                                     <th>Aksi</th>
                                 </tr>
                             </thead>
-                            <tbody>
+                            <tbody id="laporanTableBody">
                                 <tr>
-                                    <td><strong>#LAP-001</strong></td>
-                                    <td>Honda Beat - B 2345 GHI</td>
-                                    <td>Robert Brown</td>
-                                    <td>20 Jan 2024</td>
-                                    <td><span class="status-badge status-pending">Investigasi</span></td>
-                                    <td>
-                                        <button class="btn btn-primary btn-sm" onclick="lihatDetailLaporanAdmin('LAP001')"><i class="fas fa-eye"></i> Detail</button>
-                                        <button class="btn btn-success btn-sm" onclick="selesaikanLaporanAdmin('LAP001')"><i class="fas fa-check"></i> Selesai</button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td><strong>#LAP-002</strong></td>
-                                    <td>Yamaha NMAX - B 6789 JKL</td>
-                                    <td>Sarah Johnson</td>
-                                    <td>19 Jan 2024</td>
-                                    <td><span class="status-badge status-active">Aktif</span></td>
-                                    <td>
-                                        <button class="btn btn-primary btn-sm" onclick="lihatDetailLaporanAdmin('LAP002')"><i class="fas fa-eye"></i> Detail</button>
-                                        <button class="btn btn-success btn-sm" onclick="selesaikanLaporanAdmin('LAP002')"><i class="fas fa-check"></i> Selesai</button>
-                                    </td>
+                                    <td colspan="6" class="text-center">Memuat data...</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -1831,9 +1752,12 @@
                 document.querySelectorAll('.stat-card .stat-value')[3].textContent = laporan.filter(l => l.status_laporan !== 'Selesai').length.toLocaleString();
 
                 // Update tabel pengguna
-                const tbodyPengguna = document.querySelector('#users-tab table tbody');
+                const tbodyPengguna = document.getElementById('penggunaTableBody');
                 if (tbodyPengguna) {
                     tbodyPengguna.innerHTML = '';
+                    if (pengguna.length === 0) {
+                        tbodyPengguna.innerHTML = '<tr><td colspan="6" class="text-center">Belum ada data pengguna</td></tr>';
+                    }
                     pengguna.forEach(p => {
                         const kendaraanCount = kendaraan.filter(k => k.id_pengguna === p.id_pengguna).length;
                         tbodyPengguna.innerHTML += `
@@ -1853,9 +1777,12 @@
                 }
 
                 // Update tabel kendaraan
-                const tbodyKendaraan = document.querySelector('#vehicles-tab table tbody');
+                const tbodyKendaraan = document.getElementById('kendaraanTableBody');
                 if (tbodyKendaraan) {
                     tbodyKendaraan.innerHTML = '';
+                    if (kendaraan.length === 0) {
+                        tbodyKendaraan.innerHTML = '<tr><td colspan="6" class="text-center">Belum ada data kendaraan</td></tr>';
+                    }
                     kendaraan.forEach(k => {
                         const pemilik = pengguna.find(p => p.id_pengguna === k.id_pengguna);
                         const statusClass = k.status_parkir === 'aktif' ? 'status-active' : 'status-pending';
@@ -1881,9 +1808,12 @@
                 }
 
                 // Update tabel laporan kehilangan
-                const tbodyLaporan = document.querySelector('#reports-tab table tbody');
+                const tbodyLaporan = document.getElementById('laporanTableBody');
                 if (tbodyLaporan) {
                     tbodyLaporan.innerHTML = '';
+                    if (laporan.length === 0) {
+                        tbodyLaporan.innerHTML = '<tr><td colspan="6" class="text-center">Belum ada laporan kehilangan</td></tr>';
+                    }
                     laporan.forEach(l => {
                         const tanggal = new Date(l.tanggal_laporan).toLocaleDateString('id-ID');
                         const statusClass = l.status_laporan === 'Selesai' ? 'status-success' : l.status_laporan.includes('Investig') ? 'status-pending' : 'status-active';
