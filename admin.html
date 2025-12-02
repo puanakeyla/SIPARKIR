@@ -1633,27 +1633,6 @@
             });
         }
 
-        // Tab Switching
-        function switchTab(source, tabName) {
-            document.querySelectorAll('.tab-content').forEach(section => {
-                section.classList.remove('active');
-            });
-            document.querySelectorAll('.tab-controls .tab').forEach(button => {
-                button.classList.remove('active');
-            });
-
-            const targetPanel = document.getElementById(tabName + '-tab');
-            if (targetPanel) {
-                targetPanel.classList.add('active');
-            }
-
-            if (source instanceof Event) {
-                source.currentTarget.classList.add('active');
-            } else if (source) {
-                source.classList.add('active');
-            }
-        }
-
         // Modal Functions
         function openModal(modalId) {
             const modal = document.getElementById(modalId);
