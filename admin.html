@@ -2125,9 +2125,9 @@
                 
                 // Simpan ke riwayat laporan (simulasi)
                 setTimeout(() => {
-                    const currentUser = db.getCurrentUser();
+                    const user = JSON.parse(localStorage.getItem('currentUser'));
                     
-                    alert(`✅ Laporan berhasil dibuat!\n\nFile: ${fileName}\nRentang: ${rangeName}\nFormat: ${formatName}\nDibuat oleh: ${currentUser.nama}\n\n📥 Laporan siap diunduh di bagian Riwayat Laporan.`);
+                    alert(`✅ Laporan berhasil dibuat!\n\nFile: ${fileName}\nRentang: ${rangeName}\nFormat: ${formatName}\nDibuat oleh: ${user.nama}\n\n📥 Laporan siap diunduh di bagian Riwayat Laporan.`);
                     
                     // Tambahkan ke riwayat (akan terlihat setelah reload)
                     const existingReports = JSON.parse(localStorage.getItem('siparkir_reports') || '[]');
@@ -2135,7 +2135,7 @@
                         id: 'REP' + Date.now(),
                         fileName: fileName,
                         title: `Laporan ${rangeName} · ${new Date().toLocaleDateString('id-ID')}`,
-                        creator: currentUser.nama,
+                        creator: user.nama,
                         format: reportFormat.toUpperCase(),
                         size: Math.floor(Math.random() * 2000) + 500 + ' KB',
                         createdAt: new Date().toISOString(),
@@ -2197,14 +2197,14 @@
         }
 
         window.verifikasiKendaraanAdmin = function(kendaraanId) {
-            const currentUser = db.getCurrentUser();
-            if (!currentUser) {
+            const user = JSON.parse(localStorage.getItem('currentUser'));
+            if (!user) {
                 alert('Session expired!');
                 return;
             }
             
             // Gunakan fungsi verifikasi yang support admin
-            db.verifikasiKendaraan(kendaraanId, currentUser.id, 'admin', 'Valid', 'Diverifikasi oleh admin');
+            db.verifikasiKendaraan(kendaraanId, user.id, 'admin', 'Valid', 'Diverifikasi oleh admin');
             
             alert('✅ Kendaraan berhasil diverifikasi oleh admin!');
             loadAdminData();
@@ -2228,10 +2228,10 @@
 
         window.selesaikanLaporanAdmin = function(laporanId) {
             if (confirm('Tandai laporan sebagai SELESAI?')) {
-                const currentUser = db.getCurrentUser();
+                const user = JSON.parse(localStorage.getItem('currentUser'));
                 db.updateLaporan(laporanId, { 
                     status: 'Selesai',
-                    adminId: currentUser.id,
+                    adminId: user.id,
                     handlerRole: 'admin'
                 });
                 alert('✅ Laporan berhasil diselesaikan!');
