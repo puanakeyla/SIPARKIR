@@ -450,7 +450,11 @@ class Database {
     }
 
     logout() {
+        // Clear both session and persistent storage to fully sign out
         sessionStorage.removeItem('currentUser');
+        localStorage.removeItem('currentUser');
+        // Redirect to login page after cleanup
+        window.location.href = 'login.html';
     }
 
     getCurrentUser() {

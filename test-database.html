@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Database Connection</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .test-box {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .success { border-left: 4px solid #10b981; }
+        .error { border-left: 4px solid #ef4444; }
+        .warning { border-left: 4px solid #f59e0b; }
+        h1 { color: #333; }
+        h3 { margin-top: 0; color: #666; }
+        pre {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 4px;
+            overflow-x: auto;
+        }
+        button {
+            background: #3b82f6;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover { background: #2563eb; }
+    </style>
+</head>
+<body>
+    <h1>🧪 Test Database SIPARKIR</h1>
+    
+    <div id="results"></div>
+    
+    <div class="test-box">
+        <h3>Manual Login Test</h3>
+        <input type="text" id="testEmail" placeholder="Email" value="pengguna@unila.ac.id" style="padding:8px;width:200px;margin:5px;">
+        <input type="password" id="testPassword" placeholder="Password" value="pengguna123" style="padding:8px;width:200px;margin:5px;">
+        <button onclick="testLogin()">Test Login</button>
+        <div id="loginResult"></div>
+    </div>
+
+    <script src="js/database.js"></script>
+    <script>
+        const resultsDiv = document.getElementById('results');
+
+        function addResult(title, status, message, details = null) {
+            const div = document.createElement('div');
+            div.className = `test-box ${status}`;
+            div.innerHTML = `
+                <h3>${status === 'success' ? '✅' : status === 'error' ? '❌' : '⚠️'} ${title}</h3>
+                <p>${message}</p>
+                ${details ? `<pre>${details}</pre>` : ''}
+            `;
+            resultsDiv.appendChild(div);
+        }
+
+        // Test 1: Cek apakah database.js loaded
+        if (typeof db !== 'undefined') {
+            addResult('Database.js Loaded', 'success', 'File database.js berhasil dimuat!');
+        } else {
+            addResult('Database.js Loaded', 'error', 'File database.js GAGAL dimuat!', 'Pastikan file js/database.js ada di folder yang benar.');
+        }
+
+        // Test 2: Cek class Database
+        if (typeof Database !== 'undefined') {
+            addResult('Database Class', 'success', 'Class Database tersedia');
+        } else {
+            addResult('Database Class', 'error', 'Class Database tidak ditemukan');
+        }
+
+        // Test 3: Cek instance db
+        if (typeof db !== 'undefined' && db instanceof Database) {
+            addResult('Database Instance', 'success', 'Instance db berhasil dibuat');
+        } else {
+            addResult('Database Instance', 'error', 'Instance db tidak valid');
+        }
+
+        // Test 4: Cek fungsi login
+        if (typeof db !== 'undefined' && typeof db.login === 'function') {
+            addResult('Login Function', 'success', 'Fungsi login tersedia');
+        } else {
+            addResult('Login Function', 'error', 'Fungsi login tidak ditemukan');
+        }
+
+        // Test 5: Cek localStorage
+        if (localStorage.getItem('siparkir_pengguna')) {
+            const pengguna = JSON.parse(localStorage.getItem('siparkir_pengguna'));
+            addResult('Data Pengguna', 'success', `Ditemukan ${pengguna.length} pengguna`, JSON.stringify(pengguna, null, 2));
+        } else {
+            addResult('Data Pengguna', 'warning', 'Data pengguna belum diinisialisasi');
+        }
+
+        if (localStorage.getItem('siparkir_petugas')) {
+            const petugas = JSON.parse(localStorage.getItem('siparkir_petugas'));
+            addResult('Data Petugas', 'success', `Ditemukan ${petugas.length} petugas`, JSON.stringify(petugas, null, 2));
+        } else {
+            addResult('Data Petugas', 'warning', 'Data petugas belum diinisialisasi');
+        }
+
+        if (localStorage.getItem('siparkir_admin')) {
+            const admin = JSON.parse(localStorage.getItem('siparkir_admin'));
+            addResult('Data Admin', 'success', `Ditemukan ${admin.length} admin`, JSON.stringify(admin, null, 2));
+        } else {
+            addResult('Data Admin', 'warning', 'Data admin belum diinisialisasi');
+        }
+
+        // Test 6: Cek semua user
+        if (typeof db !== 'undefined') {
+            try {
+                const allUsers = db.getAllUsers();
+                addResult('Get All Users', 'success', `Total ${allUsers.length} users di database`, 
+                    JSON.stringify(allUsers.map(u => ({
+                        id: u.id,
+                        nama: u.nama,
+                        email: u.email,
+                        role: u.role
+                    })), null, 2)
+                );
+            } catch (e) {
+                addResult('Get All Users', 'error', 'Error saat mengambil data users', e.message);
+            }
+        }
+
+        // Manual login test function
+        function testLogin() {
+            const email = document.getElementById('testEmail').value;
+            const password = document.getElementById('testPassword').value;
+            const resultDiv = document.getElementById('loginResult');
+
+            try {
+                const user = db.login(email, password);
+                if (user) {
+                    resultDiv.innerHTML = `<div class="test-box success" style="margin-top:10px;">
+                        <h3>✅ Login Berhasil!</h3>
+                        <pre>${JSON.stringify(user, null, 2)}</pre>
+                    </div>`;
+                } else {
+                    resultDiv.innerHTML = `<div class="test-box error" style="margin-top:10px;">
+                        <h3>❌ Login Gagal</h3>
+                        <p>Email atau password salah</p>
+                    </div>`;
+                }
+            } catch (e) {
+                resultDiv.innerHTML = `<div class="test-box error" style="margin-top:10px;">
+                    <h3>❌ Error</h3>
+                    <p>${e.message}</p>
+                </div>`;
+            }
+        }
+
+        // Auto test default credentials
+        setTimeout(() => {
+            console.log('=== AUTO TEST CREDENTIALS ===');
+            const credentials = [
+                { email: 'pengguna@unila.ac.id', password: 'pengguna123', role: 'Pengguna' },
+                { email: 'petugas@unila.ac.id', password: 'petugas123', role: 'Petugas' },
+                { email: 'admin@unila.ac.id', password: 'admin123', role: 'Admin' }
+            ];
+
+            credentials.forEach(cred => {
+                try {
+                    const user = db.login(cred.email, cred.password);
+                    if (user) {
+                        addResult(`Auto Login Test - ${cred.role}`, 'success', 
+                            `Login ${cred.role} berhasil dengan ${cred.email}`,
+                            JSON.stringify({ nama: user.nama, email: user.email, role: user.role }, null, 2)
+                        );
+                        db.logout(); // Logout untuk test berikutnya
+                    } else {
+                        addResult(`Auto Login Test - ${cred.role}`, 'error', 
+                            `Login ${cred.role} gagal dengan ${cred.email}`
+                        );
+                    }
+                } catch (e) {
+                    addResult(`Auto Login Test - ${cred.role}`, 'error', e.message);
+                }
+            });
+        }, 500);
+    </script>
+</body>
+</html>

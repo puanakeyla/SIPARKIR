@@ -964,7 +964,7 @@
                 <a href="#database-kendaraan">Database Kendaraan</a>
                 <a href="#kelola-petugas">Kelola Petugas</a>
             </div>
-            <a class="nav-cta" href="login.html"><i class="fas fa-sign-out-alt"></i> Keluar</a>
+            <a class="nav-cta" href="#" onclick="db.logout(); return false;"><i class="fas fa-sign-out-alt"></i> Keluar</a>
         </div>
     </nav>
 
@@ -1088,7 +1088,7 @@
                         </label>
                     </form>
                     <div class="report-actions">
-                        <button type="button" class="btn btn-primary"><i class="fas fa-file-download"></i> Buat Laporan</button>
+                        <button type="button" class="btn btn-primary" onclick="buatLaporan()"><i class="fas fa-file-download"></i> Buat Laporan</button>
                     </div>
                 </article>
                 <article class="report-card">
@@ -1103,21 +1103,21 @@
                                 <span class="title">Laporan Pekanan · 10-16 Nov 2025</span>
                                 <span class="meta">Dibuat oleh Admin System · PDF · 1.2 MB</span>
                             </div>
-                            <button type="button" class="btn btn-outline btn-sm"><i class="fas fa-download"></i> Unduh</button>
+                            <button type="button" class="btn btn-outline btn-sm" onclick="unduhLaporan('Laporan_Pekanan_10-16_Nov_2025.pdf', 'PDF')"><i class="fas fa-download"></i> Unduh</button>
                         </li>
                         <li>
                             <div>
                                 <span class="title">Evaluasi Bulanan · Oktober 2025</span>
                                 <span class="meta">Dibuat oleh Puan Akeyla · XLSX · 980 KB</span>
                             </div>
-                            <button type="button" class="btn btn-outline btn-sm"><i class="fas fa-download"></i> Unduh</button>
+                            <button type="button" class="btn btn-outline btn-sm" onclick="unduhLaporan('Evaluasi_Bulanan_Oktober_2025.xlsx', 'XLSX')"><i class="fas fa-download"></i> Unduh</button>
                         </li>
                         <li>
                             <div>
                                 <span class="title">Rekap Harian · 15 Nov 2025</span>
                                 <span class="meta">Dibuat oleh Admin System · CSV · 320 KB</span>
                             </div>
-                            <button type="button" class="btn btn-outline btn-sm"><i class="fas fa-download"></i> Unduh</button>
+                            <button type="button" class="btn btn-outline btn-sm" onclick="unduhLaporan('Rekap_Harian_15_Nov_2025.csv', 'CSV')"><i class="fas fa-download"></i> Unduh</button>
                         </li>
                     </ul>
                 </article>
@@ -1169,8 +1169,8 @@
                                     <td>2 Kendaraan</td>
                                     <td><span class="status-badge status-active">Aktif</span></td>
                                     <td>
-                                        <button class="btn btn-warning btn-sm"><i class="fas fa-edit"></i> Edit</button>
-                                        <button class="btn btn-danger btn-sm"><i class="fas fa-trash"></i> Hapus</button>
+                                        <button class="btn btn-warning btn-sm" onclick="editPengguna('USR001', 'Puan Akeyla')"><i class="fas fa-edit"></i> Edit</button>
+                                        <button class="btn btn-danger btn-sm" onclick="hapusPengguna('USR001', 'Puan Akeyla')"><i class="fas fa-trash"></i> Hapus</button>
                                     </td>
                                 </tr>
                                 <tr>
@@ -1180,8 +1180,8 @@
                                     <td>1 Kendaraan</td>
                                     <td><span class="status-badge status-active">Aktif</span></td>
                                     <td>
-                                        <button class="btn btn-warning btn-sm"><i class="fas fa-edit"></i> Edit</button>
-                                        <button class="btn btn-danger btn-sm"><i class="fas fa-trash"></i> Hapus</button>
+                                        <button class="btn btn-warning btn-sm" onclick="editPengguna('USR002', 'Jane Smith')"><i class="fas fa-edit"></i> Edit</button>
+                                        <button class="btn btn-danger btn-sm" onclick="hapusPengguna('USR002', 'Jane Smith')"><i class="fas fa-trash"></i> Hapus</button>
                                     </td>
                                 </tr>
                                 <tr>
@@ -1191,8 +1191,8 @@
                                     <td>1 Kendaraan</td>
                                     <td><span class="status-badge status-active">Aktif</span></td>
                                     <td>
-                                        <button class="btn btn-warning btn-sm"><i class="fas fa-edit"></i> Edit</button>
-                                        <button class="btn btn-danger btn-sm"><i class="fas fa-trash"></i> Hapus</button>
+                                        <button class="btn btn-warning btn-sm" onclick="editPengguna('USR003', 'Michael Johnson')"><i class="fas fa-edit"></i> Edit</button>
+                                        <button class="btn btn-danger btn-sm" onclick="hapusPengguna('USR003', 'Michael Johnson')"><i class="fas fa-trash"></i> Hapus</button>
                                     </td>
                                 </tr>
                             </tbody>
@@ -1229,8 +1229,8 @@
                                     <td>Puan Akeyla</td>
                                     <td>15 Jan 2024</td>
                                     <td>
-                                        <button class="btn btn-warning btn-sm"><i class="fas fa-edit"></i> Edit</button>
-                                        <button class="btn btn-danger btn-sm"><i class="fas fa-trash"></i> Hapus</button>
+                                        <button class="btn btn-warning btn-sm" onclick="editKendaraan('KND001', 'B 1234 ABC')"><i class="fas fa-edit"></i> Edit</button>
+                                        <button class="btn btn-danger btn-sm" onclick="hapusKendaraan('KND001', 'B 1234 ABC')"><i class="fas fa-trash"></i> Hapus</button>
                                     </td>
                                 </tr>
                                 <tr>
@@ -1240,8 +1240,8 @@
                                     <td>Jane Smith</td>
                                     <td>10 Jan 2024</td>
                                     <td>
-                                        <button class="btn btn-warning btn-sm"><i class="fas fa-edit"></i> Edit</button>
-                                        <button class="btn btn-danger btn-sm"><i class="fas fa-trash"></i> Hapus</button>
+                                        <button class="btn btn-warning btn-sm" onclick="editKendaraan('KND002', 'B 5678 XYZ')"><i class="fas fa-edit"></i> Edit</button>
+                                        <button class="btn btn-danger btn-sm" onclick="hapusKendaraan('KND002', 'B 5678 XYZ')"><i class="fas fa-trash"></i> Hapus</button>
                                     </td>
                                 </tr>
                                 <tr>
@@ -1251,8 +1251,8 @@
                                     <td>Michael Johnson</td>
                                     <td>08 Jan 2024</td>
                                     <td>
-                                        <button class="btn btn-warning btn-sm"><i class="fas fa-edit"></i> Edit</button>
-                                        <button class="btn btn-danger btn-sm"><i class="fas fa-trash"></i> Hapus</button>
+                                        <button class="btn btn-warning btn-sm" onclick="editKendaraan('KND003', 'B 9012 DEF')"><i class="fas fa-edit"></i> Edit</button>
+                                        <button class="btn btn-danger btn-sm" onclick="hapusKendaraan('KND003', 'B 9012 DEF')"><i class="fas fa-trash"></i> Hapus</button>
                                     </td>
                                 </tr>
                             </tbody>
@@ -1287,8 +1287,8 @@
                                     <td>20 Jan 2024</td>
                                     <td><span class="status-badge status-pending">Investigasi</span></td>
                                     <td>
-                                        <button class="btn btn-primary btn-sm"><i class="fas fa-eye"></i> Detail</button>
-                                        <button class="btn btn-success btn-sm"><i class="fas fa-check"></i> Selesai</button>
+                                        <button class="btn btn-primary btn-sm" onclick="lihatDetailLaporanAdmin('LAP001')"><i class="fas fa-eye"></i> Detail</button>
+                                        <button class="btn btn-success btn-sm" onclick="selesaikanLaporanAdmin('LAP001')"><i class="fas fa-check"></i> Selesai</button>
                                     </td>
                                 </tr>
                                 <tr>
@@ -1298,8 +1298,8 @@
                                     <td>19 Jan 2024</td>
                                     <td><span class="status-badge status-active">Aktif</span></td>
                                     <td>
-                                        <button class="btn btn-primary btn-sm"><i class="fas fa-eye"></i> Detail</button>
-                                        <button class="btn btn-success btn-sm"><i class="fas fa-check"></i> Selesai</button>
+                                        <button class="btn btn-primary btn-sm" onclick="lihatDetailLaporanAdmin('LAP002')"><i class="fas fa-eye"></i> Detail</button>
+                                        <button class="btn btn-success btn-sm" onclick="selesaikanLaporanAdmin('LAP002')"><i class="fas fa-check"></i> Selesai</button>
                                     </td>
                                 </tr>
                             </tbody>
@@ -1344,8 +1344,8 @@
                                 <td>Pagi (07:00 - 15:00)</td>
                                 <td><span class="status-badge status-active">Aktif</span></td>
                                 <td>
-                                    <button class="btn btn-warning btn-sm"><i class="fas fa-edit"></i> Edit</button>
-                                    <button class="btn btn-danger btn-sm"><i class="fas fa-trash"></i> Hapus</button>
+                                    <button class="btn btn-warning btn-sm" onclick="editPetugas('PTG001', 'Budi Santoso')"><i class="fas fa-edit"></i> Edit</button>
+                                    <button class="btn btn-danger btn-sm" onclick="hapusPetugas('PTG001', 'Budi Santoso')"><i class="fas fa-trash"></i> Hapus</button>
                                 </td>
                             </tr>
                             <tr>
@@ -1355,8 +1355,8 @@
                                 <td>Siang (15:00 - 23:00)</td>
                                 <td><span class="status-badge status-active">Aktif</span></td>
                                 <td>
-                                    <button class="btn btn-warning btn-sm"><i class="fas fa-edit"></i> Edit</button>
-                                    <button class="btn btn-danger btn-sm"><i class="fas fa-trash"></i> Hapus</button>
+                                    <button class="btn btn-warning btn-sm" onclick="editPetugas('PTG002', 'Siti Nurjanah')"><i class="fas fa-edit"></i> Edit</button>
+                                    <button class="btn btn-danger btn-sm" onclick="hapusPetugas('PTG002', 'Siti Nurjanah')"><i class="fas fa-trash"></i> Hapus</button>
                                 </td>
                             </tr>
                             <tr>
@@ -1366,8 +1366,8 @@
                                 <td>Malam (23:00 - 07:00)</td>
                                 <td><span class="status-badge status-active">Aktif</span></td>
                                 <td>
-                                    <button class="btn btn-warning btn-sm"><i class="fas fa-edit"></i> Edit</button>
-                                    <button class="btn btn-danger btn-sm"><i class="fas fa-trash"></i> Hapus</button>
+                                    <button class="btn btn-warning btn-sm" onclick="editPetugas('PTG003', 'Ahmad Rifai')"><i class="fas fa-edit"></i> Edit</button>
+                                    <button class="btn btn-danger btn-sm" onclick="hapusPetugas('PTG003', 'Ahmad Rifai')"><i class="fas fa-trash"></i> Hapus</button>
                                 </td>
                             </tr>
                         </tbody>
@@ -1689,10 +1689,56 @@
             this.reset();
         });
 
+        // Fungsi untuk membuka modal
+        function openModal(modalId) {
+            const modal = document.getElementById(modalId);
+            if (modal) {
+                modal.style.display = 'block';
+                document.body.style.overflow = 'hidden';
+            }
+        }
+
+        // Fungsi untuk menutup modal
+        function closeModal(modalId) {
+            const modal = document.getElementById(modalId);
+            if (modal) {
+                modal.style.display = 'none';
+                document.body.style.overflow = 'auto';
+            }
+        }
+
+        // Fungsi switch tab
+        function switchTab(element, tabName) {
+            // Jika dipanggil dari event, ambil element dari currentTarget
+            if (element && element.currentTarget) {
+                element = element.currentTarget;
+            }
+            
+            // Hapus class active dari semua tab
+            const tabs = document.querySelectorAll('.tab');
+            tabs.forEach(tab => tab.classList.remove('active'));
+            
+            // Tambah class active ke tab yang diklik
+            if (element) {
+                element.classList.add('active');
+            }
+            
+            // Sembunyikan semua tab content
+            const tabContents = document.querySelectorAll('.tab-content');
+            tabContents.forEach(content => content.style.display = 'none');
+            
+            // Tampilkan tab content yang sesuai
+            const activeTab = document.getElementById(tabName);
+            if (activeTab) {
+                activeTab.style.display = 'block';
+            }
+        }
+
         // Close modal when clicking outside
         window.onclick = function(event) {
             if (event.target.classList.contains('modal')) {
                 event.target.style.display = 'none';
+                document.body.style.overflow = 'auto';
             }
         }
 
@@ -1718,8 +1764,87 @@
     </script>
     <script src="js/database-api.js"></script>
     <script>
-        // Cek login dari localStorage
-        const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+        // Definisi fungsi edit terlebih dahulu agar bisa diakses dari onclick
+        function editPengguna(userId, nama) {
+            const pengguna = db.getAllUsers('pengguna').find(u => u.id === userId);
+            if (!pengguna) {
+                alert('❌ Pengguna tidak ditemukan!');
+                return;
+            }
+
+            const newNama = prompt(`Edit Nama Pengguna:\n\nNama lama: ${pengguna.nama}\n\nMasukkan nama baru:`, pengguna.nama);
+            if (newNama && newNama !== pengguna.nama) {
+                const newEmail = prompt(`Edit Email:\n\nEmail lama: ${pengguna.email}\n\nMasukkan email baru:`, pengguna.email);
+                if (newEmail) {
+                    const allPengguna = db.getAllUsers('pengguna');
+                    const index = allPengguna.findIndex(u => u.id === userId);
+                    if (index !== -1) {
+                        allPengguna[index].nama = newNama;
+                        allPengguna[index].email = newEmail;
+                        allPengguna[index].updatedAt = new Date().toISOString();
+                        localStorage.setItem('siparkir_pengguna', JSON.stringify(allPengguna));
+                        
+                        alert(`✅ Data pengguna berhasil diupdate!\n\nNama: ${newNama}\nEmail: ${newEmail}`);
+                        loadAdminData();
+                    }
+                }
+            }
+        }
+
+        function editKendaraan(kendaraanId, platNomor) {
+            const kendaraan = db.getAllKendaraan().find(k => k.id === kendaraanId);
+            if (!kendaraan) {
+                alert('❌ Kendaraan tidak ditemukan!');
+                return;
+            }
+
+            const newPlat = prompt(`Edit Plat Nomor:\n\nPlat lama: ${kendaraan.platNomor}\n\nMasukkan plat baru:`, kendaraan.platNomor);
+            if (newPlat && newPlat !== kendaraan.platNomor) {
+                const newMerk = prompt(`Edit Merk Kendaraan:\n\nMerk lama: ${kendaraan.merk}\n\nMasukkan merk baru:`, kendaraan.merk);
+                if (newMerk) {
+                    const newTipe = prompt(`Edit Tipe Kendaraan:\n\nTipe lama: ${kendaraan.tipe}\n\nMasukkan tipe baru:`, kendaraan.tipe);
+                    if (newTipe) {
+                        db.updateKendaraan(kendaraanId, {
+                            platNomor: newPlat,
+                            merk: newMerk,
+                            tipe: newTipe
+                        });
+                        
+                        alert(`✅ Data kendaraan berhasil diupdate!\n\nPlat: ${newPlat}\nMerk: ${newMerk} ${newTipe}`);
+                        loadAdminData();
+                    }
+                }
+            }
+        }
+
+        function editPetugas(petugasId, nama) {
+            const petugas = db.getAllUsers('petugas').find(p => p.id === petugasId);
+            if (!petugas) {
+                alert('❌ Petugas tidak ditemukan!');
+                return;
+            }
+
+            const newNama = prompt(`Edit Nama Petugas:\n\nNama lama: ${petugas.nama}\n\nMasukkan nama baru:`, petugas.nama);
+            if (newNama && newNama !== petugas.nama) {
+                const newEmail = prompt(`Edit Email:\n\nEmail lama: ${petugas.email}\n\nMasukkan email baru:`, petugas.email);
+                if (newEmail) {
+                    const allPetugas = db.getAllUsers('petugas');
+                    const index = allPetugas.findIndex(p => p.id === petugasId);
+                    if (index !== -1) {
+                        allPetugas[index].nama = newNama;
+                        allPetugas[index].email = newEmail;
+                        allPetugas[index].updatedAt = new Date().toISOString();
+                        localStorage.setItem('siparkir_petugas', JSON.stringify(allPetugas));
+                        
+                        alert(`✅ Data petugas berhasil diupdate!\n\nNama: ${newNama}\nEmail: ${newEmail}`);
+                        loadAdminData();
+                    }
+                }
+            }
+        }
+
+        // Cek login
+        const currentUser = db.getCurrentUser();
         if (!currentUser || currentUser.role !== 'admin') {
             alert('⛔ Anda harus login terlebih dahulu!');
             window.location.href = 'login.html';
@@ -1750,7 +1875,7 @@
                             <td>${kendaraanCount} Kendaraan</td>
                             <td><span class="status-badge status-active">Aktif</span></td>
                             <td>
-                                <button class="btn btn-warning btn-sm"><i class="fas fa-edit"></i> Edit</button>
+                                <button class="btn btn-warning btn-sm" onclick="editPengguna('${p.id}', '${p.nama}')"><i class="fas fa-edit"></i> Edit</button>
                                 <button class="btn btn-danger btn-sm" onclick="hapusPengguna('${p.id}', '${p.nama}')"><i class="fas fa-trash"></i> Hapus</button>
                             </td>
                         </tr>
@@ -1772,7 +1897,7 @@
                             <td>${k.merk} ${k.tipe}</td>
                             <td>${pemilik ? pemilik.nama : '-'}</td>
                             <td>${k.warna}</td>
-                            <td>${k.tahun}</td>
+                            <td>${k.tahunPembuatan || k.tahun || '-'}</td>
                             <td><span class="status-badge ${statusClass}">${k.status}</span></td>
                             <td>
                                 ${k.status === 'pending' ? `
@@ -1780,6 +1905,9 @@
                                         <i class="fas fa-check"></i> Verifikasi
                                     </button>
                                 ` : ''}
+                                <button class="btn btn-warning btn-sm" onclick="editKendaraan('${k.id}', '${k.platNomor}')">
+                                    <i class="fas fa-edit"></i> Edit
+                                </button>
                                 <button class="btn btn-danger btn-sm" onclick="hapusKendaraan('${k.id}', '${k.platNomor}')">
                                     <i class="fas fa-trash"></i> Hapus
                                 </button>
@@ -1834,7 +1962,7 @@
                             <td>${p.shift}</td>
                             <td><span class="status-badge status-active">Aktif</span></td>
                             <td>
-                                <button class="btn btn-warning btn-sm"><i class="fas fa-edit"></i> Edit</button>
+                                <button class="btn btn-warning btn-sm" onclick="editPetugas('${p.id}', '${p.nama}')"><i class="fas fa-edit"></i> Edit</button>
                                 <button class="btn btn-danger btn-sm" onclick="hapusPetugas('${p.id}', '${p.nama}')"><i class="fas fa-trash"></i> Hapus</button>
                             </td>
                         </tr>
@@ -1931,6 +2059,112 @@
         });
 
         // Action functions
+        window.buatLaporan = function() {
+            const reportRange = document.getElementById('reportRange').value;
+            const reportFormat = document.getElementById('reportFormat').value;
+            const includeGraphs = document.querySelector('.report-toggle input[type="checkbox"]').checked;
+            
+            // Mapping nama rentang waktu
+            const rangeNames = {
+                'daily': 'Harian',
+                'weekly': 'Pekanan',
+                'monthly': 'Bulanan',
+                'custom': 'Kustom'
+            };
+            
+            // Mapping format file
+            const formatNames = {
+                'pdf': 'PDF',
+                'xlsx': 'Spreadsheet (XLSX)',
+                'csv': 'CSV'
+            };
+            
+            const rangeName = rangeNames[reportRange] || reportRange;
+            const formatName = formatNames[reportFormat] || reportFormat;
+            
+            // Generate nama file
+            const timestamp = new Date().toISOString().split('T')[0];
+            const fileName = `Laporan_${rangeName}_${timestamp}.${reportFormat}`;
+            
+            // Konfirmasi pembuatan laporan
+            if (confirm(`Buat Laporan Baru?\n\nRentang Waktu: ${rangeName}\nFormat: ${formatName}\nGrafik: ${includeGraphs ? 'Ya' : 'Tidak'}\n\nLaporan akan dibuat dan tersimpan di riwayat.`)) {
+                
+                // Simulasi proses pembuatan laporan
+                alert(`⏳ Sedang membuat laporan...\n\nMohon tunggu sebentar.`);
+                
+                // Simpan ke riwayat laporan (simulasi)
+                setTimeout(() => {
+                    const currentUser = db.getCurrentUser();
+                    
+                    alert(`✅ Laporan berhasil dibuat!\n\nFile: ${fileName}\nRentang: ${rangeName}\nFormat: ${formatName}\nDibuat oleh: ${currentUser.nama}\n\n📥 Laporan siap diunduh di bagian Riwayat Laporan.`);
+                    
+                    // Tambahkan ke riwayat (akan terlihat setelah reload)
+                    const existingReports = JSON.parse(localStorage.getItem('siparkir_reports') || '[]');
+                    existingReports.unshift({
+                        id: 'REP' + Date.now(),
+                        fileName: fileName,
+                        title: `Laporan ${rangeName} · ${new Date().toLocaleDateString('id-ID')}`,
+                        creator: currentUser.nama,
+                        format: reportFormat.toUpperCase(),
+                        size: Math.floor(Math.random() * 2000) + 500 + ' KB',
+                        createdAt: new Date().toISOString(),
+                        rangeName: rangeName,
+                        includeGraphs: includeGraphs
+                    });
+                    localStorage.setItem('siparkir_reports', JSON.stringify(existingReports));
+                    
+                    // Reload riwayat laporan
+                    loadReportHistory();
+                }, 500);
+            }
+        }
+        
+        // Fungsi untuk load riwayat laporan
+        function loadReportHistory() {
+            const reports = JSON.parse(localStorage.getItem('siparkir_reports') || '[]');
+            const reportList = document.querySelector('.report-history');
+            
+            if (reportList && reports.length > 0) {
+                reportList.innerHTML = '';
+                reports.slice(0, 5).forEach(report => {
+                    const li = document.createElement('li');
+                    li.innerHTML = `
+                        <div>
+                            <span class="title">${report.title}</span>
+                            <span class="meta">Dibuat oleh ${report.creator} · ${report.format} · ${report.size}</span>
+                        </div>
+                        <button type="button" class="btn btn-outline btn-sm" onclick="unduhLaporan('${report.fileName}', '${report.format}')">
+                            <i class="fas fa-download"></i> Unduh
+                        </button>
+                    `;
+                    reportList.appendChild(li);
+                });
+            }
+        }
+
+        window.unduhLaporan = function(namaFile, tipe) {
+            if (confirm(`Unduh laporan ${namaFile}?\n\nTipe: ${tipe}\n\nLaporan akan diunduh ke folder Downloads Anda.`)) {
+                alert(`✅ Laporan berhasil diunduh!\n\nFile: ${namaFile}\nTipe: ${tipe}\n\n(Fitur download akan aktif setelah integrasi dengan backend)`);
+            }
+        }
+
+        window.hapusPengguna = function(userId, nama) {
+            if (confirm(`Hapus pengguna ${nama}?\n\nPerhatian: Semua data kendaraan yang terdaftar atas nama pengguna ini juga akan terhapus!`)) {
+                // Hapus kendaraan yang dimiliki pengguna ini
+                const kendaraanPengguna = db.getKendaraanByPemilik(userId);
+                kendaraanPengguna.forEach(k => {
+                    db.deleteKendaraan(k.id);
+                });
+
+                // Hapus pengguna
+                const allPengguna = db.getAllUsers('pengguna').filter(u => u.id !== userId);
+                localStorage.setItem('siparkir_pengguna', JSON.stringify(allPengguna));
+                
+                alert(`✅ Pengguna ${nama} dan ${kendaraanPengguna.length} kendaraannya berhasil dihapus!`);
+                loadAdminData();
+            }
+        }
+
         window.verifikasiKendaraanAdmin = function(kendaraanId) {
             const currentUser = db.getCurrentUser();
             if (!currentUser) {
@@ -2011,6 +2245,7 @@
 
         // Load data saat halaman dimuat
         loadAdminData();
+        loadReportHistory();
 
         // Refresh data setiap 30 detik
         setInterval(loadAdminData, 30000);

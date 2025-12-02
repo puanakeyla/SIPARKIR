@@ -55,7 +55,10 @@ class DatabaseAPI {
     }
 
     logout() {
+        // Clear both persistent and session storage to fully sign out
         localStorage.removeItem('currentUser');
+        sessionStorage.removeItem('currentUser');
+        // Redirect to login page after cleanup
         window.location.href = 'login.html';
     }
 
