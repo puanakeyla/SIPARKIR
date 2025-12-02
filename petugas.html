@@ -1364,7 +1364,6 @@
         // Cek login dari localStorage
         const currentUser = JSON.parse(localStorage.getItem('currentUser'));
         if (!currentUser || currentUser.role !== 'petugas') {
-            alert('⛔ Anda harus login terlebih dahulu!');
             window.location.href = 'login.html';
         }
 
