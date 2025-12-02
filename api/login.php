@@ -32,7 +32,7 @@ if ($method === 'POST') {
                     'id' => $admin['id_admin'],
                     'nama' => $admin['nama'],
                     'email' => $admin['email'],
-                    'role' => $admin['role']
+                    'role' => 'admin'
                 ],
                 'redirect' => 'admin.html'
             ]);
@@ -49,9 +49,8 @@ if ($method === 'POST') {
                     'id' => $pengguna['id_pengguna'],
                     'nama' => $pengguna['nama'],
                     'email' => $pengguna['email'],
-                    'role' => $pengguna['role'],
                     'nim' => $pengguna['nim'],
-                    'peran' => $pengguna['peran']
+                    'role' => 'pengguna'
                 ],
                 'redirect' => 'pengguna.html'
             ]);
@@ -68,8 +67,8 @@ if ($method === 'POST') {
                     'id' => $petugas['id_petugas'],
                     'nama' => $petugas['nama'],
                     'email' => $petugas['email'],
-                    'role' => $petugas['role'],
                     'nip' => $petugas['nip'],
+                    'role' => 'petugas',
                     'shift' => $petugas['shift']
                 ],
                 'redirect' => 'petugas.html'

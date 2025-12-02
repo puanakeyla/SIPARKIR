@@ -1419,24 +1419,20 @@
             </div>
             <form id="addUserForm">
                 <div class="form-group">
-                    <label for="userName">Nama Lengkap</label>
+                    <label for="userName">Nama Lengkap <span style="color: red;">*</span></label>
                     <input type="text" class="form-control" id="userName" placeholder="Masukkan nama lengkap" required>
                 </div>
                 <div class="form-group">
                     <label for="userNIM">NIM</label>
-                    <input type="text" class="form-control" id="userNIM" placeholder="Masukkan NIM" required>
+                    <input type="text" class="form-control" id="userNIM" placeholder="Masukkan NIM (opsional)">
                 </div>
                 <div class="form-group">
-                    <label for="userEmail">Email</label>
+                    <label for="userEmail">Email <span style="color: red;">*</span></label>
                     <input type="email" class="form-control" id="userEmail" placeholder="email@student.unila.ac.id" required>
                 </div>
                 <div class="form-group">
-                    <label for="userRole">Role</label>
-                    <select class="form-control" id="userRole" required>
-                        <option value="user">Pengguna</option>
-                        <option value="petugas">Petugas</option>
-                        <option value="admin">Admin</option>
-                    </select>
+                    <label for="userPassword">Password <span style="color: red;">*</span></label>
+                    <input type="password" class="form-control" id="userPassword" placeholder="Masukkan password" required>
                 </div>
                 <button type="submit" class="btn btn-success btn-block">
                     <i class="fas fa-save"></i> Simpan Pengguna
@@ -1659,41 +1655,11 @@
         }
 
         // Modal Functions
-        function openModal(modalId) {
-            document.getElementById(modalId).style.display = 'flex';
-        }
-
-        function closeModal(modalId) {
-            document.getElementById(modalId).style.display = 'none';
-        }
-
-        // Form Submissions
-        document.getElementById('addUserForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            alert('✅ Pengguna berhasil ditambahkan!');
-            closeModal('addUserModal');
-            this.reset();
-        });
-
-        document.getElementById('addVehicleForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            alert('✅ Kendaraan berhasil ditambahkan!');
-            closeModal('addVehicleModal');
-            this.reset();
-        });
-
-        document.getElementById('addPetugasForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            alert('✅ Petugas berhasil ditambahkan!');
-            closeModal('addPetugasModal');
-            this.reset();
-        });
-
         // Fungsi untuk membuka modal
         function openModal(modalId) {
             const modal = document.getElementById(modalId);
             if (modal) {
-                modal.style.display = 'block';
+                modal.style.display = 'flex';
                 document.body.style.overflow = 'hidden';
             }
         }
@@ -1851,149 +1817,99 @@
         }
 
         // Load statistics untuk admin
-        function loadAdminData() {
-            const stats = db.getStatistics();
-            
-            // Update KPI cards
-            document.querySelectorAll('.stat-card .stat-value')[0].textContent = stats.totalPengguna.toLocaleString();
-            document.querySelectorAll('.stat-card .stat-value')[1].textContent = stats.totalKendaraan.toLocaleString();
-            document.querySelectorAll('.stat-card .stat-value')[2].textContent = stats.transaksiHariIni.toLocaleString();
-            document.querySelectorAll('.stat-card .stat-value')[3].textContent = stats.laporanAktif.toLocaleString();
+        async function loadAdminData() {
+            try {
+                // Fetch data dari API
+                const [resPengguna, resKendaraan, resLaporan, resPetugas] = await Promise.all([
+                    fetch('api/pengguna.php'),
+                    fetch('api/kendaraan.php'),
+                    fetch('api/laporan.php'),
+                    fetch('api/petugas.php')
+                ]);
 
-            // Update tabel pengguna
-            const pengguna = db.getAllUsers('pengguna');
-            const tbodyPengguna = document.querySelector('#users-tab table tbody');
-            if (tbodyPengguna) {
-                tbodyPengguna.innerHTML = '';
-                pengguna.forEach(p => {
-                    const kendaraanCount = db.getKendaraanByPemilik(p.id).length;
-                    tbodyPengguna.innerHTML += `
-                        <tr>
-                            <td><strong>${p.nama}</strong></td>
-                            <td>${p.nim || '-'}</td>
-                            <td>${p.email}</td>
-                            <td>${kendaraanCount} Kendaraan</td>
-                            <td><span class="status-badge status-active">Aktif</span></td>
-                            <td>
-                                <button class="btn btn-warning btn-sm" onclick="editPengguna('${p.id}', '${p.nama}')"><i class="fas fa-edit"></i> Edit</button>
-                                <button class="btn btn-danger btn-sm" onclick="hapusPengguna('${p.id}', '${p.nama}')"><i class="fas fa-trash"></i> Hapus</button>
-                            </td>
-                        </tr>
-                    `;
-                });
-            }
+                const dataPengguna = await resPengguna.json();
+                const dataKendaraan = await resKendaraan.json();
+                const dataLaporan = await resLaporan.json();
+                const dataPetugas = await resPetugas.json();
 
-            // Update tabel kendaraan
-            const kendaraan = db.getAllKendaraan();
-            const tbodyKendaraan = document.querySelector('#vehicles-tab table tbody');
-            if (tbodyKendaraan) {
-                tbodyKendaraan.innerHTML = '';
-                kendaraan.forEach(k => {
-                    const pemilik = db.getAllUsers('pengguna').find(p => p.id === k.pemilikId);
-                    const statusClass = k.status === 'aktif' ? 'status-active' : 'status-pending';
-                    tbodyKendaraan.innerHTML += `
-                        <tr>
-                            <td><strong>${k.platNomor}</strong></td>
-                            <td>${k.merk} ${k.tipe}</td>
-                            <td>${pemilik ? pemilik.nama : '-'}</td>
-                            <td>${k.warna}</td>
-                            <td>${k.tahunPembuatan || k.tahun || '-'}</td>
-                            <td><span class="status-badge ${statusClass}">${k.status}</span></td>
-                            <td>
-                                ${k.status === 'pending' ? `
-                                    <button class="btn btn-success btn-sm" onclick="verifikasiKendaraanAdmin('${k.id}')">
-                                        <i class="fas fa-check"></i> Verifikasi
-                                    </button>
-                                ` : ''}
-                                <button class="btn btn-warning btn-sm" onclick="editKendaraan('${k.id}', '${k.platNomor}')">
-                                    <i class="fas fa-edit"></i> Edit
-                                </button>
-                                <button class="btn btn-danger btn-sm" onclick="hapusKendaraan('${k.id}', '${k.platNomor}')">
-                                    <i class="fas fa-trash"></i> Hapus
-                                </button>
-                            </td>
-                        </tr>
-                    `;
-                });
-            }
+                const pengguna = dataPengguna.success ? dataPengguna.data.pengguna : [];
+                const kendaraan = dataKendaraan.success ? dataKendaraan.data : [];
+                const laporan = dataLaporan.success ? dataLaporan.data : [];
+                const petugas = dataPetugas.success ? dataPetugas.data.petugas : [];
 
-            // Update tabel laporan kehilangan
-            const laporan = db.getAllLaporan();
-            const tbodyLaporan = document.querySelector('#reports-tab table tbody');
-            if (tbodyLaporan) {
-                tbodyLaporan.innerHTML = '';
-                laporan.forEach(l => {
-                    const tanggal = new Date(l.tanggalLapor).toLocaleDateString('id-ID');
-                    const statusClass = l.status === 'Selesai' ? 'status-success' : l.status === 'Investigasi' ? 'status-pending' : 'status-active';
-                    
-                    tbodyLaporan.innerHTML += `
-                        <tr>
-                            <td><strong>${l.id}</strong></td>
-                            <td>${l.platNomor}</td>
-                            <td>${l.pelaporNama}</td>
-                            <td>${tanggal}</td>
-                            <td><span class="status-badge ${statusClass}">${l.status}</span></td>
-                            <td>
-                                <button class="btn btn-primary btn-sm" onclick="lihatDetailLaporanAdmin('${l.id}')">
-                                    <i class="fas fa-eye"></i> Detail
-                                </button>
-                                ${l.status !== 'Selesai' ? `
-                                    <button class="btn btn-success btn-sm" onclick="selesaikanLaporanAdmin('${l.id}')">
-                                        <i class="fas fa-check"></i> Selesai
-                                    </button>
-                                ` : ''}
-                            </td>
-                        </tr>
-                    `;
-                });
-            }
+                // Update KPI cards
+                document.querySelectorAll('.stat-card .stat-value')[0].textContent = pengguna.length.toLocaleString();
+                document.querySelectorAll('.stat-card .stat-value')[1].textContent = kendaraan.length.toLocaleString();
+                document.querySelectorAll('.stat-card .stat-value')[2].textContent = '0'; // TODO: get from transaksi today
+                document.querySelectorAll('.stat-card .stat-value')[3].textContent = laporan.filter(l => l.status_laporan !== 'Selesai').length.toLocaleString();
 
-            // Update tabel petugas
-            const petugas = db.getAllUsers('petugas');
-            const tbodyPetugas = document.querySelector('#kelola-petugas table tbody');
-            if (tbodyPetugas) {
-                tbodyPetugas.innerHTML = '';
-                petugas.forEach(p => {
-                    tbodyPetugas.innerHTML += `
-                        <tr>
-                            <td><strong>${p.nama}</strong></td>
-                            <td>${p.nip}</td>
-                            <td>${p.email}</td>
-                            <td>${p.shift}</td>
-                            <td><span class="status-badge status-active">Aktif</span></td>
-                            <td>
-                                <button class="btn btn-warning btn-sm" onclick="editPetugas('${p.id}', '${p.nama}')"><i class="fas fa-edit"></i> Edit</button>
-                                <button class="btn btn-danger btn-sm" onclick="hapusPetugas('${p.id}', '${p.nama}')"><i class="fas fa-trash"></i> Hapus</button>
-                            </td>
-                        </tr>
-                    `;
-                });
-            }
-
-            // Update tabel audit log
-            const auditLogs = db.getAllAuditLogs();
-            const tbodyAudit = document.getElementById('auditLogTableBody');
-            if (tbodyAudit) {
-                tbodyAudit.innerHTML = '';
-                if (auditLogs.length === 0) {
-                    tbodyAudit.innerHTML = '<tr><td colspan="7" class="text-center">Belum ada log aktivitas</td></tr>';
-                } else {
-                    auditLogs.reverse().slice(0, 50).forEach(log => {
-                        const admin = db.getAllUsers('admin').find(a => a.id === log.adminId);
-                        const waktu = new Date(log.waktuAksi).toLocaleString('id-ID');
-                        const badgeClass = log.aksi === 'INSERT' ? 'status-success' : 
-                                          log.aksi === 'UPDATE' ? 'status-warning' : 'status-danger';
-                        
-                        tbodyAudit.innerHTML += `
+                // Update tabel pengguna
+                const tbodyPengguna = document.querySelector('#users-tab table tbody');
+                if (tbodyPengguna) {
+                    tbodyPengguna.innerHTML = '';
+                    pengguna.forEach(p => {
+                        const kendaraanCount = kendaraan.filter(k => k.id_pengguna === p.id_pengguna).length;
+                        tbodyPengguna.innerHTML += `
                             <tr>
-                                <td>${waktu}</td>
-                                <td>${admin ? admin.nama : 'Unknown'}</td>
-                                <td><span class="status-badge ${badgeClass}">${log.aksi}</span></td>
-                                <td>${log.tabelTarget}</td>
-                                <td>${log.idRecord || '-'}</td>
-                                <td>${log.keterangan || '-'}</td>
+                                <td><strong>${p.nama}</strong></td>
+                                <td>${p.nim || '-'}</td>
+                                <td>${p.email}</td>
+                                <td>${kendaraanCount} Kendaraan</td>
+                                <td><span class="status-badge status-active">${p.status}</span></td>
                                 <td>
-                                    <button class="btn btn-info btn-sm" onclick="viewAuditDetail('${log.id}')">
+                                    <button class="btn btn-warning btn-sm" onclick="editPengguna('${p.id_pengguna}', '${p.nama}')"><i class="fas fa-edit"></i> Edit</button>
+                                    <button class="btn btn-danger btn-sm" onclick="hapusPengguna('${p.id_pengguna}', '${p.nama}')"><i class="fas fa-trash"></i> Hapus</button>
+                                </td>
+                            </tr>
+                        `;
+                    });
+                }
+
+                // Update tabel kendaraan
+                const tbodyKendaraan = document.querySelector('#vehicles-tab table tbody');
+                if (tbodyKendaraan) {
+                    tbodyKendaraan.innerHTML = '';
+                    kendaraan.forEach(k => {
+                        const pemilik = pengguna.find(p => p.id_pengguna === k.id_pengguna);
+                        const statusClass = k.status_parkir === 'aktif' ? 'status-active' : 'status-pending';
+                        tbodyKendaraan.innerHTML += `
+                            <tr>
+                                <td><strong>${k.plat_nomor}</strong></td>
+                                <td>${k.merk} ${k.tipe}</td>
+                                <td>${pemilik ? pemilik.nama : '-'}</td>
+                                <td>${k.warna}</td>
+                                <td>${k.tahun_pembuatan || '-'}</td>
+                                <td><span class="status-badge ${statusClass}">${k.status_parkir}</span></td>
+                                <td>
+                                    <button class="btn btn-warning btn-sm" onclick="editKendaraan('${k.id_kendaraan}', '${k.plat_nomor}')">
+                                        <i class="fas fa-edit"></i> Edit
+                                    </button>
+                                    <button class="btn btn-danger btn-sm" onclick="hapusKendaraan('${k.id_kendaraan}', '${k.plat_nomor}')">
+                                        <i class="fas fa-trash"></i> Hapus
+                                    </button>
+                                </td>
+                            </tr>
+                        `;
+                    });
+                }
+
+                // Update tabel laporan kehilangan
+                const tbodyLaporan = document.querySelector('#reports-tab table tbody');
+                if (tbodyLaporan) {
+                    tbodyLaporan.innerHTML = '';
+                    laporan.forEach(l => {
+                        const tanggal = new Date(l.tanggal_laporan).toLocaleDateString('id-ID');
+                        const statusClass = l.status_laporan === 'Selesai' ? 'status-success' : l.status_laporan.includes('Investig') ? 'status-pending' : 'status-active';
+                        
+                        tbodyLaporan.innerHTML += `
+                            <tr>
+                                <td><strong>${l.id_laporan}</strong></td>
+                                <td>${l.plat_nomor}</td>
+                                <td>${l.nama_pelapor || '-'}</td>
+                                <td>${tanggal}</td>
+                                <td><span class="status-badge ${statusClass}">${l.status_laporan}</span></td>
+                                <td>
+                                    <button class="btn btn-primary btn-sm" onclick="lihatDetailLaporanAdmin('${l.id_laporan}')">
                                         <i class="fas fa-eye"></i> Detail
                                     </button>
                                 </td>
@@ -2001,61 +1917,168 @@
                         `;
                     });
                 }
+
+                // Update tabel petugas
+                const tbodyPetugas = document.querySelector('#kelola-petugas table tbody');
+                if (tbodyPetugas) {
+                    tbodyPetugas.innerHTML = '';
+                    petugas.forEach(p => {
+                        tbodyPetugas.innerHTML += `
+                            <tr>
+                                <td><strong>${p.nama}</strong></td>
+                                <td>${p.nip}</td>
+                                <td>${p.email}</td>
+                                <td>${p.shift || '-'}</td>
+                                <td><span class="status-badge status-active">${p.status}</span></td>
+                                <td>
+                                    <button class="btn btn-warning btn-sm" onclick="editPetugas('${p.id_petugas}', '${p.nama}')"><i class="fas fa-edit"></i> Edit</button>
+                                    <button class="btn btn-danger btn-sm" onclick="hapusPetugas('${p.id_petugas}', '${p.nama}')"><i class="fas fa-trash"></i> Hapus</button>
+                                </td>
+                            </tr>
+                        `;
+                    });
+                }
+
+                // Update dropdown vehicleOwner
+                const selectOwner = document.getElementById('vehicleOwner');
+                if (selectOwner) {
+                    selectOwner.innerHTML = '<option value="" disabled selected>Pilih pemilik kendaraan</option>';
+                    pengguna.forEach(p => {
+                        selectOwner.innerHTML += `<option value="${p.id_pengguna}">${p.nama} (${p.nim || p.email})</option>`;
+                    });
+                }
+            } catch (error) {
+                console.error('Error loading admin data:', error);
             }
         }
 
         // Form handlers
-        document.getElementById('addUserForm').addEventListener('submit', function(e) {
+        document.getElementById('addUserForm').addEventListener('submit', async function(e) {
             e.preventDefault();
-            const userData = {
-                nama: document.getElementById('userName').value,
-                nim: document.getElementById('userNIM').value,
-                email: document.getElementById('userEmail').value,
-                password: 'password123', // default password
-                role: document.getElementById('userRole').value
-            };
+            const submitBtn = this.querySelector('button[type="submit"]');
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Menyimpan...';
             
-            db.addUser(userData, userData.role);
-            alert(`✅ ${userData.role.toUpperCase()} berhasil ditambahkan!\n\nNama: ${userData.nama}\nEmail: ${userData.email}\nPassword: password123`);
-            closeModal('addUserModal');
-            this.reset();
-            loadAdminData();
+            try {
+                const userData = {
+                    nama: document.getElementById('userName').value.trim(),
+                    nim: document.getElementById('userNIM').value.trim() || null,
+                    email: document.getElementById('userEmail').value.trim(),
+                    password: document.getElementById('userPassword').value
+                };
+
+                // Validasi
+                if (!userData.nama || !userData.email || !userData.password) {
+                    alert('⚠️ Nama, email, dan password harus diisi!');
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = 'Simpan Pengguna';
+                    return;
+                }
+                
+                const response = await fetch('api/pengguna.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(userData)
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    alert(`✅ Pengguna berhasil ditambahkan!\n\nNama: ${userData.nama}\nEmail: ${userData.email}\nPassword: ${userData.password}`);
+                    closeModal('addUserModal');
+                    this.reset();
+                    await loadAdminData();
+                } else {
+                    alert('❌ Gagal menambahkan pengguna: ' + result.message);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('❌ Terjadi kesalahan saat menambahkan pengguna\n\n' + error.message);
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Simpan Pengguna';
+            }
         });
 
-        document.getElementById('addVehicleForm').addEventListener('submit', function(e) {
+        document.getElementById('addVehicleForm').addEventListener('submit', async function(e) {
             e.preventDefault();
-            const pemilikId = document.getElementById('vehicleOwner').value;
-            const kendaraanData = {
-                pemilikId: pemilikId,
-                platNomor: document.getElementById('vehiclePlate').value,
-                merk: document.getElementById('vehicleBrand').value,
-                tipe: document.getElementById('vehicleType').value,
-                warna: 'Hitam', // default
-                tahun: new Date().getFullYear()
-            };
+            const submitBtn = this.querySelector('button[type="submit"]');
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Menyimpan...';
             
-            db.addKendaraan(kendaraanData);
-            alert('✅ Kendaraan berhasil ditambahkan!');
-            closeModal('addVehicleModal');
-            this.reset();
-            loadAdminData();
+            try {
+                const kendaraanData = {
+                    id_pengguna: document.getElementById('vehicleOwner').value,
+                    plat_nomor: document.getElementById('vehiclePlate').value,
+                    merk: document.getElementById('vehicleBrand').value,
+                    tipe: document.getElementById('vehicleType').value,
+                    warna: 'Hitam',
+                    tahun_pembuatan: new Date().getFullYear()
+                };
+                
+                const response = await fetch('api/kendaraan.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(kendaraanData)
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    alert('✅ Kendaraan berhasil ditambahkan!');
+                    closeModal('addVehicleModal');
+                    this.reset();
+                    await loadAdminData();
+                } else {
+                    alert('❌ Gagal menambahkan kendaraan: ' + result.message);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('❌ Terjadi kesalahan saat menambahkan kendaraan');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Simpan Kendaraan';
+            }
         });
 
-        document.getElementById('addPetugasForm').addEventListener('submit', function(e) {
+        document.getElementById('addPetugasForm').addEventListener('submit', async function(e) {
             e.preventDefault();
-            const petugasData = {
-                nama: document.getElementById('petugasName').value,
-                nip: document.getElementById('petugasNIP').value,
-                email: document.getElementById('petugasEmail').value,
-                shift: document.getElementById('petugasShift').options[document.getElementById('petugasShift').selectedIndex].text,
-                password: document.getElementById('petugasPassword').value
-            };
+            const submitBtn = this.querySelector('button[type="submit"]');
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Menyimpan...';
             
-            db.addUser(petugasData, 'petugas');
-            alert('✅ Petugas berhasil ditambahkan!');
-            closeModal('addPetugasModal');
-            this.reset();
-            loadAdminData();
+            try {
+                const petugasData = {
+                    nama: document.getElementById('petugasName').value,
+                    nip: document.getElementById('petugasNIP').value,
+                    email: document.getElementById('petugasEmail').value,
+                    shift: document.getElementById('petugasShift').options[document.getElementById('petugasShift').selectedIndex].text,
+                    password: document.getElementById('petugasPassword').value
+                };
+                
+                const response = await fetch('api/petugas.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(petugasData)
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    alert('✅ Petugas berhasil ditambahkan!');
+                    closeModal('addPetugasModal');
+                    this.reset();
+                    await loadAdminData();
+                } else {
+                    alert('❌ Gagal menambahkan petugas: ' + result.message);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('❌ Terjadi kesalahan saat menambahkan petugas');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Simpan Petugas';
+            }
         });
 
         // Action functions

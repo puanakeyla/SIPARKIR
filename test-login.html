@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Login Status</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #3a6bff;
+        }
+        .info {
+            background: #e3f2fd;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        pre {
+            background: #263238;
+            color: #aed581;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+        button {
+            background: #3a6bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #2550d4;
+        }
+        .danger {
+            background: #dc3545;
+        }
+        .danger:hover {
+            background: #c82333;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 Test Login Status - SIPARKIR</h1>
+        
+        <div class="info">
+            <h3>Status LocalStorage:</h3>
+            <div id="status"></div>
+        </div>
+
+        <div class="info">
+            <h3>Data currentUser:</h3>
+            <pre id="userData"></pre>
+        </div>
+
+        <div>
+            <button onclick="checkLogin()">🔄 Refresh Status</button>
+            <button class="danger" onclick="clearStorage()">🗑️ Clear Storage & Logout</button>
+            <button onclick="location.href='login.html'">🔐 Ke Halaman Login</button>
+        </div>
+
+        <div class="info">
+            <h3>📝 Cara Menggunakan:</h3>
+            <ol>
+                <li>Klik "Clear Storage & Logout" untuk membersihkan localStorage</li>
+                <li>Klik "Ke Halaman Login" untuk login ulang</li>
+                <li>Login dengan salah satu kredensial:
+                    <ul>
+                        <li>Admin: admin@unila.ac.id / admin123</li>
+                        <li>Pengguna: pengguna@unila.ac.id / pengguna123</li>
+                        <li>Petugas: petugas@unila.ac.id / petugas123</li>
+                    </ul>
+                </li>
+                <li>Setelah login, kembali ke halaman ini untuk cek status</li>
+            </ol>
+        </div>
+    </div>
+
+    <script>
+        function checkLogin() {
+            const currentUser = localStorage.getItem('currentUser');
+            const statusDiv = document.getElementById('status');
+            const userDataPre = document.getElementById('userData');
+
+            if (currentUser) {
+                const user = JSON.parse(currentUser);
+                statusDiv.innerHTML = `<strong style="color: green;">✅ LOGGED IN</strong><br>Role: ${user.role}<br>Nama: ${user.nama}`;
+                userDataPre.textContent = JSON.stringify(user, null, 2);
+            } else {
+                statusDiv.innerHTML = '<strong style="color: red;">❌ NOT LOGGED IN</strong>';
+                userDataPre.textContent = 'null';
+            }
+
+            // Tampilkan semua keys di localStorage
+            console.log('All localStorage keys:', Object.keys(localStorage));
+        }
+
+        function clearStorage() {
+            if (confirm('Yakin ingin menghapus semua data localStorage dan logout?')) {
+                localStorage.clear();
+                alert('✅ localStorage berhasil dibersihkan!');
+                checkLogin();
+            }
+        }
+
+        // Auto check saat halaman dimuat
+        checkLogin();
+    </script>
+</body>
+</html>

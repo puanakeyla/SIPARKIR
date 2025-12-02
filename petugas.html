@@ -881,7 +881,7 @@
                 <a href="#verifikasi-identitas">Verifikasi Identitas</a>
                 <a href="#laporan-kehilangan">Laporan Kehilangan</a>
             </div>
-            <a class="nav-cta" href="#" onclick="db.logout(); return false;"><i class="fas fa-sign-out-alt"></i> Keluar</a>
+            <a class="nav-cta" href="#" onclick="logout(); return false;"><i class="fas fa-sign-out-alt"></i> Keluar</a>
         </div>
     </nav>
 
@@ -1361,11 +1361,20 @@
     </script>
     <script src="js/database-api.js"></script>
     <script>
-        // Cek login
-        const currentUser = db.getCurrentUser();
+        // Cek login dari localStorage
+        const currentUser = JSON.parse(localStorage.getItem('currentUser'));
         if (!currentUser || currentUser.role !== 'petugas') {
             alert('⛔ Anda harus login terlebih dahulu!');
             window.location.href = 'login.html';
+        }
+
+        // Fungsi logout
+        function logout() {
+            if (confirm('Apakah Anda yakin ingin keluar?')) {
+                localStorage.removeItem('currentUser');
+                alert('✅ Anda berhasil logout!');
+                window.location.href = 'login.html';
+            }
         }
 
         // Fungsi untuk Simpan Pencatatan (Masuk/Keluar)
@@ -1384,29 +1393,42 @@
             }
 
             const pencatatanData = {
-                platNomor: platNomor,
-                jenisKendaraan: jenisKendaraan,
-                lokasiPenjagaan: lokasiPenjagaan,
-                waktu: new Date().toISOString(),
-                statusTransaksi: statusTransaksi === 'Masuk' ? 'Kendaraan Masuk' : 'Kendaraan Keluar',
-                catatan: catatanTransaksi || '',
-                petugasId: currentUser.id,
-                petugasNama: currentUser.nama
+                id_petugas: currentUser.id,
+                plat_nomor: platNomor,
+                jenis_kendaraan: jenisKendaraan,
+                lokasi_penjagaan: lokasiPenjagaan,
+                status_transaksi: statusTransaksi === 'Masuk' ? 'Kendaraan Masuk' : 'Kendaraan Keluar',
+                catatan: catatanTransaksi || ''
             };
 
-            db.addPencatatan(pencatatanData);
-            
-            alert(`✅ Pencatatan ${statusTransaksi} berhasil!\n\nKendaraan: ${platNomor}\nJenis: ${jenisKendaraan}\nLokasi: ${lokasiPenjagaan}\nStatus: ${pencatatanData.statusTransaksi}`);
-            
-            // Reset form
-            document.getElementById('platNomor').value = '';
-            document.getElementById('jenisKendaraan').selectedIndex = 0;
-            document.getElementById('lokasiPenjagaan').selectedIndex = 0;
-            document.getElementById('statusPergerakan').selectedIndex = 0;
-            document.getElementById('catatanTransaksi').value = '';
-            
-            // Reload data
-            loadPetugasData();
+            // Simpan ke API
+            fetch('api/pencatatan.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(pencatatanData)
+            })
+            .then(response => response.json())
+            .then(result => {
+                if (result.success) {
+                    alert(`✅ Pencatatan ${statusTransaksi} berhasil!\n\nKendaraan: ${platNomor}\nJenis: ${jenisKendaraan}\nLokasi: ${lokasiPenjagaan}`);
+                    
+                    // Reset form
+                    document.getElementById('platNomor').value = '';
+                    document.getElementById('jenisKendaraan').selectedIndex = 0;
+                    document.getElementById('lokasiPenjagaan').selectedIndex = 0;
+                    document.getElementById('statusPergerakan').selectedIndex = 0;
+                    document.getElementById('catatanTransaksi').value = '';
+                    
+                    // Reload data
+                    loadPetugasData();
+                } else {
+                    alert('❌ Gagal menyimpan pencatatan: ' + result.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('❌ Terjadi kesalahan saat menyimpan pencatatan');
+            });
         }
 
         // Fungsi untuk Refresh Data
@@ -1509,85 +1531,239 @@ Petugas: Budi Santoso`;
             }
         }
 
+        // Fungsi untuk melihat detail laporan (dari API)
+        async function lihatDetailLaporan(idLaporan) {
+            try {
+                const response = await fetch(`api/laporan.php?id=${idLaporan}`);
+                const result = await response.json();
+                
+                if (result.success && result.data) {
+                    const l = result.data;
+                    const tanggal = new Date(l.created_at || l.tanggal_lapor).toLocaleString('id-ID');
+                    const waktuKejadian = new Date(l.waktu_kejadian).toLocaleString('id-ID');
+                    
+                    const detailInfo = `
+📋 DETAIL LAPORAN KEHILANGAN
+
+ID Laporan: ${l.id_laporan}
+Status: ${l.status}
+
+👤 PELAPOR
+Nama: ${l.pelapor_nama || l.nama_pelapor || '-'}
+Email: ${l.email_pelapor || '-'}
+
+🚗 KENDARAAN
+Plat Nomor: ${l.plat_nomor}
+Jenis: ${l.merk || ''} ${l.tipe || ''}
+
+📍 KEJADIAN
+Lokasi: ${l.lokasi_kehilangan}
+Waktu Kejadian: ${waktuKejadian}
+Tanggal Lapor: ${tanggal}
+
+📝 KRONOLOGI
+${l.kronologi || l.deskripsi || '-'}
+
+${l.catatan_petugas ? '🔍 CATATAN PETUGAS\n' + l.catatan_petugas : ''}
+                    `;
+                    
+                    alert(detailInfo);
+                } else {
+                    alert('❌ Gagal memuat detail laporan: ' + result.message);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('❌ Terjadi kesalahan saat memuat detail laporan');
+            }
+        }
+
+        // Fungsi untuk menyelesaikan laporan (dari API)
+        async function selesaikanLaporan(idLaporan) {
+            const catatan = prompt('Masukkan catatan penyelesaian laporan:\n\n(Contoh: Kendaraan ditemukan di parkiran C, sudah diserahkan ke pemilik)');
+            
+            if (catatan === null) return; // User cancel
+            
+            if (!catatan.trim()) {
+                alert('⚠️ Catatan harus diisi!');
+                return;
+            }
+            
+            if (!confirm(`Tandai laporan ${idLaporan} sebagai SELESAI?\n\nPastikan kasus sudah benar-benar terselesaikan.`)) {
+                return;
+            }
+            
+            try {
+                const response = await fetch('api/laporan.php', {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        id_laporan: idLaporan,
+                        status: 'Selesai',
+                        catatan_petugas: catatan,
+                        id_petugas: currentUser.id,
+                        tanggal_selesai: new Date().toISOString().slice(0, 19).replace('T', ' ')
+                    })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    alert(`✅ Laporan ${idLaporan} berhasil diselesaikan!\n\nStatus: SELESAI\nPetugas: ${currentUser.nama}`);
+                    await loadPetugasData();
+                } else {
+                    alert('❌ Gagal menyelesaikan laporan: ' + result.message);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('❌ Terjadi kesalahan saat menyelesaikan laporan');
+            }
+        }
+
         // Load data untuk petugas
-        function loadPetugasData() {
-            const allKendaraan = db.getAllKendaraan();
-            const allLaporan = db.getAllLaporan();
-            const pencatatan = db.getAllPencatatan();
+        async function loadPetugasData() {
+            try {
+                // Fetch data dari API
+                const [resKendaraan, resLaporan, resPencatatan, resPengguna, resTransaksi] = await Promise.all([
+                    fetch('api/kendaraan.php'),
+                    fetch('api/laporan.php'),
+                    fetch('api/pencatatan.php'),
+                    fetch('api/pengguna.php'),
+                    fetch('api/transaksi.php?status=aktif')
+                ]);
 
-            // Update tabel kendaraan yang perlu verifikasi
-            const tbodyVerif = document.querySelector('#verifikasi-identitas table tbody');
-            if (tbodyVerif) {
-                tbodyVerif.innerHTML = '';
-                allKendaraan.filter(k => k.status === 'pending').slice(0, 5).forEach(k => {
-                    const pemilik = db.getAllUsers('pengguna').find(p => p.id === k.pemilikId);
-                    tbodyVerif.innerHTML += `
-                        <tr>
-                            <td><strong>${k.platNomor}</strong></td>
-                            <td>${k.merk} ${k.tipe}</td>
-                            <td>${k.warna}</td>
-                            <td>${pemilik ? pemilik.nama : '-'}</td>
-                            <td><span class="status-badge status-pending">Pending</span></td>
-                            <td>
-                                <button class="btn btn-primary btn-sm" onclick="verifikasiKendaraanReal('${k.id}', '${k.platNomor}')">
-                                    <i class="fas fa-check"></i> Verifikasi
-                                </button>
-                            </td>
-                        </tr>
-                    `;
-                });
-            }
+                const dataKendaraan = await resKendaraan.json();
+                const dataLaporan = await resLaporan.json();
+                const dataPencatatan = await resPencatatan.json();
+                const dataPengguna = await resPengguna.json();
+                const dataTransaksi = await resTransaksi.json();
 
-            // Update tabel laporan kehilangan
-            const tbodyLaporan = document.querySelector('#laporan-kehilangan table tbody');
-            if (tbodyLaporan) {
-                tbodyLaporan.innerHTML = '';
-                allLaporan.forEach(l => {
-                    const waktu = new Date(l.tanggalLapor).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
-                    const statusClass = l.status === 'Selesai' ? 'status-success' : l.status === 'Investigasi' ? 'status-pending' : 'status-active';
+                const allKendaraan = dataKendaraan.success ? dataKendaraan.data : [];
+                const allLaporan = dataLaporan.success ? dataLaporan.data : [];
+                const pencatatan = dataPencatatan.success ? (Array.isArray(dataPencatatan.data) ? dataPencatatan.data : dataPencatatan.data.pencatatan || []) : [];
+                const pengguna = dataPengguna.success ? (Array.isArray(dataPengguna.data) ? dataPengguna.data : dataPengguna.data.pengguna || []) : [];
+                const transaksiAktif = dataTransaksi.success ? dataTransaksi.data : [];
+                
+                console.log('Kendaraan:', allKendaraan);
+                console.log('Transaksi Aktif:', transaksiAktif);
+                console.log('Laporan:', allLaporan);
+                console.log('Pencatatan:', pencatatan);
 
-                    tbodyLaporan.innerHTML += `
-                        <tr>
-                            <td>${waktu}</td>
-                            <td><span class="status-badge ${statusClass}">${l.status}</span></td>
-                            <td><strong>${l.platNomor}</strong></td>
-                            <td>${l.lokasiKehilangan}</td>
-                            <td>${l.pelaporNama}</td>
-                            <td>
-                                <div class="table-actions">
-                                    <button class="btn btn-primary btn-sm" onclick="lihatDetailLaporan('${l.id}')">
-                                        <i class="fas fa-eye"></i> Detail
-                                    </button>
-                                    ${l.status !== 'Selesai' ? `
-                                        <button class="btn btn-success btn-sm" onclick="selesaikanLaporan('${l.id}')">
-                                            <i class="fas fa-check"></i> Selesaikan
+                // Update tabel kendaraan yang perlu verifikasi (menampilkan transaksi parkir aktif)
+                const tbodyVerif = document.querySelector('#verifikasi-identitas table tbody');
+                if (tbodyVerif) {
+                    if (transaksiAktif.length === 0) {
+                        tbodyVerif.innerHTML = `
+                            <tr>
+                                <td colspan="6" style="text-align: center; padding: 20px; color: #999;">
+                                    <i class="fas fa-info-circle"></i> Tidak ada kendaraan parkir aktif
+                                </td>
+                            </tr>
+                        `;
+                    } else {
+                        tbodyVerif.innerHTML = '';
+                        transaksiAktif.forEach(t => {
+                            const kendaraan = allKendaraan.find(k => k.id_kendaraan === t.id_kendaraan);
+                            const waktuMasuk = new Date(t.waktu_masuk);
+                            const now = new Date();
+                            const durasiMenit = Math.floor((now - waktuMasuk) / (1000 * 60));
+                            const jam = Math.floor(durasiMenit / 60);
+                            const menit = durasiMenit % 60;
+                            const durasi = `${jam} jam ${menit} menit`;
+                            const waktuStr = waktuMasuk.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+                            const jenis = kendaraan ? `${kendaraan.merk} ${kendaraan.tipe}` : 'Unknown';
+                            
+                            tbodyVerif.innerHTML += `
+                                <tr>
+                                    <td><strong>${t.plat_nomor}</strong></td>
+                                    <td>${jenis}</td>
+                                    <td>${t.lokasi_parkir}</td>
+                                    <td>${waktuStr}</td>
+                                    <td><span class="status-badge status-active">${durasi}</span></td>
+                                    <td>
+                                        <button class="btn btn-success btn-sm" onclick="alert('Kendaraan sedang parkir aktif')">
+                                            <i class="fas fa-eye"></i> Lihat
                                         </button>
-                                    ` : ''}
-                                </div>
-                            </td>
-                        </tr>
-                    `;
-                });
-            }
+                                    </td>
+                                </tr>
+                            `;
+                        });
+                    }
+                }
 
-            // Update riwayat pencatatan
-            const tbodyPencatatan = document.querySelector('#catat-kendaraan-log table tbody');
-            if (tbodyPencatatan) {
-                tbodyPencatatan.innerHTML = '';
-                pencatatan.slice(0, 10).reverse().forEach(p => {
-                    const waktu = new Date(p.waktu).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
-                    const statusBadge = p.statusTransaksi === 'Masuk' ? 'status-active' : 'status-success';
+                // Update tabel laporan kehilangan
+                const tbodyLaporan = document.querySelector('#laporan-kehilangan table tbody');
+                if (tbodyLaporan) {
+                    if (allLaporan.length === 0) {
+                        tbodyLaporan.innerHTML = `
+                            <tr>
+                                <td colspan="6" style="text-align: center; padding: 20px; color: #999;">
+                                    <i class="fas fa-info-circle"></i> Belum ada laporan kehilangan
+                                </td>
+                            </tr>
+                        `;
+                    } else {
+                        tbodyLaporan.innerHTML = '';
+                        allLaporan.forEach(l => {
+                            const waktu = new Date(l.created_at || l.tanggal_lapor).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+                            const statusClass = l.status === 'Selesai' ? 'status-success' : l.status.includes('Investig') ? 'status-pending' : 'status-active';
 
-                    tbodyPencatatan.innerHTML += `
-                        <tr>
-                            <td>${waktu}</td>
-                            <td><strong>${p.platNomor}</strong></td>
-                            <td>${p.jenisKendaraan}</td>
-                            <td><span class="status-badge ${statusBadge}">${p.statusTransaksi}</span></td>
-                            <td>${p.petugasNama || currentUser.nama}</td>
-                        </tr>
-                    `;
-                });
+                            tbodyLaporan.innerHTML += `
+                                <tr>
+                                    <td>${waktu}</td>
+                                    <td><span class="status-badge ${statusClass}">${l.status}</span></td>
+                                    <td><strong>${l.plat_nomor}</strong></td>
+                                    <td>${l.lokasi_kehilangan}</td>
+                                    <td>${l.pelapor_nama || l.nama_pelapor || '-'}</td>
+                                    <td>
+                                        <div class="table-actions">
+                                            <button class="btn btn-primary btn-sm" onclick="lihatDetailLaporan('${l.id_laporan}')">
+                                                <i class="fas fa-eye"></i> Detail
+                                            </button>
+                                            ${l.status !== 'Selesai' ? `
+                                                <button class="btn btn-success btn-sm" onclick="selesaikanLaporan('${l.id_laporan}')">
+                                                    <i class="fas fa-check"></i> Selesaikan
+                                                </button>
+                                            ` : ''}
+                                        </div>
+                                    </td>
+                                </tr>
+                            `;
+                        });
+                    }
+                    });
+                }
+
+                // Update riwayat pencatatan
+                const tbodyPencatatan = document.querySelector('#catat-kendaraan-log table tbody');
+                if (tbodyPencatatan) {
+                    if (pencatatan.length === 0) {
+                        tbodyPencatatan.innerHTML = `
+                            <tr>
+                                <td colspan="5" style="text-align: center; padding: 20px; color: #999;">
+                                    <i class="fas fa-info-circle"></i> Belum ada riwayat pencatatan
+                                </td>
+                            </tr>
+                        `;
+                    } else {
+                        tbodyPencatatan.innerHTML = '';
+                        pencatatan.slice(0, 10).forEach(p => {
+                            const waktu = new Date(p.waktu_pencatatan || p.created_at).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+                            const statusBadge = p.status_transaksi.includes('Masuk') ? 'status-active' : 'status-success';
+
+                            tbodyPencatatan.innerHTML += `
+                                <tr>
+                                    <td>${waktu}</td>
+                                    <td><strong>${p.plat_nomor}</strong></td>
+                                    <td>${p.jenis_kendaraan}</td>
+                                    <td><span class="status-badge ${statusBadge}">${p.status_transaksi}</span></td>
+                                    <td>${p.nama_petugas || currentUser.nama}</td>
+                                </tr>
+                            `;
+                        });
+                    }
+                }
+            } catch (error) {
+                console.error('Error loading petugas data:', error);
             }
         }
 
